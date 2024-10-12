@@ -3,7 +3,6 @@
 python  -m  venv  env
 .\env\Scripts\activate
 pip  install  -r  requirements.txt
-cd  project
 python  manage.py  migrate
 python  manage.py  runserver
 ```
@@ -11,12 +10,11 @@ python  manage.py  runserver
 ## If project is already setup
 ```bash
 .\env\Scripts\activate
-cd  project
 python  manage.py  migrate
 python  manage.py  runserver
 ```
 
-## If you want to check it on the phone for some reason
+## If you want to check it on the phone
 ```bash
 python  manage.py  runserver 0.0.0.0:8000
 ```
