@@ -9,6 +9,23 @@ on:
       - main
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run Super-Linter
+      uses: github/super-linter@v5
+      env:
+        VALIDATE_PYTHON: true
+        VALIDATE_HTML: true
+        VALIDATE_CSS: true
+        VALIDATE_YAML: true
+        VALIDATE_JAVASCRIPT: false
+        DEFAULT_BRANCH: main
+
   test:
     runs-on: ubuntu-latest
 
