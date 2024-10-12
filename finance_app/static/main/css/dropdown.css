@@ -1,0 +1,31 @@
+#header-user:hover .dropdown-menu{
+  display:block 
+}
+.dropdown-menu{
+  display:none;
+  position:absolute;
+  left:0;
+  background-color:var(--color-bg-primary);
+  width:100%;
+  z-index:10;
+  padding:0;
+  box-shadow:0 8px 16px rgba(0,0,0,.1);
+  color: var(--color-text-primary) 
+}
+.dropdown-menu-item{
+  width:100%;
+  padding-top:10px;
+  position:relative 
+}
+.dropdown-menu-item:hover{
+  background-color:var(--color-bg-secondary) 
+}
+.dropdown-menu-item label{
+  display:flex;
+  align-items:center;
+  width:100%;
+  cursor:pointer 
+}
+.dropdown-menu-item .ms-auto{
+  margin-left:auto 
+}

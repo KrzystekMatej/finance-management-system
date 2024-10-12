@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Finance app{% endblock %}</title>
+    <link rel="icon" href="{% static 'main/favicon.ico' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'main/css/constants.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/dropdown.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/general.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/notification.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/slider.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/summary.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/utilities.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/parallax.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/scaling.css' %}">
+  </head>
+  <body>
+
+    {% block content %}
+    {% endblock %}
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'main/js/scripts.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="container y-50">
+  <div class="row login-container align-items-center">
+    <h2 class="text-center mb-4">Přihlásit se</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="mb-3">
+        <label for="login-email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="login-email" placeholder="jan.novak@example.com">
+      </div>
+      <div class="mb-3">
+        <label for="login-password" class="form-label">Heslo</label>
+        <input type="password" class="form-control" id="login-password" placeholder="********">
+      </div>
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="remember-me">
+        <label class="form-check-label" for="remember-me">Pamatovat si mě</label>
+      </div>
+      <a href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
+      </br>
+      <a href="{% url 'main_page' %}">DEBUG: Přeskočit přihlášení</a>
+      <button type="submit" class="btn btn-primary w-100">Přihlásit</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
