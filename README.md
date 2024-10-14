@@ -1,22 +1,23 @@
 ## First time setup (windows)
 ```bash
-python  -m  venv  env
+python -m venv env
 .\env\Scripts\activate
-pip  install  -r  requirements.txt
-python  manage.py  migrate
-python  manage.py  runserver
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+
 ```
 
 ## If project is already setup
 ```bash
 .\env\Scripts\activate
-python  manage.py  migrate
-python  manage.py  runserver
+python manage.py migrate
+python manage.py runserver
 ```
 
 ## If you want to check it on the phone
 ```bash
-python  manage.py  runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000
 ```
 1. Find your PC's local IP with ipconfig
 2. Add it to ALLOWED_HOSTS in finance-management-system/project/settings.py
