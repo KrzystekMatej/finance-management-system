@@ -1,0 +1,16 @@
+.modal-content{
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+}
+
+.modal-xxl {
+  width: 90vw;
+  max-width: 90vw;
+  min-height: 90vh;
+  max-height: 90vh;
+}
+
+.modal-xxl .modal-content {
+  height: 100%;
+}
+
