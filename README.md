@@ -37,26 +37,71 @@ classDiagram
         +String jmeno
         +String prijmeni
         +int id
+        +String adresa
+        +String telefon
+        +void zalozitUcet(BankovniUcet ucet)
+        +void pridatSpolecnyUcet(SpolecnyUcet ucet)
     }
 
     class BankovniUcet {
         +String cisloUctu
         +double zbytek
+        +Date datumZalozeni
+        +List~Transaction~ historieTransakci
         +void ulozitTransakci(Transaction transakce)
     }
 
     class SpolecnyUcet {
         +String cisloUctu
         +double zbytek
+        +void pridatVlastnika(Zakaznik zakaznik)
+        +List~Zakaznik~ vlastnici
     }
 
     class Transaction {
         +double castka
         +String datum
         +String typ
+        +String popis
+    }
+
+    class KreditniKarta {
+        +String cisloKarty
+        +double limit
+        +double aktualniDluh
+        +String datumPlatnosti
+        +void provestPlatbu(double castka)
+    }
+
+    class Pojisteni {
+        +String typPojisteni
+        +double castka
+        +Date datumSplatnosti
+        +void vypocitatSplatku()
+    }
+
+    class Adresa {
+        +String ulice
+        +String mesto
+        +String psc
+    }
+
+    class Zamestnanec {
+        +String jmeno
+        +String prijmeni
+        +int id
+        +String pozice
+        +double plat
     }
 
     Zakaznik "1" --> "N" BankovniUcet : vlastni
-    BankovniUcet "0..1" --> "0..*" SpolecnyUcet : spolecny
+    Zakaznik "0..*" --> "N" KreditniKarta : vlastniKartu
+    Zakaznik "1" --> "0..*" Adresa : bydliNa
     BankovniUcet "1" --> "0..*" Transaction : ma
+    BankovniUcet "0..1" --> "0..*" SpolecnyUcet : spolecny
+    KreditniKarta "1" --> "0..*" Transaction : transakce
+    Zakaznik "1" --> "0..*" Pojisteni : maPojisteni
+    Pojisteni "1" --> "1" BankovniUcet : pojisteniUhrada
+    Zamestnanec "1" --> "1..*" BankovniUcet : spravuje
+
 ```
