@@ -1,0 +1,47 @@
+body{
+  font-family:Roboto,sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  color:var(--color-text-primary);
+  background-color:var(--color-bg-primary);
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+#header {
+  background-color: var(--color-secondary);
+  width: 100%;
+  margin: 0;
+  padding: 10px;
+  min-height: 4vh;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 24px;
+}
+#header-account,#header-balance,#header-user{
+  position:relative;
+  display:inline-block;
+  width:100%;
+  height:100%;
+  font-size:24px 
+}
+.divider {
+  border-left: 1px solid #ddd;
+  height: 100%;
+}
+a {
+  text-decoration: underline !important;
+  color: rgb(45, 94, 255) !important;
+}
+a:hover {
+  color: rgb(85, 37, 255) !important;
+}
+a.no-highlight {
+  text-decoration: none !important;
+  color: inherit !important;
+ /* Or set a specific color if needed */
+}

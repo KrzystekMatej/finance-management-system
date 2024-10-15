@@ -1,0 +1,42 @@
+{% load custom_filters %}
+
+<div class="summary-module parallax">
+  <div class="summary-header">
+    <div class="row width-100">
+      <div class="col-md-3 vert-center">
+        <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
+      </div>
+      <div class="col-md-3 vert-center">
+        <span class="income positive">+{{ summary.positive_income | spacedNumber }} Kč</span>
+      </div>
+      <div class="col-md-3 vert-center">
+        <span class="income negative">-{{ summary.negative_income | spacedNumber }} Kč</span>
+      </div>
+      <div class="col-md-3 vert-center">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#statistics-modal"> Zobrazit statistiku </button>
+      </div>
+    </div>
+  </div>
+  <div class="summary-body">
+    
+    {% for transaction in summary.transactions %}
+    <div class="transaction {% if transaction.amount > 0 %}incoming-transaction{% else %}outcoming-transaction{% endif %}">
+      <div class="row width-100">
+        <div class="col-md-3 vert-center">
+          <span class="transaction-date">{{ transaction.date }}</span>
+        </div>
+        <div class="col-md-3 vert-center">
+          <span class="transaction-source">{{ transaction.source }}</span>
+        </div>
+        <div class="col-md-3 vert-center">
+          <span class="transaction-amount {% if transaction.amount < 0 %} negative {% else %} positive {% endif %}"> {% if transaction.amount < 0 %} {{ transaction.amount | spacedNumber }} Kč {% else %} +{{ transaction.amount | spacedNumber }} Kč {% endif %} </span>
+        </div>
+        <div class="col-md-3 vert-center">
+          <!-- Empty so it aligns with header -->
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>

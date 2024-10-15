@@ -1,0 +1,12 @@
+@media (max-width: 576px) {
+  .mobile-padding {
+      padding: 20px 15px !important;
+      margin: 0 !important;
+ }
+}
+@media (max-width: 820px) {
+  .mobile-centering {
+      display: flex;
+      justify-content: center;
+ }
+}
