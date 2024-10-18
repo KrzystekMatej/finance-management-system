@@ -62,7 +62,7 @@
           </div>
 
       <!-- This is retarded but linter complains otherwise -->
-      {% if transaction.amount < 0 %}
+      {% if transaction.amount|is_positive %}
         </div>
       {% else %}
         </div>
