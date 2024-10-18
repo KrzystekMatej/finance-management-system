@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% extends 'base.html' %}
 
 {% block title %}Login{% endblock %}
@@ -23,7 +24,7 @@
         <label class="form-check-label" for="remember-me">Pamatovat si mě</label>
       </div>
       <a href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
-      </br>
+      <br>
       <a href="{% url 'main_page' %}">DEBUG: Přeskočit přihlášení</a>
       <button type="submit" class="btn btn-primary w-100">Přihlásit</button>
     </form>

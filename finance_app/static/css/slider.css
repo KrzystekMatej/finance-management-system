@@ -8,9 +8,9 @@
   border-radius:calc(var(--slider-height)/ 2);
   height:var(--slider-height);
   width:var(--slider-width);
-  border-radius:calc(var(--slider-height)/ 2) 
 }
-.slider:before{
+
+.slider::before{
   position:absolute;
   content:"";
   height:var(--slider-handle-size);
@@ -18,11 +18,12 @@
   background-color:var(--color-bg-tertiary);
   transition:var(--slider-transition-speed);
   border-radius:50%;
-  border-radius:50% 
 }
+
 input:checked+.slider{
   background-color:var(--color-primary) 
 }
-input:checked+.slider:before{
+
+input:checked+.slider::before{
   transform:translateX(var(--slider-translate)) 
 }
