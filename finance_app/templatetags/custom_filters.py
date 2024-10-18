@@ -16,3 +16,10 @@ def spaced_number(value):
         return f'{int(value):,}'.replace(',', ' ')
     except (ValueError, TypeError):
         return str(value)
+
+# Since linter complains about usage of special symbols like "<",
+# use this function for comparison instead
+@register.filter
+def is_positive(value):
+        return value >= 0
+      
