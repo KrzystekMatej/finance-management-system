@@ -46,12 +46,12 @@
             <div class="col-md-3 vert-center">
             
               {% if transaction.amount|is_positive  %}
-              <span class="transaction-amount negative">
-                {% if transaction.amount|is_positive  %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %}
+              <span class="transaction-amount positive">
+                +{{ transaction.amount|spaced_number }} Kč 
               </span>
               {% else %}
-              <span class="transaction-amount positive">
-                {% if  transaction.amount|is_positive  %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %}
+              <span class="transaction-amount negative">
+                {{ transaction.amount|spaced_number }} Kč 
               </span>
               {% endif %}
             
