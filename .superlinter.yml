@@ -1,4 +1,0 @@
-linters:
-  html:
-    disable:
-      - spec-char-escape
