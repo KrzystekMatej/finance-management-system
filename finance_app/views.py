@@ -150,12 +150,15 @@ def main_page(request):
 
 def register(request):
     # TODO: this all
+
     return render(request, 'register.html')
 
 def login(request):
     # TODO: this all
+
     return render(request, 'login.html')
 
 def logout(request):
     # TODO: this all
+    
     return render(request, 'logout.html')
