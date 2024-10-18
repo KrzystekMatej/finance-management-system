@@ -21,7 +21,11 @@
   <div class="summary-body">
     
     {% for transaction in summary.transactions %}
+    <!-- stylelint-disable-next-line id-class-value -->
+    <!-- stylelint-disable-next-line spec-char-escape -->
     <div class="transaction {% if transaction.amount > 0 %}incoming-transaction{% else %}outcoming-transaction{% endif %}">
+    <!-- stylelint-enable id-class-value -->
+    <!-- stylelint-enable spec-char-escape -->
       <div class="row width-100">
         <div class="col-md-3 vert-center">
           <span class="transaction-date">{{ transaction.date }}</span>
