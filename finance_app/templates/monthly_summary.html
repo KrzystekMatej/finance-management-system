@@ -22,10 +22,8 @@
     
     {% for transaction in summary.transactions %}
     <!-- stylelint-disable-next-line id-class-value -->
-    <!-- stylelint-disable-next-line spec-char-escape -->
     <div class="transaction {% if transaction.amount > 0 %}incoming-transaction{% else %}outcoming-transaction{% endif %}">
-    <!-- stylelint-enable id-class-value -->
-    <!-- stylelint-enable spec-char-escape -->
+      <!-- stylelint-enable id-class-value -->
       <div class="row width-100">
         <div class="col-md-3 vert-center">
           <span class="transaction-date">{{ transaction.date }}</span>
@@ -34,11 +32,13 @@
           <span class="transaction-source">{{ transaction.source }}</span>
         </div>
         <div class="col-md-3 vert-center">
-            <!-- stylelint-disable-next-line id-class-value -->
-            <!-- stylelint-disable-next-line spec-char-escape -->
-            <span class="transaction-amount {% if transaction.amount < 0 %} negative {% else %} positive {% endif %}"> {% if transaction.amount < 0 %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %} </span>
-            <!-- stylelint-enable id-class-value -->
-            <!-- stylelint-enable spec-char-escape -->
+          <!-- stylelint-disable-next-line id-class-value -->
+          <!-- stylelint-disable-next-line spec-char-escape -->
+          <span class="transaction-amount {% if transaction.amount < 0 %} negative {% else %} positive {% endif %}">
+            {% if transaction.amount < 0 %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %}
+          </span>
+          <!-- stylelint-enable id-class-value -->
+          <!-- stylelint-enable spec-char-escape -->
         </div>
         <div class="col-md-3 vert-center">
           <!-- Empty so it aligns with header, perhaps add something here later -->
