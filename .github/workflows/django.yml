@@ -28,7 +28,6 @@ jobs:
           VALIDATE_YAML: true
           VALIDATE_JAVASCRIPT: false
           DEFAULT_BRANCH: main
-          LINTER_RULES: "spec-char-escape=false"
 
   test:
     runs-on: ubuntu-latest
