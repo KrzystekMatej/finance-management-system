@@ -21,7 +21,13 @@
   <div class="summary-body">
     
     {% for transaction in summary.transactions %}
-    <div class="transaction {% if transaction.amount > 0 %}incoming-transaction{% else %}outgoing-transaction{% endif %}">
+
+      {% if transaction.amount < 0 %}
+        <div class="transaction-amount outcoming-transaction">
+      {% else %}
+        <div class="transaction-amount incoming-transaction">
+      {% endif %}
+
       <div class="row width-100">
         <div class="col-md-3 vert-center">
           <span class="transaction-date">{{ transaction.date }}</span>
@@ -30,12 +36,20 @@
           <span class="transaction-source">{{ transaction.source }}</span>
         </div>
         <div class="col-md-3 vert-center">
-          <span class="transaction-amount {% if transaction.amount < 0 %} negative {% else %} positive {% endif %}">
+
+          {% if transaction.amount < 0 %}
+          <span class="transaction-amount negative">
             {% if transaction.amount < 0 %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %}
           </span>
+          {% else %}
+          <span class="transaction-amount positive">
+            {% if transaction.amount < 0 %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %}
+          </span>
+          {% endif %}
+        
         </div>
         <div class="col-md-3 vert-center">
-          <!-- Empty so it aligns with header, perhaps add something here later -->
+          <!-- Empty so it aligns with header, perhaps add something here -->
         </div>
       </div>
     </div>
