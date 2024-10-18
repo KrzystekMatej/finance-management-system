@@ -5,6 +5,7 @@
   padding: 10px;
   opacity: 1;
 }
+
 .summary-header {
   display: flex;
   justify-content: space-between;
@@ -15,29 +16,36 @@
   z-index: 1;
   position: relative;
 }
+
 .income {
   font-size: 16px;
 }
+
 .positive {
-  color: rgb(66, 148, 66);
+  color: rgb(66 148 66);
 }
+
 .negative {
-  color: rgb(255, 81, 81);
+  color: rgb(255 81 81);
 }
+
 .summary-body {
   margin-top: 10px;
   z-index: 1;
   position: relative;
 }
+
 .transaction {
   display: flex;
   justify-content: space-between;
   padding: 5px 0;
   border-bottom: 1px solid var(--color-secondary);
 }
+
 .transaction:last-child {
   border-bottom: none;
 }
+
 .transaction-date, .transaction-source, .transaction-amount {
   flex: 1;
 }

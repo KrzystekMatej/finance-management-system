@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% load custom_filters %}
 
 <div class="summary-module parallax">
@@ -29,10 +30,12 @@
           <span class="transaction-source">{{ transaction.source }}</span>
         </div>
         <div class="col-md-3 vert-center">
+          <!-- stylelint-disable-next-line id-class-value -->
           <span class="transaction-amount {% if transaction.amount < 0 %} negative {% else %} positive {% endif %}"> {% if transaction.amount < 0 %} {{ transaction.amount | spaced_number }} Kč {% else %} +{{ transaction.amount | spaced_number }} Kč {% endif %} </span>
+          <!-- stylelint-enable id-class-value -->
         </div>
         <div class="col-md-3 vert-center">
-          <!-- Empty so it aligns with header -->
+          <!-- Empty so it aligns with header, perhaps add something here later -->
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ body{
   box-sizing: border-box;
   min-height: 100vh;
 }
+
 #header {
   background-color: var(--color-secondary);
   width: 100%;
@@ -22,6 +23,7 @@ body{
   z-index: 10;
   font-size: 24px;
 }
+
 #header-account,#header-balance,#header-user{
   position:relative;
   display:inline-block;
@@ -29,19 +31,22 @@ body{
   height:100%;
   font-size:24px 
 }
+
 .divider {
   border-left: 1px solid #ddd;
   height: 100%;
 }
+
 a {
   text-decoration: underline !important;
-  color: rgb(45, 94, 255) !important;
+  color: rgb(45 94 255) !important;
 }
+
 a:hover {
-  color: rgb(85, 37, 255) !important;
+  color: rgb(85 37 255) !important;
 }
+
 a.no-highlight {
   text-decoration: none !important;
   color: inherit !important;
- /* Or set a specific color if needed */
 }

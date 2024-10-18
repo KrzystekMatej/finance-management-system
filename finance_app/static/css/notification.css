@@ -14,6 +14,7 @@
   opacity: 0;
   border: solid 1px white;
 }
+
 .notification.show {
   display: block;
   opacity: 1;

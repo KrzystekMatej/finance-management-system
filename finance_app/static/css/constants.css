@@ -5,31 +5,32 @@
   --slider-translate:calc(var(--slider-width) - var(--slider-handle-size));
   --slider-transition-speed:0.25s 
 }
-/* Static colors that do not change in different modes */
+
 body{
-  --color-always-white:#ffffff;
-  --color-always-black: #000000;
-}
-/* Light mode colors */
-body{
+  /* Colors active in both modes*/
+  --color-always-white:#fff;
+  --color-always-black: #000;
+  
+  /* Light mode colors */
   --color-primary:#007bff;
   --color-secondary:#5eacff;
   --color-tertiary:#004a8b;
   --color-text-primary:#212529;
   --color-text-secondary:#6c757d;
-  --color-text-tertiary:#000000;
-  --color-bg-primary:#ffffff;
+  --color-text-tertiary:#000;
+  --color-bg-primary:#fff;
   --color-bg-secondary:#949494;
   --color-bg-tertiary: #696969;
 }
+
 body.dark-mode {
   --color-primary:#007bff;
   --color-secondary:#5eacff;
   --color-tertiary:#004a8b;
   --color-text-primary: #f8f9fa;
   --color-text-secondary: #dcdcdc;
-  --color-text-tertiary: #ffffff;
+  --color-text-tertiary: #fff;
   --color-bg-primary: #212529;
   --color-bg-secondary: #494949;
-  --color-bg-tertiary: #333333;
+  --color-bg-tertiary: #333;
 }
