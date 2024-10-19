@@ -33,75 +33,111 @@ python manage.py runserver 0.0.0.0:8000
 
 ```mermaid
 classDiagram
-    class Zakaznik {
-        +String jmeno
-        +String prijmeni
-        +int id
-        +String adresa
-        +String telefon
-        +void zalozitUcet(BankovniUcet ucet)
-        +void pridatSpolecnyUcet(SpolecnyUcet ucet)
+    class User {
+        +String username
+        +String password
+        +String email
+        +String first_name
+        +String last_name
+        +boolean is_staff
+        +boolean is_active
+        +boolean is_superuser
+        +Date last_login
+        +Date date_joined
     }
 
-    class BankovniUcet {
-        +String cisloUctu
-        +double zbytek
-        +Date datumZalozeni
-        +List~Transaction~ historieTransakci
-        +void ulozitTransakci(Transaction transakce)
+    class UserProfile {
+        +User user
+        +double balance
+        +NotificationMode global_notification_mode 
     }
-
-    class SpolecnyUcet {
-        +String cisloUctu
-        +double zbytek
-        +void pridatVlastnika(Zakaznik zakaznik)
-        +List~Zakaznik~ vlastnici
+    
+    class Category {
+        +UserProfile user
+        +String name
     }
 
     class Transaction {
-        +double castka
-        +String datum
-        +String typ
-        +String popis
+        +String name
+        +double amount
+        +Date created_at
+        +Date performed_at
+        +Category category
+        +String description
     }
-
-    class KreditniKarta {
-        +String cisloKarty
+    
+    class RecurringTransaction {
+        +uint interval_seconds
+        +Date start_at
+        +Date end_at
+    }
+    
+    class Budget {
+        +String name
+        +UserProfile owner
+        +Date created_at
+        +Date exceeded_at
         +double limit
-        +double aktualniDluh
-        +String datumPlatnosti
-        +void provestPlatbu(double castka)
+        +Date period_start
+        +Date period_end
+        +String description
+    }
+    
+    class NotificationMode {
+        <<enumeration>>
+        NONE
+        APP
+        EMAIL
+        APP_EMAIL
+    }
+    
+    class BudgetRole {
+        <<enumeration>>
+        PARTICIPANT
+        OBSERVER
+    }
+    
+    class BudgetPermission {
+        <<enumeration>>
+        VIEW
+        EDIT
+    }
+    
+    class BudgetNotificationSettings {
+        +Boolean on_exceeded
+        +Boolean on_limit_change
+        +Boolean on_transaction
+        +NotificationMode notification_mode 
+    }
+    
+    class SharedBudget {
+        +Budget budget
+        +UserProfile shared_with
+        +BudgetPermission permission
+        +BudgetRole role
+        +BudgetNotificationSettings notification_settings
+    }
+    
+    class Notification {
+        +UserProfile receiver
+        +String message
+        +Date sent_at
+        +Boolean is_read
     }
 
-    class Pojisteni {
-        +String typPojisteni
-        +double castka
-        +Date datumSplatnosti
-        +void vypocitatSplatku()
-    }
-
-    class Adresa {
-        +String ulice
-        +String mesto
-        +String psc
-    }
-
-    class Zamestnanec {
-        +String jmeno
-        +String prijmeni
-        +int id
-        +String pozice
-        +double plat
-    }
-
-    Zakaznik "1" --> "N" BankovniUcet : vlastni
-    Zakaznik "0..*" --> "N" KreditniKarta : vlastniKartu
-    Zakaznik "1" --> "0..*" Adresa : bydliNa
-    BankovniUcet "1" --> "0..*" Transaction : ma
-    BankovniUcet "0..1" --> "0..*" SpolecnyUcet : spolecny
-    KreditniKarta "1" --> "0..*" Transaction : transakce
-    Zakaznik "1" --> "0..*" Pojisteni : maPojisteni
-    Pojisteni "1" --> "1" BankovniUcet : pojisteniUhrada
-    Zamestnanec "1" --> "1..*" BankovniUcet : spravuje
-
+    Transaction "1" --> "0..1" Category : "has"
+    Transaction "N" --* "1" UserProfile : "owns"
+    RecurringTransaction --|> Transaction
+    Notification "N" --* "1" UserProfile : "owns"
+    UserProfile "0..1" --* "1" User : "owns"
+    UserProfile "1" *-- "N" Category : "owns"
+    NotificationMode <-- UserProfile
+    NotificationMode <-- BudgetNotificationSettings
+    SharedBudget "N" --* "1" Budget : "owns"
+    SharedBudget "N" --> "1" UserProfile : "shared_with"
+    SharedBudget "1" --> "1" BudgetNotificationSettings
+    BudgetRole <-- SharedBudget
+    BudgetPermission <-- SharedBudget
+    Budget "N" --* "1" UserProfile : "owns"
+    Budget "1" --> "N" Category : "has"
 ```
