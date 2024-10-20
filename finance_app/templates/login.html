@@ -12,21 +12,20 @@
                     <label for="login-email" class="form-label">Email</label>
                     <input type="email"
                            name="email"
-                           class="form-control"
+                           class="form-control {% if form.email.errors %}is-invalid{% endif %}"
                            id="login-email"
                            placeholder="jan.novak@example.com"
                            value="{{ form.email.value|default_if_none:'' }}"
-                           {% if form.email.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                        >
                     {{ form.email.errors }}
                 </div>
                 <div class="mb-3">
                     <label for="login-password" class="form-label">Heslo</label>
                     <input type="password"
                            name="password"
-                           class="form-control"
+                           class="form-control {% if form.password.errors %}is-invalid{% endif %}"
                            id="login-password"
-                           placeholder="********"
-                           {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                           placeholder="********">
                     {{ form.password.errors }}
                 </div>
                 <div class="mb-3 form-check">

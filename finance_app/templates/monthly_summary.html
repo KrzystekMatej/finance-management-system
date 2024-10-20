@@ -22,35 +22,29 @@
     </div>
     <div class="summary-body">
         {% for transaction in summary.transactions %}
-            {% if transaction.amount|is_positive %}
-                <div class="transaction-amount outcoming-transaction">
-                {% else %}
-                    <div class="transaction-amount incoming-transaction">
-                    {% endif %}
-                    <div class="row width-100">
-                        <div class="col-md-3 vert-center">
-                            <span class="transaction-date">{{ transaction.date }}</span>
-                        </div>
-                        <div class="col-md-3 vert-center">
-                            <span class="transaction-source">{{ transaction.source }}</span>
-                        </div>
-                        <div class="col-md-3 vert-center">
-                            {% if transaction.amount|is_positive %}
-                                <span class="transaction-amount positive">+{{ transaction.amount|spaced_number }} Kč</span>
-                            {% else %}
-                                <span class="transaction-amount negative">{{ transaction.amount|spaced_number }} Kč</span>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-3 vert-center">
-                            <!-- Empty so it aligns with header, perhaps add something here -->
-                        </div>
-                    </div>
-                    <!-- This is retarded but linter complains otherwise -->
-                    {% if transaction.amount|is_positive %}
-                    </div>
-                {% else %}
-                </div>
-            {% endif %}
+        <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
+          <div class="row width-100">
+              <div class="col-md-3 vert-center">
+                  <span class="transaction-date">{{ transaction.date }}</span>
+              </div>
+              <div class="col-md-3 vert-center">
+                  <span class="transaction-source">{{ transaction.source }}</span>
+              </div>
+              <div class="col-md-3 vert-center">
+                  <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
+                      {% if transaction.amount > 0 %}
+                          +{{ transaction.amount|spaced_number }} Kč
+                      {% else %}
+                          {{ transaction.amount|spaced_number }} Kč
+                      {% endif %}
+                  </span>
+              </div>
+              <div class="col-md-3 vert-center">
+                  <!-- Empty so it aligns with header, perhaps add something here -->
+              </div>
+          </div>
+      </div>
+      
         {% endfor %}
     </div>
 </div>
