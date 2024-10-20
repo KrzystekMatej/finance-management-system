@@ -1,4 +1,3 @@
----
 name: Django Lint and Test
 
 on:
@@ -34,31 +33,34 @@ jobs:
       # Run djlint
       - name: Run djlint
         run: |
-          venv/bin/djlint --check .
-          
+          env/bin/djlint --check .  # Use `env/bin/djlint` to match your virtual environment
+
   test:
     runs-on: ubuntu-latest
+    needs: lint-django  # Ensure this job runs after linting
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Use the same version for consistency
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Updated to match your first job
         with:
           python-version: '3.12'
 
       - name: Install dependencies
         run: |
+          python -m venv env  # Create a virtual environment
+          source env/bin/activate
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run migrations
         run: |
-          python manage.py migrate
+          env/bin/python manage.py migrate  # Ensure you're using the virtual environment's Python
 
       - name: Run tests
         run: |
-          python manage.py test
+          env/bin/python manage.py test  # Again, ensure you're using the virtual environment's Python
