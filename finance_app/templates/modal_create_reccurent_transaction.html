@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<div class="modal fade"
+     id="recurrence-modal"
+     tabindex="-1"
+     aria-labelledby="recurrence-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="recurrence-modal-label">Nastavit opakující se transakci</h5>
+        <button type="button"
+                class="btn-close"
+                onclick="closeRecurrenceModal()"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Recurrent transaction frequency -->
+        <div class="mb-3">
+          <label for="recurrence-frequency" class="form-label">Frekvence opakování</label>
+          <select class="form-select"
+                  id="recurrence-frequency-modal"
+                  name="recurrence_frequency"
+                  onchange="updateRecurrenceOptions()">
+            <option value="daily">Každý den</option>
+            <option value="weekly">Každý týden</option>
+            <option value="monthly">Každý měsíc</option>
+            <option value="yearly">Každý rok</option>
+          </select>
+        </div>
+        <!-- Weekly recurrence day selection -->
+        <div class="mb-3" id="weekly-options-modal">
+          <label for="weekly-day" class="form-label">Vyberte den v týdnu</label>
+          <select class="form-select" id="weekly-day" name="weekly_day">
+            <option value="monday">Pondělí</option>
+            <option value="tuesday">Úterý</option>
+            <option value="wednesday">Středa</option>
+            <option value="thursday">Čtvrtek</option>
+            <option value="friday">Pátek</option>
+            <option value="saturday">Sobota</option>
+            <option value="sunday">Neděle</option>
+          </select>
+        </div>
+        <!-- Monthly recurrence day selection -->
+        <div class="mb-3" id="monthly-options-modal">
+          <label for="monthly-day" class="form-label">Vyberte den v měsíci</label>
+          <input type="number"
+                 class="form-control"
+                 id="monthly-day"
+                 name="monthly_day"
+                 min="1"
+                 value="15"
+                 max="27"
+                 placeholder="Zadejte den v měsíci">
+        </div>
+        <!-- Yearly recurrence date selection -->
+        <div class="mb-3" id="yearly-options-modal">
+          <label for="yearly-date" class="form-label">Vyberte datum</label>
+          <input type="date" class="form-control" id="yearly-date" name="yearly_date">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary"
+                onclick="closeRecurrenceModal()">Zavřít a zahodit</button>
+        <button type="button"
+                class="btn btn-primary"
+                onclick="saveRecurrenceSettings()">Uložit nastavení</button>
+      </div>
+    </div>
+  </div>
+</div>

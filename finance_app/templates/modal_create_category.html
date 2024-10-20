@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<div class="modal fade"
+     id="custom-category-modal"
+     tabindex="-1"
+     aria-labelledby="custom-category-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="custom-category-modal-label">Vytvořit novou kategorii</h5>
+        <button type="button"
+                class="btn-close"
+                onclick="closeCustomCategoryModal()"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="custom-category-name" class="form-label">Název kategorie</label>
+          <input type="text"
+                 class="form-control"
+                 id="custom-category-name"
+                 placeholder="Zadejte název kategorie">
+        </div>
+        <div class="mb-3">
+          <label for="custom-category-color-input" class="form-label">Barva kategorie</label>
+          <input type="color" class="form-control" id="custom-category-color-input">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary"
+                onclick="closeCustomCategoryModal()">Zavřít a zahodit</button>
+        <button type="button" class="btn btn-primary" onclick="saveCustomCategory()">Uložit jako novou kategorii</button>
+      </div>
+    </div>
+  </div>
+</div>

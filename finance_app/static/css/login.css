@@ -27,7 +27,7 @@
   animation-iteration-count: 2;
 }
 
-#recurrence-options, #weekly-options, #monthly-options{
+#weekly-options-modal, #monthly-options-modal, #yearly-options-modal{
   display: none;
 }
 

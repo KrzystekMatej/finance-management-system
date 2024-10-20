@@ -183,3 +183,74 @@ document.getElementById('recurrence-frequency').addEventListener('change', funct
     monthlyOptions.style.display = 'block';
   }
 });
+
+  function saveCustomCategory() {
+    const categoryName = document.getElementById('custom-category-name').value;
+    const categoryColor = document.getElementById('custom-category-color-input').value;
+
+    // TODO: Create new category database entry for this
+    console.log("Category Name:", categoryName);
+    console.log("Category Color:", categoryColor);
+
+    closeCustomCategoryModal();
+}
+
+function closeCustomCategoryModal() {
+    const customCategoryModal = bootstrap.Modal.getInstance(document.getElementById('custom-category-modal'));
+    customCategoryModal.hide();
+    const previousModal = bootstrap.Modal.getInstance(document.getElementById('transaction-modal'));
+    previousModal.show();
+}
+
+function saveRecurrenceSettings() {
+  const recurrenceFrequency = document.getElementById('recurrence-frequency-modal').value;
+  const weeklyDay = document.getElementById('weekly-day').value;
+  const monthlyDay = document.getElementById('monthly-day').value;
+
+  // TODO: Save recurrence settings logic here
+  console.log("Recurrence Frequency:", recurrenceFrequency);
+  console.log("Weekly Day:", weeklyDay);
+  console.log("Monthly Day:", monthlyDay);
+
+  closeRecurrenceModal();
+}
+
+function openRecurrenceModal() {
+  const recurrenceModal = new bootstrap.Modal(document.getElementById('recurrence-modal'));
+  recurrenceModal.show();
+  
+  // Call the update function to ensure correct options are displayed
+  updateRecurrenceOptions();
+}
+
+
+function closeRecurrenceModal() {
+  const recurrenceModal = bootstrap.Modal.getInstance(document.getElementById('recurrence-modal'));
+  recurrenceModal.hide();
+  const previousModal = bootstrap.Modal.getInstance(document.getElementById('transaction-modal'));
+  previousModal.show();
+}
+
+function toggleRecurrenceModal() {
+  const isChecked = document.getElementById('recurrent-transaction').checked;
+  const setRecurrenceButton = document.getElementById('set-recurrence-btn');
+  
+  setRecurrenceButton.disabled = !isChecked;
+}
+
+function updateRecurrenceOptions() {
+  const frequency = document.getElementById('recurrence-frequency-modal').value;
+  
+  document.getElementById('weekly-options-modal').style.display = 'none';
+  document.getElementById('monthly-options-modal').style.display = 'none';
+  document.getElementById('yearly-options-modal').style.display = 'none';
+  
+  // Show the relevant option based on selected frequency
+  if (frequency === 'weekly') {
+      document.getElementById('weekly-options-modal').style.display = 'block';
+  } else if (frequency === 'monthly') {
+      document.getElementById('monthly-options-modal').style.display = 'block';
+  } else if (frequency === 'yearly') {
+      document.getElementById('yearly-options-modal').style.display = 'block';
+  }
+}

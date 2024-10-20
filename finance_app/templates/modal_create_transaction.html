@@ -16,15 +16,6 @@
       <form method="post" action="">
         <!--{% csrf_token %}-->
         <div class="modal-body">
-          <!-- User search field -->
-          <div class="mb-3">
-            <label for="user-search" class="form-label">Příjemce</label>
-            <input type="text"
-                   class="form-control"
-                   id="user-search"
-                   name="user_search"
-                   placeholder="Vyhledejte uživatele">
-          </div>
           <!-- Transaction amount -->
           <div class="mb-3">
             <label for="transaction-amount" class="form-label">Částka (Kč)</label>
@@ -32,20 +23,34 @@
                    class="form-control"
                    id="transaction-amount"
                    name="amount"
-                   step="1"
+                   step="100"
                    min="0"
                    placeholder="Zadejte částku">
+          </div>
+          <!-- Transaction date -->
+          <div class="mb-3">
+            <label for="transaction-date" class="form-label">Datum transakce</label>
+            <input type="date"
+                   class="form-control"
+                   id="transaction-date"
+                   name="transaction_date">
           </div>
           <!-- Transaction category -->
           <div class="mb-3">
             <label for="transaction-category" class="form-label">Kategorie</label>
-            <select class="form-select" id="transaction-category" name="category">
-              <option value="grocery">Potraviny</option>
-              <option value="salary">Plat</option>
-              <option value="entertainment">Zábava</option>
-              <option value="utilities">Služby</option>
-              <option value="other">Ostatní</option>
-            </select>
+            <div class="d-flex">
+              <select class="form-select" id="transaction-category" name="category">
+                <option value="grocery">Potraviny</option>
+                <option value="salary">Plat</option>
+                <option value="entertainment">Zábava</option>
+                <option value="utilities">Služby</option>
+                <option value="other">Ostatní</option>
+              </select>
+              <button type="button"
+                      class="btn btn-primary ms-2 width-100"
+                      data-bs-toggle="modal"
+                      data-bs-target="#custom-category-modal">Vytvořit novou kategorii</button>
+            </div>
           </div>
           <!-- Transaction name -->
           <div class="mb-3">
@@ -65,57 +70,32 @@
                       rows="3"
                       placeholder="Zadejte poznámku k transakci"></textarea>
           </div>
-          <!-- Recurrent transaction -->
-          <div class="mb-3 form-check">
-            <input type="checkbox"
-                   class="form-check-input"
-                   id="recurrent-transaction"
-                   name="recurrent">
-            <label class="form-check-label" for="recurrent-transaction">Opakující se transakce</label>
-          </div>
-          <!-- Recurrent transaction frequency -->
-          <div class="mb-3" id="recurrence-options">
-            <label for="recurrence-frequency" class="form-label">Frekvence opakování</label>
-            <select class="form-select"
-                    id="recurrence-frequency"
-                    name="recurrence_frequency">
-              <option value="daily">Každý den</option>
-              <option value="weekly">Každý týden</option>
-              <option value="30day">Každých 30 dnů</option>
-              <option value="monthly">Každý měsíc</option>
-              <option value="yearly">Každý rok</option>
-            </select>
-          </div>
-          <!-- Weekly recurrence day selection -->
-          <div class="mb-3" id="weekly-options">
-            <label for="weekly-day" class="form-label">Vyberte den v týdnu</label>
-            <select class="form-select" id="weekly-day" name="weekly_day">
-              <option value="monday">Pondělí</option>
-              <option value="tuesday">Úterý</option>
-              <option value="wednesday">Středa</option>
-              <option value="thursday">Čtvrtek</option>
-              <option value="friday">Pátek</option>
-              <option value="saturday">Sobota</option>
-              <option value="sunday">Neděle</option>
-            </select>
-          </div>
-          <!-- Monthly recurrence day selection -->
-          <div class="mb-3" id="monthly-options">
-            <label for="monthly-day" class="form-label">Vyberte den v měsíci</label>
-            <input type="number"
-                   class="form-control"
-                   id="monthly-day"
-                   name="monthly_day"
-                   min="1"
-                   value="15"
-                   max="27"
-                   placeholder="Zadejte den v měsíci">
+          <!-- Recurrent transaction checkbox and button container -->
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <!-- Recurrent transaction checkbox -->
+            <div class="form-check me-3 flex-grow-1">
+              <input type="checkbox"
+                     class="form-check-input"
+                     id="recurrent-transaction"
+                     name="recurrent"
+                     onchange="toggleRecurrenceModal()">
+              <label class="form-check-label no-select" for="recurrent-transaction">Rekurentní transakce</label>
+            </div>
+            <!-- Button to open the recurrence modal -->
+            <button type="button"
+                    class="btn btn-primary flex-grow-1"
+                    id="set-recurrence-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#recurrence-modal"
+                    disabled>Nastavení rekurence</button>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Zaplatit</button>
+          <button type="submit" class="btn btn-primary">Vytvořit transakci</button>
         </div>
       </form>
     </div>
   </div>
 </div>
+{% include "modal_create_category.html" %}
+{% include "modal_create_reccurent_transaction.html" %}
