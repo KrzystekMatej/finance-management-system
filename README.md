@@ -5,7 +5,6 @@ python -m venv env
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
-
 ```
 
 ## If project is already setup
