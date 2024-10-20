@@ -13,8 +13,15 @@
       
       <div class="mb-3">
         <label for="register-username" class="form-label">Uživatelské jméno</label>
-        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
-               id="register-username" name="username" placeholder="Jan Novák" value="{{ form.username.value|default_if_none:'' }}">
+
+          {% if form.username.errors %}
+          <input type="text" class="form-control is-invalid" 
+                  id="register-username" name="username" placeholder="Jan Novák" value="{{ form.username.value|default_if_none:'' }}">
+          {% else %}
+          <input type="text" class="form-control" 
+                  id="register-username" name="username" placeholder="Jan Novák" value="{{ form.username.value|default_if_none:'' }}">
+          {% endif %}
+
         <div class="invalid-feedback">
           {{ form.username.errors }}
         </div>
@@ -22,8 +29,15 @@
       
       <div class="mb-3">
         <label for="register-email" class="form-label">Email</label>
-        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
-               id="register-email" name="email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}">
+
+          {% if form.email.errors %}
+          <input type="email" class="form-control is-invalid" 
+                  id="register-email" name="email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}">
+          {% else %}
+          <input type="email" class="form-control" 
+                  id="register-email" name="email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}">
+          {% endif %}
+
         <div class="invalid-feedback">
           {{ form.email.errors }}
         </div>
@@ -31,8 +45,15 @@
       
       <div class="mb-3">
         <label for="register-password" class="form-label">Heslo</label>
-        <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
-               id="register-password" name="password" placeholder="********">
+
+            {% if form.password.errors %}
+            <input type="password" class="form-control is-invalid" 
+                    id="register-password" name="password" placeholder="********">
+            {% else %}
+            <input type="password" class="form-control" 
+                    id="register-password" name="password" placeholder="********">
+            {% endif %}
+
         <div class="invalid-feedback">
           {{ form.password.errors }}
         </div>
@@ -40,8 +61,15 @@
       
       <div class="mb-3">
         <label for="confirm-password" class="form-label">Potvrzení hesla</label>
-        <input type="password" class="form-control {% if form.confirm_password.errors %}is-invalid{% endif %}" 
-               id="confirm-password" name="confirm_password" placeholder="********">
+
+          {% if form.confirm_password.errors %}
+          <input type="password" class="form-control is-invalid" 
+                  id="confirm-password" name="confirm_password" placeholder="********">
+          {% else %}
+          <input type="password" class="form-control" 
+                  id="confirm-password" name="confirm_password" placeholder="********">
+          {% endif %}
+
         <div class="invalid-feedback">
           {{ form.confirm_password.errors }}
         </div>
