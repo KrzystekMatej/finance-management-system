@@ -1,5 +1,5 @@
 ---
-name: Django CI
+name: Django Lint and Test
 
 on:
   push:
@@ -10,25 +10,32 @@ on:
       - main
 
 jobs:
-  lint:
+  lint-django:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Run Super-Linter
-        uses: github/super-linter@v5
-        env:
-          VALIDATE_PYTHON: true
-          VALIDATE_HTML: true
-          VALIDATE_CSS: true
-          VALIDATE_YAML: true
-          VALIDATE_JAVASCRIPT: false
-          DEFAULT_BRANCH: main
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
+      - name: Install dependencies
+        run: |
+          python -m venv env
+          source env/bin/activate
+          pip install -r requirements.txt
+          pip install djlint
+
+      # Run djlint
+      - name: Run djlint
+        run: |
+          venv/bin/djlint --check .
+          
   test:
     runs-on: ubuntu-latest
     env:
