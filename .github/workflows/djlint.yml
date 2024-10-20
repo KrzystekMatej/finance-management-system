@@ -3,7 +3,7 @@ name: DJlint
 on: [push, pull_request]
 
 permissions:
-  contents: write  # Allow actions to push changes to the repository
+  contents: write
 
 jobs:
   ReformatAndLint:
@@ -28,17 +28,18 @@ jobs:
         . venv/bin/activate
         pip install -r requirements.txt
 
-    - name: Reformat with DJlint
+    - name: Reformat with DJlint and Black
       run: |
         . venv/bin/activate
         djlint . --reformat || true
+        black . 
 
     - name: Commit reformatted code
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
-        git commit -m "Apply DJlint reformatting" || echo "No changes to commit"
+        git commit -m "Apply DJlint and/or Black formatting" || echo "No changes to commit"
 
     - name: Push changes
       run: |
@@ -48,3 +49,8 @@ jobs:
       run: |
         . venv/bin/activate
         djlint . --lint
+
+    - name: Lint Python files with Flake8
+      run: |
+        . venv/bin/activate
+        flake8

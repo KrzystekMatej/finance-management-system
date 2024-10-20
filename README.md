@@ -1,4 +1,4 @@
-## First time setup (windows)
+## First time setup
 ```bash
 python -m venv env
 .\env\Scripts\activate
@@ -14,25 +14,44 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## Lint locally
+## Linting
 Format = process which checks/fixes indentation, spacing and similar. Can be fixed automatically
 
 Linting = process which checks for rules (snake_case for variables for example). Cannot be automatically fixed
 
-### Check formatting 
+Setup uses 3 linters and formatters.
+
+DJlint will automatically format django files (.html), then it will run lint, which will show you linting problems in .html files that you should to fix.
+
+After that, Black will automatically format python files, then Flake8 will run lint, which will show you linting problems in .py files that you should to fix.
+
+### Linting locally
+
+#### Check formatting problems in html files
 ```bash
 djlint . --check
 ```
 
-### Automatically fix formatting 
+#### Automatically fix formatting in html files
 ```bash
 djlint . --reformat
 ```
 
-### Check for linting problems
+#### Check for linting problems in html files
 ```bash
 djlint . --lint
 ```
+
+#### Automatically fix formatting problems in python files
+```bash
+black .
+```
+
+#### Check for linting problems in python files
+```bash
+flake8
+```
+
 
 ## If you want to check it on the phone
 ```bash
@@ -48,7 +67,7 @@ python manage.py runserver 0.0.0.0:8000
 
 [UI mockup](https://www.figma.com/design/eYu9ELOc3WdKGwBth3F1sO/Untitled?node-id=0-1&node-type=canvas)
 
-## UML diagram test
+## UML diagram
 
 ```mermaid
 classDiagram
