@@ -1,50 +1,49 @@
 <!DOCTYPE html>
 {% load custom_filters %}
 <div class="summary-module parallax">
-    <div class="summary-header">
-        <div class="row width-100">
-            <div class="col-md-3 vert-center">
-                <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
-            </div>
-            <div class="col-md-3 vert-center">
-                <span class="income positive">+{{ summary.positive_income | spaced_number }} Kč</span>
-            </div>
-            <div class="col-md-3 vert-center">
-                <span class="income negative">-{{ summary.negative_income | spaced_number }} Kč</span>
-            </div>
-            <div class="col-md-3 vert-center">
-                <button type="button"
-                        class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#statistics-modal">Zobrazit statistiku</button>
-            </div>
-        </div>
-    </div>
-    <div class="summary-body">
-        {% for transaction in summary.transactions %}
-        <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
-          <div class="row width-100">
-              <div class="col-md-3 vert-center">
-                  <span class="transaction-date">{{ transaction.date }}</span>
-              </div>
-              <div class="col-md-3 vert-center">
-                  <span class="transaction-source">{{ transaction.source }}</span>
-              </div>
-              <div class="col-md-3 vert-center">
-                  <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
-                      {% if transaction.amount > 0 %}
-                          +{{ transaction.amount|spaced_number }} Kč
-                      {% else %}
-                          {{ transaction.amount|spaced_number }} Kč
-                      {% endif %}
-                  </span>
-              </div>
-              <div class="col-md-3 vert-center">
-                  <!-- Empty so it aligns with header, perhaps add something here -->
-              </div>
-          </div>
+  <div class="summary-header">
+    <div class="row width-100">
+      <div class="col-md-3 vert-center">
+        <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
       </div>
-      
-        {% endfor %}
+      <div class="col-md-3 vert-center">
+        <span class="income positive">+{{ summary.positive_income | spaced_number }} Kč</span>
+      </div>
+      <div class="col-md-3 vert-center">
+        <span class="income negative">-{{ summary.negative_income | spaced_number }} Kč</span>
+      </div>
+      <div class="col-md-3 vert-center">
+        <button type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#statistics-modal">Zobrazit statistiku</button>
+      </div>
     </div>
+  </div>
+  <div class="summary-body">
+    {% for transaction in summary.transactions %}
+      <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
+        <div class="row width-100">
+          <div class="col-md-3 vert-center">
+            <span class="transaction-date">{{ transaction.date }}</span>
+          </div>
+          <div class="col-md-3 vert-center">
+            <span class="transaction-source">{{ transaction.source }}</span>
+          </div>
+          <div class="col-md-3 vert-center">
+            <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
+              {% if transaction.amount > 0 %}
+                +{{ transaction.amount|spaced_number }} Kč
+              {% else %}
+                {{ transaction.amount|spaced_number }} Kč
+              {% endif %}
+            </span>
+          </div>
+          <div class="col-md-3 vert-center">
+            <!-- Empty so it aligns with header, perhaps add something here -->
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 </div>

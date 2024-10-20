@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
-{% block title %}Logout{% endblock title %}
+{% block title %}
+  Logout
+{% endblock title %}
 {% block content %}
-    <div class="container y-75">
-        <div class="row login-container align-items-center">
-            <h2 class="text-center mb-4">Byli jste odhlášeni</h2>
-            <a href="{% url 'login' %}">Zpět na přihlášení</a>
-        </div>
+  <div class="container y-75">
+    <div class="row login-container align-items-center">
+      <h2 class="text-center mb-4">Byli jste odhlášeni</h2>
+      <a href="{% url 'login' %}">Zpět na přihlášení</a>
     </div>
+  </div>
 {% endblock content %}

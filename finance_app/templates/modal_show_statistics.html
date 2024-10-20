@@ -4,32 +4,32 @@
      tabindex="-1"
      aria-labelledby="statistics-modal-label"
      aria-hidden="true">
-    <div class="modal-dialog modal-xxl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statistics-modal-label">Statistika za měsíc XYZ</h5>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+  <div class="modal-dialog modal-xxl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="statistics-modal-label">Statistika za měsíc XYZ</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6 d-flex flex-column align-items-center">
+            <div class="text-center mb-3">
+              <h6>Příchozí platby dle kategorie</h6>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6 d-flex flex-column align-items-center">
-                        <div class="text-center mb-3">
-                            <h6>Příchozí platby dle kategorie</h6>
-                        </div>
-                        <canvas id="summary-pie-incoming" width="400" height="400"></canvas>
-                    </div>
-                    <div class="col-md-6 d-flex flex-column align-items-center">
-                        <div class="text-center mb-3">
-                            <h6>Odchozí platby dle kategorie</h6>
-                        </div>
-                        <canvas id="summary-pie-outcoming" width="400" height="400"></canvas>
-                    </div>
-                </div>
+            <canvas id="summary-pie-incoming" width="400" height="400"></canvas>
+          </div>
+          <div class="col-md-6 d-flex flex-column align-items-center">
+            <div class="text-center mb-3">
+              <h6>Odchozí platby dle kategorie</h6>
             </div>
-            <div class="modal-footer"></div>
+            <canvas id="summary-pie-outcoming" width="400" height="400"></canvas>
+          </div>
         </div>
+      </div>
+      <div class="modal-footer"></div>
     </div>
+  </div>
 </div>
