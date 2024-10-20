@@ -28,6 +28,13 @@ jobs:
         . venv/bin/activate
         djlint . --reformat
 
+    - name: Commit reformatted code
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Apply DJlint reformatting" || echo "No changes to commit"
+
   lint:
     runs-on: ubuntu-latest
     env:
