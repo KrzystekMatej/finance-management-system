@@ -157,6 +157,7 @@ classDiagram
     
     class Notification {
         +UserProfile receiver
+        +String subject
         +String message
         +Date sent_at
         +Boolean is_read

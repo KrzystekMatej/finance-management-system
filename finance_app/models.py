@@ -83,3 +83,11 @@ class SharedBudgetModel(models.Model):
         ],
         default="APP",
     )
+
+
+class NotificationModel(models.Model):
+    receiver = models.ForeignKey(UserProfileModel, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=100)
+    message = models.CharField(max_length=255)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
