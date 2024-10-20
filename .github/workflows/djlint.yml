@@ -2,6 +2,9 @@ name: DJlint
 
 on: [push, pull_request]
 
+permissions:
+  contents: write  # Allow actions to push changes to the repository
+
 jobs:
   reformat:
     runs-on: ubuntu-latest
@@ -36,7 +39,7 @@ jobs:
         git config --local user.name "GitHub Action"
         git add .
         git commit -m "Apply DJlint reformatting" || echo "No changes to commit"
-        
+
     - name: Push changes
       run: |
         git push origin HEAD:${{ github.ref }}  # Push changes to the same branch
