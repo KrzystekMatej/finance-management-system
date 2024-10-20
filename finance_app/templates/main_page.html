@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-{% extends 'base.html' %}
-{% block title %}Finance app{% endblock %}
+{% extends "base.html" %}
+{% block title %}Finance app{% endblock title %}
 {% block content %}
     <div id="header">
         <div class="row">
@@ -73,14 +73,14 @@
 </div>
 </div>
 <div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-{% include 'modal_create_transaction.html' %}
-{% include 'modal_show_statistics.html' %}
-{% include 'modal_create_account.html' %}
+{% include "modal_create_transaction.html" %}
+{% include "modal_show_statistics.html" %}
+{% include "modal_create_account.html" %}
 <div class="container py-3 py-md-5 mobile-padding">
     <div class="row">
         {% for summary in monthly_summaries %}
-            {% include 'monthly_summary.html' %}
+            {% include "monthly_summary.html" %}
         {% endfor %}
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

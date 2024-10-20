@@ -26,3 +26,8 @@
   animation-duration: 1s;
   animation-iteration-count: 2;
 }
+
+#recurrence-options, #weekly-options, #monthly-options{
+  display: none;
+}
+

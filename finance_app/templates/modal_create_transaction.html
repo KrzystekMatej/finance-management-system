@@ -13,7 +13,7 @@
                         data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
-            <form method="POST" action="">
+            <form method="post" action="">
                 <!--{% csrf_token %}-->
                 <div class="modal-body">
                     <!-- User search field -->
@@ -74,7 +74,7 @@
                         <label class="form-check-label" for="recurrent-transaction">Opakující se transakce</label>
                     </div>
                     <!-- Recurrent transaction frequency -->
-                    <div class="mb-3" id="recurrence-options" style="display: none;">
+                    <div class="mb-3" id="recurrence-options">
                         <label for="recurrence-frequency" class="form-label">Frekvence opakování</label>
                         <select class="form-select"
                                 id="recurrence-frequency"
@@ -87,7 +87,7 @@
                         </select>
                     </div>
                     <!-- Weekly recurrence day selection -->
-                    <div class="mb-3" id="weekly-options" style="display: none;">
+                    <div class="mb-3" id="weekly-options">
                         <label for="weekly-day" class="form-label">Vyberte den v týdnu</label>
                         <select class="form-select" id="weekly-day" name="weekly_day">
                             <option value="monday">Pondělí</option>
@@ -100,7 +100,7 @@
                         </select>
                     </div>
                     <!-- Monthly recurrence day selection -->
-                    <div class="mb-3" id="monthly-options" style="display: none;">
+                    <div class="mb-3" id="monthly-options">
                         <label for="monthly-day" class="form-label">Vyberte den v měsíci</label>
                         <input type="number"
                                class="form-control"
