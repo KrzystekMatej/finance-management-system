@@ -13,9 +13,25 @@ python manage.py runserver
 python manage.py migrate
 python manage.py runserver
 ```
+
 ## Lint locally
+Format = process which checks/fixes indentation, spacing and similar. Can be fixed automatically
+
+Linting = process which checks for rules (snake_case for variables for example). Cannot be automatically fixed
+
+### Check formatting 
 ```bash
-djlint .
+djlint . --check
+```
+
+### Automatically fix formatting 
+```bash
+djlint . --reformat
+```
+
+### Check for linting problems
+```bash
+djlint . --lint
 ```
 
 ## If you want to check it on the phone
