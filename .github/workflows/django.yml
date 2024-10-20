@@ -30,10 +30,10 @@ jobs:
           pip install -r requirements.txt
           pip install djlint
 
-      # Run djlint
       - name: Run djlint
         run: |
-          env/bin/djlint --check .  # Use `env/bin/djlint` to match your virtual environment
+          env/bin/djlint --check --format json . > djlint-output.json
+          cat djlint-output.json
 
   test:
     runs-on: ubuntu-latest
