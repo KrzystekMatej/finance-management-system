@@ -1,59 +1,57 @@
 {% extends 'base.html' %}
-
 {% block title %}Register{% endblock %}
-
 {% block content %}
-<div class="container y-25">
-  <div class="row login-container align-items-center">
-    <h2 class="text-center mb-4">Registrace</h2>
-    
-    <form method="post">
-      {% csrf_token %}
-      {{ form.non_field_errors }}
-      
-      <div class="mb-3">
-        <label for="register-username" class="form-label">Uživatelské jméno</label>
-
-          <input type="text" class="form-control" id="register-username" name="username"
-                  placeholder="Jan Novák" value="{{ form.username.value|default_if_none:'' }}"
-                  {% if form.username.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
-
-          {{ form.username.errors }}
-      </div>
-      
-      <div class="mb-3">
-        <label for="register-email" class="form-label">Email</label>
-
-          <input type="email" class="form-control" 
-                  id="register-email" name="email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}"
-                  {% if form.email.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
-
-          {{ form.email.errors }}
-      </div>
-      
-      <div class="mb-3">
-        <label for="register-password" class="form-label">Heslo</label>
-
-            <input type="password" class="form-control" 
-                    id="register-password" name="password" placeholder="********"
-                    {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
-
-          {{ form.password.errors }}
-      </div>
-      
-      <div class="mb-3">
-        <label for="confirm-password" class="form-label">Potvrzení hesla</label>
-
-          <input type="password" class="form-control" 
-                  id="confirm-password" name="confirm_password" placeholder="********"
-                  {% if form.confirm_password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
-
-          {{ form.confirm_password.errors }}
-      </div>
-      
-      <a href="{% url 'login' %}">Již máte účet? Zpět na přihlašovací stránku</a>
-      <button type="submit" class="btn btn-primary w-100 spacer-top">Registrovat</button>
-    </form>
-  </div>
-</div>
+    <div class="container y-25">
+        <div class="row login-container align-items-center">
+            <h2 class="text-center mb-4">Registrace</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="mb-3">
+                    <label for="register-username" class="form-label">Uživatelské jméno</label>
+                    <input type="text"
+                           class="form-control"
+                           id="register-username"
+                           name="username"
+                           placeholder="Jan Novák"
+                           value="{{ form.username.value|default_if_none:'' }}"
+                           {% if form.username.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                    {{ form.username.errors }}
+                </div>
+                <div class="mb-3">
+                    <label for="register-email" class="form-label">Email</label>
+                    <input type="email"
+                           class="form-control"
+                           id="register-email"
+                           name="email"
+                           placeholder="jan.novak@example.com"
+                           value="{{ form.email.value|default_if_none:'' }}"
+                           {% if form.email.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                    {{ form.email.errors }}
+                </div>
+                <div class="mb-3">
+                    <label for="register-password" class="form-label">Heslo</label>
+                    <input type="password"
+                           class="form-control"
+                           id="register-password"
+                           name="password"
+                           placeholder="********"
+                           {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                    {{ form.password.errors }}
+                </div>
+                <div class="mb-3">
+                    <label for="confirm-password" class="form-label">Potvrzení hesla</label>
+                    <input type="password"
+                           class="form-control"
+                           id="confirm-password"
+                           name="confirm_password"
+                           placeholder="********"
+                           {% if form.confirm_password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                    {{ form.confirm_password.errors }}
+                </div>
+                <a href="{% url 'login' %}">Již máte účet? Zpět na přihlašovací stránku</a>
+                <button type="submit" class="btn btn-primary w-100 spacer-top">Registrovat</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

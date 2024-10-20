@@ -24,4 +24,4 @@ jobs:
     - name: Run DJlint
       run: |
         . venv/bin/activate
-        djlint . --check --fix
+        djlint . --check

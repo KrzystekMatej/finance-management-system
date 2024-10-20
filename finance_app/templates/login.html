@@ -1,53 +1,43 @@
 <!DOCTYPE html>
 {% extends 'base.html' %}
-
 {% block title %}Login{% endblock %}
-
 {% block content %}
-
-<div class="container y-50">
-  <div class="row login-container align-items-center">
-    <h2 class="text-center mb-4">Přihlásit se</h2>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.non_field_errors }}
-
-      <div class="mb-3">
-        <label for="login-email" class="form-label">Email</label>
-
-
-        <input type="email" name="email" class="form-control" id="login-email"
-        placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}"
-        {% if form.email.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}
-        >
-
-        {{ form.email.errors }}
-      </div>
-
-      <div class="mb-3">
-        <label for="login-password" class="form-label">Heslo</label>
-
-
-        <input type="password" name="password" class="form-control" id="login-password" placeholder="********"
-        {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}
-        >
-
-
-        {{ form.password.errors }}
-      </div>
-
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="remember-me">
-        <label class="form-check-label" for="remember-me">Pamatovat si mě</label>
-      </div>
-      
-      <a href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
-      <br>
-      <a href="{% url 'main_page' %}">DEBUG: Přeskočit přihlášení</a>
-
-      <button type="submit" class="btn btn-primary w-100">Přihlásit</button>
-    </form>
-  </div>
-</div>
-
+    <div class="container y-50">
+        <div class="row login-container align-items-center">
+            <h2 class="text-center mb-4">Přihlásit se</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="mb-3">
+                    <label for="login-email" class="form-label">Email</label>
+                    <input type="email"
+                           name="email"
+                           class="form-control"
+                           id="login-email"
+                           placeholder="jan.novak@example.com"
+                           value="{{ form.email.value|default_if_none:'' }}"
+                           {% if form.email.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                    {{ form.email.errors }}
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Heslo</label>
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           id="login-password"
+                           placeholder="********"
+                           {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
+                    {{ form.password.errors }}
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember-me">
+                    <label class="form-check-label" for="remember-me">Pamatovat si mě</label>
+                </div>
+                <a href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
+                <br>
+                <a href="{% url 'main_page' %}">DEBUG: Přeskočit přihlášení</a>
+                <button type="submit" class="btn btn-primary w-100">Přihlásit</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

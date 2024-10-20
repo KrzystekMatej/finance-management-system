@@ -1,77 +1,86 @@
 <!DOCTYPE html>
 {% extends 'base.html' %}
-
 {% block title %}Finance app{% endblock %}
-
 {% block content %}
-
-<div id="header">
-  <div class="row">
-    <div class="col-md-2">
-      <div id="header-account">
-        <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-          <option value="1">Hlavní účet</option>
-          <option value="2">Spořící účet</option>
-          <option value="3">Sdílený účet</option>
-        </select>
-      </div>
-    </div>
-    <div class="col-md-1 mobile-centering">
-      <div id="balance-container" class="no-select white">
-        <!-- Controlled by JS script -->
-      </div>
-    </div>
-    <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
-      <div id="header-functions">
-        <button type="button" class="btn btn-primary"> Čudlík test 1 </button>
-        <button type="button" class="btn btn-primary"> Čudlík test 2 </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transaction-modal"> Vytvořit transakci </button>
-        <button type="button" class="btn btn-primary"> Čudlík test 3 </button>
-        <button type="button" class="btn btn-primary"> Čudlík test 4 </button>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div id="header-user" class="no-select">
-        <span class="white bold mobile-centering">Jan Novák <i class="spacer-left fas fa-chevron-down"></i>
-        </span>
-        <div class="dropdown-menu no-select">
-          <div class="dropdown-menu-item ps-3 pe-3" id="user-id" data-user-id="jan.novak#0001"> Vaše unikátní ID: <b>jan.novak#0001</b>
-          </div>
-          <div class="dropdown-menu-item ps-3 pe-3" data-bs-toggle="modal" data-bs-target="#account-modal"> Vytvořit nové konto </div>
-          <label for="toggle-checkbox-dark-mode" class="d-flex align-items-center w-100">
-            <div class="dropdown-menu-item ps-3 pe-3"> Tmavý režim <div class="ms-auto">
-                <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
-                <span class="slider round"></span>
-              </div>
+    <div id="header">
+        <div class="row">
+            <div class="col-md-2">
+                <div id="header-account">
+                    <select class="form-select form-select-sm"
+                            aria-label=".form-select-sm example">
+                        <option value="1">Hlavní účet</option>
+                        <option value="2">Spořící účet</option>
+                        <option value="3">Sdílený účet</option>
+                    </select>
+                </div>
             </div>
-          </label>
-          <label for="toggle-checkbox-hide-balance" class="d-flex align-items-center w-100">
-            <div class="dropdown-menu-item ps-3 pe-3"> Skrýt zůstatek <div class="ms-auto">
-                <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
-                <span class="slider round"></span>
-              </div>
+            <div class="col-md-1 mobile-centering">
+                <div id="balance-container" class="no-select white">
+                    <!-- Controlled by JS script -->
+                </div>
             </div>
-          </label>
-          <a class="no-highlight" href="{% url 'logout' %}">
-            <div class="dropdown-menu-item ps-3 pe-3"> Odhlásit se </div>
-          </a>
+            <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
+                <div id="header-functions">
+                    <button type="button" class="btn btn-primary">Čudlík test 1</button>
+                    <button type="button" class="btn btn-primary">Čudlík test 2</button>
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#transaction-modal">Vytvořit transakci</button>
+                    <button type="button" class="btn btn-primary">Čudlík test 3</button>
+                    <button type="button" class="btn btn-primary">Čudlík test 4</button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div id="header-user" class="no-select">
+                <span class="white bold mobile-centering">Jan Novák <i class="spacer-left fas fa-chevron-down"></i>
+            </span>
+            <div class="dropdown-menu no-select">
+                <div class="dropdown-menu-item ps-3 pe-3"
+                     id="user-id"
+                     data-user-id="jan.novak#0001">
+                    Vaše unikátní ID: <b>jan.novak#0001</b>
+                </div>
+                <div class="dropdown-menu-item ps-3 pe-3"
+                     data-bs-toggle="modal"
+                     data-bs-target="#account-modal">Vytvořit nové konto</div>
+                <label for="toggle-checkbox-dark-mode"
+                       class="d-flex align-items-center w-100">
+                    <div class="dropdown-menu-item ps-3 pe-3">
+                        Tmavý režim
+                        <div class="ms-auto">
+                            <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
+                            <span class="slider round"></span>
+                        </div>
+                    </div>
+                </label>
+                <label for="toggle-checkbox-hide-balance"
+                       class="d-flex align-items-center w-100">
+                    <div class="dropdown-menu-item ps-3 pe-3">
+                        Skrýt zůstatek
+                        <div class="ms-auto">
+                            <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
+                            <span class="slider round"></span>
+                        </div>
+                    </div>
+                </label>
+                <a class="no-highlight" href="{% url 'logout' %}">
+                    <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
+                </a>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 </div>
 <div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-
 {% include 'modal_create_transaction.html' %}
 {% include 'modal_show_statistics.html' %}
 {% include 'modal_create_account.html' %}
-
 <div class="container py-3 py-md-5 mobile-padding">
-  <div class="row">
-    {% for summary in monthly_summaries %}
-      {% include 'monthly_summary.html' %}
-    {% endfor %}
-  </div>
+    <div class="row">
+        {% for summary in monthly_summaries %}
+            {% include 'monthly_summary.html' %}
+        {% endfor %}
+    </div>
 </div>
-
 {% endblock %}
