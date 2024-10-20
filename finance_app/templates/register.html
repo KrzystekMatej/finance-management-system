@@ -1,36 +1,55 @@
-<!DOCTYPE html>
 {% extends 'base.html' %}
 
 {% block title %}Register{% endblock %}
 
 {% block content %}
-
 <div class="container y-25">
   <div class="row login-container align-items-center">
     <h2 class="text-center mb-4">Registrace</h2>
+    
     <form method="post">
       {% csrf_token %}
-      {{ form.as_p }}
+      {{ form.non_field_errors }}
+      
       <div class="mb-3">
         <label for="register-username" class="form-label">Uživatelské jméno</label>
-        <input type="text" class="form-control" id="register-username" placeholder="Jan Novák">
+        <input type="text" class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+               id="register-username" name="username" placeholder="Jan Novák" value="{{ form.username.value|default_if_none:'' }}">
+        <div class="invalid-feedback">
+          {{ form.username.errors }}
+        </div>
       </div>
+      
       <div class="mb-3">
         <label for="register-email" class="form-label">Email</label>
-        <input type="email" class="form-control" id="register-email" placeholder="jan.novak@example.com">
+        <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+               id="register-email" name="email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}">
+        <div class="invalid-feedback">
+          {{ form.email.errors }}
+        </div>
       </div>
+      
       <div class="mb-3">
         <label for="register-password" class="form-label">Heslo</label>
-        <input type="password" class="form-control" id="register-password" placeholder="********">
+        <input type="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+               id="register-password" name="password" placeholder="********">
+        <div class="invalid-feedback">
+          {{ form.password.errors }}
+        </div>
       </div>
+      
       <div class="mb-3">
         <label for="confirm-password" class="form-label">Potvrzení hesla</label>
-        <input type="password" class="form-control" id="confirm-password" placeholder="********">
+        <input type="password" class="form-control {% if form.confirm_password.errors %}is-invalid{% endif %}" 
+               id="confirm-password" name="confirm_password" placeholder="********">
+        <div class="invalid-feedback">
+          {{ form.confirm_password.errors }}
+        </div>
       </div>
+      
       <a href="{% url 'login' %}">Již máte účet? Zpět na přihlašovací stránku</a>
       <button type="submit" class="btn btn-primary w-100 spacer-top">Registrovat</button>
     </form>
   </div>
 </div>
-
 {% endblock %}

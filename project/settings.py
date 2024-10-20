@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.0.109']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -106,11 +105,12 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+USE_L10N = True
+
+LANGUAGE_CODE = 'cs'
 
 USE_TZ = True
 
