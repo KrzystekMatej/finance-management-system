@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for proper commits
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -26,14 +28,18 @@ jobs:
     - name: Reformat with DJlint
       run: |
         . venv/bin/activate
-        djlint . --reformat  || true
-  
+        djlint . --reformat || true
+
     - name: Commit reformatted code
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add -u
+        git add .
         git commit -m "Apply DJlint reformatting" || echo "No changes to commit"
+        
+    - name: Push changes
+      run: |
+        git push origin HEAD:${{ github.ref }}  # Push changes to the same branch
 
   lint:
     runs-on: ubuntu-latest
@@ -43,6 +49,8 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for proper commits
 
     - name: Set up Python
       uses: actions/setup-python@v2
