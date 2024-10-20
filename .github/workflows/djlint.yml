@@ -6,7 +6,7 @@ permissions:
   contents: write
 
 jobs:
-  ReformatAndLint:
+  Reformat_and_Lint:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +43,7 @@ jobs:
 
     - name: Push changes
       run: |
-        git push origin HEAD:${{ github.ref }}  # Push changes to the same branch
+        git push origin HEAD:${{ github.ref }}
 
     - name: Lint with DJlint
       run: |

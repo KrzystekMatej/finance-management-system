@@ -15,15 +15,17 @@ python manage.py runserver
 ```
 
 ## Linting
-Format = process which checks/fixes indentation, spacing and similar. Can be fixed automatically
+Formatting = process which checks/fixes indentation, spacing and similar. Can be fixed automatically
 
 Linting = process which checks for rules (snake_case for variables for example). Cannot be automatically fixed
 
-Setup uses 3 linters and formatters.
+Setup uses 3 linters and formatters in this process, you can run it locally or commit it to github and it will automatically run:
 
-DJlint will automatically format django files (.html), then it will run lint, which will show you linting problems in .html files that you should to fix.
-
-After that, Black will automatically format python files, then Flake8 will run lint, which will show you linting problems in .py files that you should to fix.
+1. DJlint will automatically format django files (.html)
+2. Black will automatically format python files
+3. (if it runs on github) If changes were made, it will fix the files and commits them to repo
+2. DJlint will run lint, which will show you linting problems in .html files that you should to fix
+4. Flake8 will run lint, which will show you linting problems in .py files that you should to fix
 
 ### Linting locally
 
@@ -52,14 +54,13 @@ black .
 flake8
 ```
 
-
-## If you want to check it on the phone
+## If you want to check the website on the phone
 ```bash
 python manage.py runserver 0.0.0.0:8000
 ```
-1. Find your PC's local IP with ipconfig
-2. Add it to ALLOWED_HOSTS in finance-management-system/project/settings.py
-3. Connect to that IP with same port on your phone
+1. Find your PC's local IP with ipconfig (usually something like 192.168.0.101)
+2. Add the local IP to ALLOWED_HOSTS in finance-management-system/project/settings.py
+3. Connect to that IP with same port on your phone (for example 192.168.0.101:8000)
 
 ## Resources
 
