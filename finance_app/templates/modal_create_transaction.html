@@ -16,7 +16,6 @@
       <form method="post" action="">
         <!--{% csrf_token %}-->
         <div class="modal-body">
-
           <!-- Transaction amount -->
           <div class="mb-3">
             <label for="transaction-amount" class="form-label">Částka (Kč)</label>
@@ -47,7 +46,10 @@
                 <option value="utilities">Služby</option>
                 <option value="other">Ostatní</option>
               </select>
-              <button type="button" class="btn btn-primary ms-2 width-100" data-bs-toggle="modal" data-bs-target="#custom-category-modal">Vytvořit novou kategorii</button>
+              <button type="button"
+                      class="btn btn-primary ms-2 width-100"
+                      data-bs-toggle="modal"
+                      data-bs-target="#custom-category-modal">Vytvořit novou kategorii</button>
             </div>
           </div>
           <!-- Transaction name -->
@@ -68,22 +70,25 @@
                       rows="3"
                       placeholder="Zadejte poznámku k transakci"></textarea>
           </div>
-
-
-<!-- Recurrent transaction checkbox and button container -->
-<div class="mb-3 d-flex justify-content-between align-items-center">
-  <!-- Recurrent transaction checkbox -->
-  <div class="form-check me-3 flex-grow-1">
-      <input type="checkbox" class="form-check-input" id="recurrent-transaction" name="recurrent" onchange="toggleRecurrenceModal()">
-      <label class="form-check-label no-select" for="recurrent-transaction">Rekurentní transakce</label>
-  </div>
-  <!-- Button to open the recurrence modal -->
-  <button type="button" class="btn btn-primary flex-grow-1" id="set-recurrence-btn" data-bs-toggle="modal" data-bs-target="#recurrence-modal" disabled>Nastavení rekurence</button>
-</div>
-
-
-
-
+          <!-- Recurrent transaction checkbox and button container -->
+          <div class="mb-3 d-flex justify-content-between align-items-center">
+            <!-- Recurrent transaction checkbox -->
+            <div class="form-check me-3 flex-grow-1">
+              <input type="checkbox"
+                     class="form-check-input"
+                     id="recurrent-transaction"
+                     name="recurrent"
+                     onchange="toggleRecurrenceModal()">
+              <label class="form-check-label no-select" for="recurrent-transaction">Rekurentní transakce</label>
+            </div>
+            <!-- Button to open the recurrence modal -->
+            <button type="button"
+                    class="btn btn-primary flex-grow-1"
+                    id="set-recurrence-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#recurrence-modal"
+                    disabled>Nastavení rekurence</button>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Vytvořit transakci</button>
@@ -92,6 +97,5 @@
     </div>
   </div>
 </div>
-
 {% include "modal_create_category.html" %}
 {% include "modal_create_reccurent_transaction.html" %}
