@@ -13,6 +13,10 @@ python manage.py runserver
 python manage.py migrate
 python manage.py runserver
 ```
+## Lint locally
+```bash
+djlint .
+```
 
 ## If you want to check it on the phone
 ```bash
