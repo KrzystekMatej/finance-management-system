@@ -6,10 +6,10 @@
         <h5 class="modal-title" id="transaction-modal-label">Vytvořit transakci</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form method="POST" action="">
-          <!--{% csrf_token %}-->
-
+      <form method="POST" action="">
+      <!--{% csrf_token %}-->
+          <div class="modal-body">
+          
           <!-- User search field -->
           <div class="mb-3">
             <label for="user-search" class="form-label">Příjemce</label>
@@ -54,9 +54,7 @@
 
           <!-- Recurrent transaction frequency -->
           <div class="mb-3" id="recurrence-options" style="display: none;">
-            <label for="recurrence-frequency" class="form-label">
-              Frekvence opakování
-            </label>
+            <label for="recurrence-frequency" class="form-label"> Frekvence opakování </label>
             <select class="form-select" id="recurrence-frequency" name="recurrence_frequency">
               <option value="daily">Každý den</option>
               <option value="weekly">Každý týden</option>
@@ -83,14 +81,13 @@
           <!-- Monthly recurrence day selection -->
           <div class="mb-3" id="monthly-options" style="display: none;">
             <label for="monthly-day" class="form-label">Vyberte den v měsíci</label>
-            <input type="number" class="form-control" id="monthly-day" name="monthly_day" min="1" max="27" placeholder="Zadejte den v měsíci">
+            <input type="number" class="form-control" id="monthly-day" name="monthly_day" min="1" value="15" max="27" placeholder="Zadejte den v měsíci">
           </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Zaplatit</button>
-      </div>
-    </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Zaplatit</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
