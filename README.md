@@ -167,7 +167,7 @@ classDiagram
     RecurringTransaction --|> Transaction
     Notification "N" --* "1" UserProfile : "owns"
     UserProfile "0..1" --* "1" User : "owns"
-    UserProfile "1" *-- "N" Category : "owns"
+    UserProfile "N" *-- "M" Category : "owns"
     NotificationMode <-- UserProfile
     NotificationMode <-- BudgetNotificationSettings
     SharedBudget "N" --* "1" Budget : "owns"
@@ -176,5 +176,5 @@ classDiagram
     BudgetRole <-- SharedBudget
     BudgetPermission <-- SharedBudget
     Budget "N" --* "1" UserProfile : "owns"
-    Budget "1" --> "N" Category : "has"
+    Budget "N" --> "M" Category : "has"
 ```
