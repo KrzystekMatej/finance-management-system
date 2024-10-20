@@ -6,7 +6,7 @@ permissions:
   contents: write  # Allow actions to push changes to the repository
 
 jobs:
-  lintAndReformat:
+  ReformatAndLint:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -15,7 +15,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  # Fetch all history for proper commits
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v2
