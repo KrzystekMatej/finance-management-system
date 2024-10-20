@@ -15,11 +15,11 @@
       <div class="mb-3">
         <label for="login-email" class="form-label">Email</label>
 
-        {% if form.email.errors %}
-        <input type="email" name="email" class="form-control is-invalid" id="login-email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}">
-        {% else %}
-        <input type="email" name="email" class="form-control" id="login-email" placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}">
-        {% endif %}
+
+        <input type="email" name="email" class="form-control" id="login-email"
+        placeholder="jan.novak@example.com" value="{{ form.email.value|default_if_none:'' }}"
+        {% if form.email.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}
+        >
 
         {{ form.email.errors }}
       </div>
@@ -27,11 +27,11 @@
       <div class="mb-3">
         <label for="login-password" class="form-label">Heslo</label>
 
-        {% if form.password.errors %}
-        <input type="password" name="password" class="form-control is-invalid" id="login-password" placeholder="********">
-        {% else %}
-        <input type="password" name="password" class="form-control" id="login-password" placeholder="********">
-        {% endif %}
+
+        <input type="password" name="password" class="form-control" id="login-password" placeholder="********"
+        {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}
+        >
+
 
         {{ form.password.errors }}
       </div>
