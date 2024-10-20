@@ -2,24 +2,19 @@ from django import template
 
 register = template.Library()
 
+
 # Converts string "69 420" to float 69420
 @register.filter
 def to_number(value):
     try:
-        return float(value.replace(' ', ''))
+        return float(value.replace(" ", ""))
     except (ValueError, AttributeError):
-        return 0 
-    
+        return 0
+
+
 @register.filter
 def spaced_number(value):
     try:
-        return f'{int(value):,}'.replace(',', ' ')
+        return f"{int(value):,}".replace(",", " ")
     except (ValueError, TypeError):
         return str(value)
-
-# Since linter complains about usage of special symbols like "<",
-# use this function for comparison instead
-@register.filter
-def is_positive(value):
-        return value >= 0
-      

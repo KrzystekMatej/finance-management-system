@@ -4,10 +4,18 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Finance app{% endblock %}</title>
+    <meta name="description" content="A brief description of the finance app.">
+    <meta name="keywords" content="finance, app, budgeting, tracking">
+    <title>
+      {% block title %}
+        Finance app
+      {% endblock title %}
+    </title>
     <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/constants.css' %}">
     <link rel="stylesheet" href="{% static 'css/dropdown.css' %}">
     <link rel="stylesheet" href="{% static 'css/general.css' %}">
@@ -21,10 +29,8 @@
     <link rel="stylesheet" href="{% static 'css/scaling.css' %}">
   </head>
   <body>
-
     {% block content %}
-    {% endblock %}
-    
+    {% endblock content %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'js/scripts.js' %}"></script>

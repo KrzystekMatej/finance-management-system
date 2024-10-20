@@ -1,24 +1,121 @@
 <!DOCTYPE html>
-<div class="modal fade" id="transaction-modal" tabindex="-1" aria-labelledby="transaction-modal-label" aria-hidden="true">
+<div class="modal fade"
+     id="transaction-modal"
+     tabindex="-1"
+     aria-labelledby="transaction-modal-label"
+     aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="transaction-modal-label">Vytvořit transakci</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form method="POST" action="">
-          <!--{% csrf_token %}-->
+      <form method="post" action="">
+        <!--{% csrf_token %}-->
+        <div class="modal-body">
+          <!-- User search field -->
           <div class="mb-3">
-            <label for="input-field" class="form-label">TODO</label>
-            <input type="text" class="form-control" id="input-field" name="field_name">
+            <label for="user-search" class="form-label">Příjemce</label>
+            <input type="text"
+                   class="form-control"
+                   id="user-search"
+                   name="user_search"
+                   placeholder="Vyhledejte uživatele">
           </div>
+          <!-- Transaction amount -->
+          <div class="mb-3">
+            <label for="transaction-amount" class="form-label">Částka (Kč)</label>
+            <input type="number"
+                   class="form-control"
+                   id="transaction-amount"
+                   name="amount"
+                   step="1"
+                   min="0"
+                   placeholder="Zadejte částku">
+          </div>
+          <!-- Transaction category -->
+          <div class="mb-3">
+            <label for="transaction-category" class="form-label">Kategorie</label>
+            <select class="form-select" id="transaction-category" name="category">
+              <option value="grocery">Potraviny</option>
+              <option value="salary">Plat</option>
+              <option value="entertainment">Zábava</option>
+              <option value="utilities">Služby</option>
+              <option value="other">Ostatní</option>
+            </select>
+          </div>
+          <!-- Transaction name -->
+          <div class="mb-3">
+            <label for="transaction-name" class="form-label">Název</label>
+            <input type="text"
+                   class="form-control"
+                   id="transaction-name"
+                   name="name"
+                   placeholder="Zadejte název transakce">
+          </div>
+          <!-- Transaction note -->
+          <div class="mb-3">
+            <label for="transaction-note" class="form-label">Poznámka</label>
+            <textarea class="form-control"
+                      id="transaction-note"
+                      name="note"
+                      rows="3"
+                      placeholder="Zadejte poznámku k transakci"></textarea>
+          </div>
+          <!-- Recurrent transaction -->
+          <div class="mb-3 form-check">
+            <input type="checkbox"
+                   class="form-check-input"
+                   id="recurrent-transaction"
+                   name="recurrent">
+            <label class="form-check-label" for="recurrent-transaction">Opakující se transakce</label>
+          </div>
+          <!-- Recurrent transaction frequency -->
+          <div class="mb-3" id="recurrence-options">
+            <label for="recurrence-frequency" class="form-label">Frekvence opakování</label>
+            <select class="form-select"
+                    id="recurrence-frequency"
+                    name="recurrence_frequency">
+              <option value="daily">Každý den</option>
+              <option value="weekly">Každý týden</option>
+              <option value="30day">Každých 30 dnů</option>
+              <option value="monthly">Každý měsíc</option>
+              <option value="yearly">Každý rok</option>
+            </select>
+          </div>
+          <!-- Weekly recurrence day selection -->
+          <div class="mb-3" id="weekly-options">
+            <label for="weekly-day" class="form-label">Vyberte den v týdnu</label>
+            <select class="form-select" id="weekly-day" name="weekly_day">
+              <option value="monday">Pondělí</option>
+              <option value="tuesday">Úterý</option>
+              <option value="wednesday">Středa</option>
+              <option value="thursday">Čtvrtek</option>
+              <option value="friday">Pátek</option>
+              <option value="saturday">Sobota</option>
+              <option value="sunday">Neděle</option>
+            </select>
+          </div>
+          <!-- Monthly recurrence day selection -->
+          <div class="mb-3" id="monthly-options">
+            <label for="monthly-day" class="form-label">Vyberte den v měsíci</label>
+            <input type="number"
+                   class="form-control"
+                   id="monthly-day"
+                   name="monthly_day"
+                   min="1"
+                   value="15"
+                   max="27"
+                   placeholder="Zadejte den v měsíci">
+          </div>
+        </div>
+        <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Zaplatit</button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
-      </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>

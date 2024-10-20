@@ -159,3 +159,27 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 });
+
+// ----------------------
+// 6. Create transaction functions
+// ----------------------
+
+document.getElementById('recurrent-transaction').addEventListener('change', function () {
+  const recurrenceOptions = document.getElementById('recurrence-options');
+  recurrenceOptions.style.display = this.checked ? 'block' : 'none';
+});
+
+document.getElementById('recurrence-frequency').addEventListener('change', function () {
+  const weeklyOptions = document.getElementById('weekly-options');
+  const monthlyOptions = document.getElementById('monthly-options');
+  
+  // Reset options display
+  weeklyOptions.style.display = 'none';
+  monthlyOptions.style.display = 'none';
+
+  if (this.value === 'weekly') {
+    weeklyOptions.style.display = 'block';
+  } else if (this.value === 'monthly') {
+    monthlyOptions.style.display = 'block';
+  }
+});

@@ -1,0 +1,56 @@
+name: DJlint
+
+on: [push, pull_request]
+
+permissions:
+  contents: write
+
+jobs:
+  Reformat_and_Lint:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        . venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Reformat with DJlint and Black
+      run: |
+        . venv/bin/activate
+        djlint . --reformat || true
+        black . 
+
+    - name: Commit reformatted code
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Apply DJlint and/or Black formatting" || echo "No changes to commit"
+
+    - name: Push changes
+      run: |
+        git push origin HEAD:${{ github.ref }}
+
+    - name: Lint with DJlint
+      run: |
+        . venv/bin/activate
+        djlint . --lint
+
+    - name: Lint Python files with Flake8
+      run: |
+        . venv/bin/activate
+        flake8
