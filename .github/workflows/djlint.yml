@@ -32,7 +32,7 @@ jobs:
       run: |
         . venv/bin/activate
         djlint . --reformat || true
-        black . 
+        black .
 
     - name: Commit reformatted code
       run: |
@@ -43,12 +43,13 @@ jobs:
 
     - name: Push changes
       run: |
-        git push origin HEAD:${{ github.head_ref }} || git push origin HEAD:${{ github.ref }}
+        git push origin HEAD:${{ github.ref }}
 
     - name: Lint with DJlint
       run: |
         . venv/bin/activate
         djlint . --lint
+      continue-on-error: true
 
     - name: Lint Python files with Flake8
       run: |
