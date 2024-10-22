@@ -19,12 +19,10 @@
           <!-- Transaction amount -->
           <div class="mb-3">
             <label for="transaction-amount" class="form-label">Částka (Kč)</label>
-            <input type="number"
+            <input type="decimal"
                    class="form-control"
                    id="transaction-amount"
                    name="amount"
-                   step="100"
-                   min="0"
                    placeholder="Zadejte částku">
           </div>
           <!-- Transaction date -->
@@ -44,7 +42,7 @@
                 <option value="salary">Plat</option>
                 <option value="entertainment">Zábava</option>
                 <option value="utilities">Služby</option>
-                <option value="other">Ostatní</option>
+                <option value="other" selected>Ostatní</option>
               </select>
               <button type="button"
                       class="btn btn-primary ms-2 width-100"
