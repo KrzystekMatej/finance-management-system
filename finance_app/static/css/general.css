@@ -50,3 +50,9 @@ a.no-highlight {
   text-decoration: none !important;
   color: inherit !important;
 }
+
+@media (min-width: 768px) {
+  #sidemenu {
+    position: fixed;
+  }
+}

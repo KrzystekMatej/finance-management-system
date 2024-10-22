@@ -6,17 +6,7 @@
 {% block content %}
   <div id="header">
     <div class="row">
-      <div class="col-md-2">
-        <div id="header-account">
-          <select class="form-select form-select-sm"
-                  aria-label=".form-select-sm example">
-            <option value="1">Hlavní účet</option>
-            <option value="2">Spořící účet</option>
-            <option value="3">Sdílený účet</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-md-1 mobile-centering">
+      <div class="col-md-3 mobile-centering ps-4">
         <div id="balance-container" class="no-select white">
           <!-- Controlled by JS script -->
         </div>
@@ -33,7 +23,7 @@
           <button type="button" class="btn btn-primary">Čudlík test 4</button>
         </div>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 text-end">
         <div id="header-user" class="no-select">
         <span class="white bold mobile-centering">Jan Novák <i class="spacer-left fas fa-chevron-down"></i>
       </span>
@@ -43,9 +33,6 @@
              data-user-id="jan.novak#0001">
           Vaše unikátní ID: <b>jan.novak#0001</b>
         </div>
-        <div class="dropdown-menu-item ps-3 pe-3"
-             data-bs-toggle="modal"
-             data-bs-target="#account-modal">Vytvořit nové konto</div>
         <label for="toggle-checkbox-dark-mode"
                class="d-flex align-items-center w-100">
           <div class="dropdown-menu-item ps-3 pe-3">
@@ -78,11 +65,35 @@
 {% include "modal_create_transaction.html" %}
 {% include "modal_show_statistics.html" %}
 {% include "modal_create_account.html" %}
-<div class="container py-3 py-md-5 mobile-padding">
-  <div class="row">
-    {% for summary in monthly_summaries %}
-      {% include "monthly_summary.html" %}
-    {% endfor %}
+
+
+<div class="w-100 py-3 py-md-5 mobile-padding">
+  <div class="row ps-4">
+    <div id="sidemenu" class="col-md-2">
+      <div class="py-md-0">
+        <ul class="list-group">
+          <li class="list-group-item border-0" style="background-color: var(--color-bg-primary)"><button class="btn btn-primary w-100" href="#">Kompletní rozpočet</button></li>
+          <li class="list-group-item border-0" style="background-color: var(--color-bg-primary)"><button class="btn btn-primary w-100" href="#">Restaurace s kamarády</button></li>
+          <li class="list-group-item border-0" style="background-color: var(--color-bg-primary)"><button class="btn btn-primary w-100" href="#">Volejbal</button></li>
+          <li class="list-group-item border-0" style="background-color: var(--color-bg-primary)"><button class="btn btn-primary w-100" href="#">Předplatné</button></li>
+          <li class="list-group-item border-0" style="background-color: var(--color-bg-primary)">
+            <button type="button" class="btn w-100 border" style="background-color: var(--color-bg-secondary)"
+            data-bs-toggle="modal"
+            data-bs-target="#account-modal">
+              <i class="fas fa-plus"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+      <div class="row w-90 container px-5">
+        {% for summary in monthly_summaries %}
+          {% include "monthly_summary.html" %}
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock content %}

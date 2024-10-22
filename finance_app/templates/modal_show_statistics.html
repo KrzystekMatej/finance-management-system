@@ -28,6 +28,15 @@
             </div>
             <canvas id="summary-pie-outcoming" width="400" height="400"></canvas>
           </div>
+          <div class="container py-3 py-md-5 mobile-padding">
+            <div class="row w-100">
+              {% for summary in monthly_summaries %}
+                {% if summary.month == "Leden" and summary.year == 2024 %}
+                  {% include "monthly_summary_statistics.html" %}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
         </div>
       </div>
       <div class="modal-footer"></div>
