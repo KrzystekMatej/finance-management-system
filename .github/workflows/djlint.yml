@@ -1,4 +1,4 @@
-name: DJlint
+name: Reformat_and_Lint
 
 on: [push, pull_request]
 
@@ -45,9 +45,9 @@ jobs:
       run: |
         git push origin HEAD:${{ github.ref }}
 
-  Lint_DJlint:
+  Lint_DJlint_html:
     runs-on: ubuntu-latest
-    needs: Reformat  # This job depends on the Reformat job
+    needs: Reformat
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -73,9 +73,9 @@ jobs:
         . venv/bin/activate
         djlint . --lint
 
-  Lint_Flake8:
+  Lint_Flake8_python:
     runs-on: ubuntu-latest
-    needs: Reformat  # This job also depends on the Reformat job
+    needs: Reformat
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
