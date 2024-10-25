@@ -2,25 +2,30 @@ from django.db import models
 from django.conf import settings
 from enum import Enum
 
+
 class NotificationMode(Enum):
     NONE = "NONE"
     APP = "APP"
     EMAIL = "EMAIL"
     APP_EMAIL = "APP_EMAIL"
 
+
 class BudgetRole(Enum):
     PARTICIPANT = "PARTICIPANT"
     OBSERVER = "OBSERVER"
 
+
 class BudgetPermission(Enum):
     VIEW = "VIEW"
     EDIT = "EDIT"
+
 
 class TimeInterval(Enum):
     DAY = "DAY"
     WEEK = "WEEK"
     MONTH = "MONTH"
     YEAR = "YEAR"
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -65,7 +70,9 @@ class Transaction(models.Model):
 class RecurringTransaction(Transaction):
     _interval = models.CharField(
         max_length=10,
-        choices=[(interval.value, interval.name.capitalize()) for interval in TimeInterval],
+        choices=[
+            (interval.value, interval.name.capitalize()) for interval in TimeInterval
+        ],
         default=TimeInterval.MONTH.value,
     )
 
@@ -97,7 +104,10 @@ class SharedBudget(models.Model):
     shared_with = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     _permission = models.CharField(
         max_length=10,
-        choices=[(permission.value, permission.name.capitalize()) for permission in BudgetPermission],
+        choices=[
+            (permission.value, permission.name.capitalize())
+            for permission in BudgetPermission
+        ],
         default=BudgetPermission.VIEW.value,
     )
 
