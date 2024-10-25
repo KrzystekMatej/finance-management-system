@@ -104,9 +104,7 @@ classDiagram
     }
     
     class RecurringTransaction {
-        +uint interval_seconds
-        +Date start_at
-        +Date end_at
+        +TimeInterval interval
     }
     
     class Budget {
@@ -126,6 +124,14 @@ classDiagram
         APP
         EMAIL
         APP_EMAIL
+    }
+    
+    class TimeInterval {
+        <<enumeration>>
+        DAY
+        WEEK
+        MONTH
+        YEAR
     }
     
     class BudgetRole {
@@ -171,6 +177,7 @@ classDiagram
     UserProfile "N" *-- "M" Category : "owns"
     NotificationMode <-- UserProfile
     NotificationMode <-- BudgetNotificationSettings
+    TimeInterval <-- RecurringTransaction
     SharedBudget "N" --* "1" Budget : "owns"
     SharedBudget "N" --> "1" UserProfile : "shared_with"
     SharedBudget "1" --> "1" BudgetNotificationSettings
