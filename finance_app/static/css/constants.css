@@ -34,3 +34,12 @@ body.dark-mode {
   --color-bg-secondary: #494949;
   --color-bg-tertiary: #333;
 }
+
+/* These classes can be used to override default bootstrap colors */
+.color-bg-primary{
+  background-color: var(--color-bg-primary)
+}
+
+.color-bg-secondary{
+  background-color: var(--color-bg-secondary)
+}
