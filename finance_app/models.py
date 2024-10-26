@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from enum import Enum
-from django.contrib.auth import get_user_model
 
 
 class NotificationMode(Enum):

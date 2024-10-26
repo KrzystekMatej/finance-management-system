@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate  # , logout
+from django.contrib.auth import login, authenticate, logout
 
 # from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 # from django.contrib.auth.decorators import login_required
@@ -427,6 +427,8 @@ def login_page(request):
             if user:
                 login(request, user)
                 return redirect("main_page")
+            else:
+                form.add_error(None, "Nesprávný email nebo heslo.")
     else:
         form = LoginForm()
 
@@ -434,6 +436,5 @@ def login_page(request):
 
 
 def logout_page(request):
-    # TODO: this all
-
+    logout(request)
     return render(request, "logout.html")

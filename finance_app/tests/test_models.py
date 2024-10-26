@@ -1,15 +1,26 @@
 from django.test import TestCase
-from finance_app.models import *
+from finance_app.models import (
+    UserProfile,
+    NotificationMode,
+    Category,
+    CategoryPreference,
+    Transaction,
+    Budget,
+    SharedBudget,
+    BudgetRole,
+    BudgetPermission,
+)
+from django.contrib.auth import get_user_model
 
 
 class UserProfileTests(TestCase):
     def test_create_user_profile(self):
         user = get_user_model().objects.create_user(
-            username='john',
-            password='password123',
-            email='johnsmith@gmail.com',
-            first_name='john',
-            last_name='smith',
+            username="john",
+            password="password123",
+            email="johnsmith@gmail.com",
+            first_name="john",
+            last_name="smith",
             is_superuser=False,
         )
         user.save()
@@ -27,7 +38,9 @@ class UserProfileTests(TestCase):
         self.assertEqual(user_profile_db.user.last_name, "smith")
         self.assertEqual(user_profile_db.balance, 100)
         self.assertEqual(user_profile_db.user.is_superuser, False)
-        self.assertEqual(user_profile_db.global_notification_mode, NotificationMode.APP_EMAIL)
+        self.assertEqual(
+            user_profile_db.global_notification_mode, NotificationMode.APP_EMAIL
+        )
 
 
 class CategoryTests(TestCase):
@@ -37,19 +50,19 @@ class CategoryTests(TestCase):
 class CategoryPreferenceTests(TestCase):
     def test_create_category_preference(self):
         user = get_user_model().objects.create_user(
-            username='john',
-            password='password123',
+            username="john",
+            password="password123",
         )
         user_profile = UserProfile.objects.create(user=user)
 
         category = Category.objects.create(name="Groceries")
         category_preference = CategoryPreference.objects.create(
-            color="#FF5733",
-            user=user_profile,
-            category=category
+            color="#FF5733", user=user_profile, category=category
         )
 
-        category_preference_db = CategoryPreference.objects.get(id=category_preference.id)
+        category_preference_db = CategoryPreference.objects.get(
+            id=category_preference.id
+        )
         self.assertEqual(category_preference_db.user, user_profile)
         self.assertEqual(category_preference_db.category, category)
         self.assertEqual(category_preference_db.color, "#FF5733")
@@ -59,8 +72,8 @@ class CategoryPreferenceTests(TestCase):
 class TransactionTests(TestCase):
     def test_create_transaction(self):
         user = get_user_model().objects.create_user(
-            username='john',
-            password='password123',
+            username="john",
+            password="password123",
         )
         user_profile = UserProfile.objects.create(user=user)
 
@@ -72,7 +85,7 @@ class TransactionTests(TestCase):
             performed_at="2024-10-25T14:30:00Z",
             category=category,
             description="Weekly grocery shopping",
-            user=user_profile
+            user=user_profile,
         )
 
         transaction_db = Transaction.objects.get(id=transaction.id)
@@ -83,7 +96,9 @@ class TransactionTests(TestCase):
         self.assertEqual(transaction_db.description, "Weekly grocery shopping")
         self.assertEqual(transaction_db.user, user_profile)
         self.assertIsNotNone(transaction_db.created_at)
-        self.assertEqual(transaction_db.performed_at.isoformat(), "2024-10-25T14:30:00+00:00")
+        self.assertEqual(
+            transaction_db.performed_at.isoformat(), "2024-10-25T14:30:00+00:00"
+        )
 
 
 class RecurringTransactionTests(TestCase):
@@ -97,14 +112,14 @@ class BudgetTests(TestCase):
 class SharedBudgetTests(TestCase):
     def test_create_shared_budget(self):
         user1 = get_user_model().objects.create_user(
-            username='john',
-            password='password123',
+            username="john",
+            password="password123",
         )
         user_profile1 = UserProfile.objects.create(user=user1)
 
         user2 = get_user_model().objects.create_user(
-            username='jane',
-            password='password456',
+            username="jane",
+            password="password456",
         )
         user_profile2 = UserProfile.objects.create(user=user2)
 
@@ -117,7 +132,7 @@ class SharedBudgetTests(TestCase):
             limit=500.00,
             period_start="2024-10-01",
             period_end="2024-10-31",
-            description="October expenses"
+            description="October expenses",
         )
         budget.categories.add(category1, category2)
 
@@ -150,7 +165,9 @@ class SharedBudgetTests(TestCase):
         self.assertEqual(shared_budget1_db.shared_with, user_profile1)
         self.assertEqual(shared_budget1_db.permission, BudgetPermission.EDIT)
         self.assertEqual(shared_budget1_db.role, BudgetRole.PARTICIPANT)
-        self.assertEqual(shared_budget1_db.notification_mode, NotificationMode.APP_EMAIL)
+        self.assertEqual(
+            shared_budget1_db.notification_mode, NotificationMode.APP_EMAIL
+        )
         self.assertTrue(shared_budget1_db.on_exceeded)
         self.assertTrue(shared_budget1_db.on_limit_change)
         self.assertTrue(shared_budget1_db.on_transaction)
@@ -172,7 +189,3 @@ class SharedBudgetTests(TestCase):
 
 class NotificationTests(TestCase):
     pass
-
-
-
-

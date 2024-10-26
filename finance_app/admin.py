@@ -1,5 +1,14 @@
 from django.contrib import admin
-from finance_app.models import *
+from finance_app.models import (
+    UserProfile,
+    Category,
+    CategoryPreference,
+    Transaction,
+    Budget,
+    SharedBudget,
+    RecurringTransaction,
+    Notification,
+)
 
 admin.site.register(UserProfile)
 admin.site.register(Category)

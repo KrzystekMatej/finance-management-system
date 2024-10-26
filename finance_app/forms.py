@@ -1,20 +1,24 @@
 from django import forms
 from django.contrib.auth.models import User
+from finance_app.models import UserProfile
 from django.core.exceptions import ValidationError
 
 
 class RegistrationForm(forms.ModelForm):
-    email = forms.EmailField(
-        required=True
-    )  # Fixes email not giving error when not filled
+    username = forms.CharField(required=True, max_length=150, label="Username")
+    email = forms.EmailField(required=True, label="Email")
     password = forms.CharField(widget=forms.PasswordInput, label="Password")
-    confirm_password = forms.CharField(
-        widget=forms.PasswordInput, label="Confirm Password"
-    )
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
 
     class Meta:
         model = User
         fields = ["username", "email", "password"]
+
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+        if len(password) < 8:
+            raise ValidationError("Heslo musí obsahovat alespoň 8 znaků.")
+        return password
 
     def clean(self):
         cleaned_data = super().clean()
@@ -25,6 +29,14 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError("Hesla se neshodují!")
 
         return cleaned_data
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+            UserProfile.objects.create(user=user)
+        return user
 
 
 class LoginForm(forms.Form):
