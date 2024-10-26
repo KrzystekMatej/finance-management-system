@@ -1,46 +1,41 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from finance_app.models import UserProfile
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import gettext_lazy as _
 
 
-class RegistrationForm(forms.ModelForm):
-    email = forms.EmailField(
-        required=True
-    )  # Fixes email not giving error when not filled
-    password = forms.CharField(widget=forms.PasswordInput, label="Password")
-    confirm_password = forms.CharField(
-        widget=forms.PasswordInput, label="Confirm Password"
-    )
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True, label="Email")
 
     class Meta:
-        model = User
-        fields = ["username", "email", "password"]
+        model = get_user_model()
+        fields = ["username", "email", "password1", "password2"]
+        error_messages = {
+            "username": {
+                "unique": _("Toto uživatelské jméno je již používáno."),
+            },
+            "password_mismatch": _("Hesla se neshodují!"),
+        }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        confirm_password = cleaned_data.get("confirm_password")
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if get_user_model().objects.filter(email=email).exists():
+            raise ValidationError("Tento email je již používaný.")
+        return email
 
-        if password != confirm_password:
-            raise ValidationError("Hesla se neshodují!")
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+            UserProfile.objects.create(user=user)
+        return user
 
-        return cleaned_data
 
-
-class LoginForm(forms.Form):
-    email = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput, label=("Password"))
-
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     email = cleaned_data.get("email")
-    #     password = cleaned_data.get("password")
-    #
-    #     if email and password:
-    #          user = authenticate(username=email, password=password)
-    #          if user is None:
-    #              raise forms.ValidationError("Invalid email or password.")
-    #          elif not user.is_active:
-    #              raise forms.ValidationError("This account is inactive.")
-
-    #     return cleaned_data
+class LoginForm(AuthenticationForm):
+    error_messages = {
+        "invalid_login": _("Nesprávné uživatelské jméno nebo heslo."),
+        "inactive": _("Tento účet je neaktivní."),
+    }

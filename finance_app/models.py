@@ -29,7 +29,7 @@ class TimeInterval(Enum):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     _global_notification_mode = models.CharField(
         max_length=10,
         choices=[(mode.value, mode.name.capitalize()) for mode in NotificationMode],
@@ -48,7 +48,6 @@ class UserProfile(models.Model):
 class Category(models.Model):
     # user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
-    users = models.ManyToManyField(UserProfile, blank=True)
 
 
 class CategoryPreference(models.Model):

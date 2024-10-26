@@ -36,7 +36,7 @@
           <input type="password"
                  class="form-control"
                  id="register-password"
-                 name="password"
+                 name="password1"
                  placeholder="********"
                  {% if form.password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
           {{ form.password.errors }}
@@ -46,7 +46,7 @@
           <input type="password"
                  class="form-control"
                  id="confirm-password"
-                 name="confirm_password"
+                 name="password2"
                  placeholder="********"
                  {% if form.confirm_password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
           {{ form.confirm_password.errors }}

@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate  # , logout
-
-# from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-# from django.contrib.auth.decorators import login_required
-from .forms import RegistrationForm, LoginForm
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from finance_app.forms import RegistrationForm, LoginForm
 
 
 # DEBUG: Comment if you don't want to bother with logging in
-# @login_required #TODO: Uncomment once authentification is implemented.
+@login_required(login_url="login")
 def main_page(request):
 
     # TODO: Implement actual logic for fetching real data
@@ -418,22 +416,22 @@ def register_page(request):
 
 
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect("main_page")
+
     if request.method == "POST":
-        form = LoginForm(request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get("email")
-            password = form.cleaned_data.get("password")
-            user = authenticate(username=email, password=password)
-            if user:
-                login(request, user)
-                return redirect("main_page")
+            user = form.get_user()
+            login(request, user)
+            return redirect("main_page")
     else:
         form = LoginForm()
 
     return render(request, "login.html", {"form": form})
 
 
+@login_required(login_url="login")
 def logout_page(request):
-    # TODO: this all
-
+    logout(request)
     return render(request, "logout.html")
