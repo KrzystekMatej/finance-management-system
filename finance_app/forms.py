@@ -16,6 +16,12 @@ class RegistrationForm(forms.ModelForm):
         model = User
         fields = ["username", "email", "password"]
 
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Tento email je již používaný.")
+        return email
+
     def clean_password(self):
         password = self.cleaned_data.get("password")
         if len(password) < 8:
@@ -42,8 +48,8 @@ class RegistrationForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput, label=("Password"))
+    username = forms.CharField(required=True, max_length=150, label="Username")
+    password = forms.CharField(widget=forms.PasswordInput, label="Password")
 
     # def clean(self):
     #     cleaned_data = super().clean()

@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-
-# from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
 from .forms import RegistrationForm, LoginForm
 
 
 # DEBUG: Comment if you don't want to bother with logging in
-# @login_required #TODO: Uncomment once authentification is implemented.
+@login_required(login_url="login")
 def main_page(request):
 
     # TODO: Implement actual logic for fetching real data
@@ -421,9 +419,9 @@ def login_page(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get("email")
+            username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
-            user = authenticate(username=email, password=password)
+            user = authenticate(username=username, password=password)
             if user:
                 login(request, user)
                 return redirect("main_page")
@@ -435,6 +433,7 @@ def login_page(request):
     return render(request, "login.html", {"form": form})
 
 
+@login_required(login_url="login")
 def logout_page(request):
     logout(request)
     return render(request, "logout.html")
