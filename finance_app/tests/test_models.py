@@ -53,17 +53,16 @@ class CategoryPreferenceTests(TestCase):
             username="john",
             password="password123",
         )
-        user_profile = UserProfile.objects.create(user=user)
 
         category = Category.objects.create(name="Groceries")
         category_preference = CategoryPreference.objects.create(
-            color="#FF5733", user=user_profile, category=category
+            color="#FF5733", user=user, category=category
         )
 
         category_preference_db = CategoryPreference.objects.get(
             id=category_preference.id
         )
-        self.assertEqual(category_preference_db.user, user_profile)
+        self.assertEqual(category_preference_db.user, user)
         self.assertEqual(category_preference_db.category, category)
         self.assertEqual(category_preference_db.color, "#FF5733")
         self.assertEqual(category_preference_db.category.name, "Groceries")
@@ -75,7 +74,6 @@ class TransactionTests(TestCase):
             username="john",
             password="password123",
         )
-        user_profile = UserProfile.objects.create(user=user)
 
         category = Category.objects.create(name="Groceries")
 
@@ -85,7 +83,7 @@ class TransactionTests(TestCase):
             performed_at="2024-10-25T14:30:00Z",
             category=category,
             description="Weekly grocery shopping",
-            user=user_profile,
+            user=user,
         )
 
         transaction_db = Transaction.objects.get(id=transaction.id)
@@ -94,7 +92,7 @@ class TransactionTests(TestCase):
         self.assertEqual(transaction_db.amount, 50.00)
         self.assertEqual(transaction_db.category, category)
         self.assertEqual(transaction_db.description, "Weekly grocery shopping")
-        self.assertEqual(transaction_db.user, user_profile)
+        self.assertEqual(transaction_db.user, user)
         self.assertIsNotNone(transaction_db.created_at)
         self.assertEqual(
             transaction_db.performed_at.isoformat(), "2024-10-25T14:30:00+00:00"
@@ -115,20 +113,18 @@ class SharedBudgetTests(TestCase):
             username="john",
             password="password123",
         )
-        user_profile1 = UserProfile.objects.create(user=user1)
 
         user2 = get_user_model().objects.create_user(
             username="jane",
             password="password456",
         )
-        user_profile2 = UserProfile.objects.create(user=user2)
 
         category1 = Category.objects.create(name="Groceries")
         category2 = Category.objects.create(name="Utilities")
 
         budget = Budget.objects.create(
             name="Monthly Budget",
-            owner=user_profile1,
+            owner=user1,
             limit=500.00,
             period_start="2024-10-01",
             period_end="2024-10-31",
@@ -138,7 +134,7 @@ class SharedBudgetTests(TestCase):
 
         shared_budget1 = SharedBudget.objects.create(
             budget=budget,
-            shared_with=user_profile1,
+            shared_with=user1,
             _permission=BudgetPermission.EDIT.value,
             _role=BudgetRole.PARTICIPANT.value,
             on_exceeded=True,
@@ -149,7 +145,7 @@ class SharedBudgetTests(TestCase):
 
         shared_budget2 = SharedBudget.objects.create(
             budget=budget,
-            shared_with=user_profile2,
+            shared_with=user2,
             _permission=BudgetPermission.VIEW.value,
             _role=BudgetRole.OBSERVER.value,
             on_exceeded=False,
@@ -162,7 +158,7 @@ class SharedBudgetTests(TestCase):
         shared_budget2_db = SharedBudget.objects.get(id=shared_budget2.id)
 
         self.assertEqual(shared_budget1_db.budget, budget)
-        self.assertEqual(shared_budget1_db.shared_with, user_profile1)
+        self.assertEqual(shared_budget1_db.shared_with, user1)
         self.assertEqual(shared_budget1_db.permission, BudgetPermission.EDIT)
         self.assertEqual(shared_budget1_db.role, BudgetRole.PARTICIPANT)
         self.assertEqual(
@@ -173,7 +169,7 @@ class SharedBudgetTests(TestCase):
         self.assertTrue(shared_budget1_db.on_transaction)
 
         self.assertEqual(shared_budget2_db.budget, budget)
-        self.assertEqual(shared_budget2_db.shared_with, user_profile2)
+        self.assertEqual(shared_budget2_db.shared_with, user2)
         self.assertEqual(shared_budget2_db.permission, BudgetPermission.VIEW)
         self.assertEqual(shared_budget2_db.role, BudgetRole.OBSERVER)
         self.assertEqual(shared_budget2_db.notification_mode, NotificationMode.NONE)

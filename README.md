@@ -90,8 +90,13 @@ classDiagram
     }
     
     class Category {
-        +UserProfile user
         +String name
+    }
+    
+    class CategoryPreference {
+        +User user
+        +Category category
+        +String color
     }
 
     class Transaction {
@@ -100,6 +105,7 @@ classDiagram
         +Date created_at
         +Date performed_at
         +Category category
+        +User user
         +String description
     }
     
@@ -109,12 +115,13 @@ classDiagram
     
     class Budget {
         +String name
-        +UserProfile owner
+        +User owner
         +Date created_at
         +Date exceeded_at
         +double limit
         +Date period_start
         +Date period_end
+        List~Category~ categories
         +String description
     }
     
@@ -155,14 +162,14 @@ classDiagram
     
     class SharedBudget {
         +Budget budget
-        +UserProfile shared_with
+        +User shared_with
         +BudgetPermission permission
         +BudgetRole role
         +BudgetNotificationSettings notification_settings
     }
     
     class Notification {
-        +UserProfile receiver
+        +User receiver
         +String subject
         +String message
         +Date sent_at
@@ -170,19 +177,20 @@ classDiagram
     }
 
     Transaction "1" --> "0..1" Category : "has"
-    Transaction "N" --* "1" UserProfile : "owns"
+    Transaction "N" --* "1" User : "owns"
     RecurringTransaction --|> Transaction
-    Notification "N" --* "1" UserProfile : "owns"
+    Notification "N" --* "1" User : "owns"
     UserProfile "0..1" --* "1" User : "owns"
-    UserProfile "N" *-- "M" Category : "owns"
     NotificationMode <-- UserProfile
     NotificationMode <-- BudgetNotificationSettings
     TimeInterval <-- RecurringTransaction
     SharedBudget "N" --* "1" Budget : "owns"
-    SharedBudget "N" --> "1" UserProfile : "shared_with"
+    SharedBudget "N" --> "1" User : "shared_with"
+    CategoryPreference "N" --* "1" User : "owns"
+    CategoryPreference "N" --> "1" Category
     SharedBudget "1" --> "1" BudgetNotificationSettings
     BudgetRole <-- SharedBudget
     BudgetPermission <-- SharedBudget
-    Budget "N" --* "1" UserProfile : "owns"
+    Budget "N" --* "1" User : "owns"
     Budget "N" --> "M" Category : "has"
 ```

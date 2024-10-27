@@ -46,13 +46,12 @@ class UserProfile(models.Model):
 
 
 class Category(models.Model):
-    # user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
 
 
 class CategoryPreference(models.Model):
     color = models.CharField(max_length=7)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
 
@@ -61,9 +60,9 @@ class Transaction(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     performed_at = models.DateTimeField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True)
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
 
 class RecurringTransaction(Transaction):
@@ -86,21 +85,19 @@ class RecurringTransaction(Transaction):
 
 class Budget(models.Model):
     name = models.CharField(max_length=100)
-    owner = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     exceeded_at = models.DateTimeField(null=True, blank=True)
     limit = models.DecimalField(max_digits=10, decimal_places=2)
     period_start = models.DateField()
     period_end = models.DateField()
     description = models.TextField(blank=True)
-
-    # category_names = JSONField(default=list, blank=True)
     categories = models.ManyToManyField(Category, blank=True)
 
 
 class SharedBudget(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
-    shared_with = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    shared_with = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     _permission = models.CharField(
         max_length=10,
         choices=[
@@ -151,7 +148,7 @@ class SharedBudget(models.Model):
 
 
 class Notification(models.Model):
-    receiver = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100)
     message = models.CharField(max_length=255)
     sent_at = models.DateTimeField(auto_now_add=True)
