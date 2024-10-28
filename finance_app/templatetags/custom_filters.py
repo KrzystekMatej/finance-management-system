@@ -3,6 +3,7 @@ from collections import defaultdict
 
 register = template.Library()
 
+
 # Converts string "69 420" to float 69420
 @register.filter
 def to_number(value):
@@ -10,6 +11,7 @@ def to_number(value):
         return float(value.replace(" ", ""))
     except (ValueError, AttributeError):
         return 0
+
 
 # Formats numbers with spaces as thousand separators
 @register.filter
@@ -30,6 +32,7 @@ def dec_to_float(value):
     except (ValueError, TypeError):
         return str(value)
 
+
 @register.filter
 def dec_to_int(value):
     try:
@@ -39,13 +42,14 @@ def dec_to_int(value):
     except (ValueError, TypeError):
         return str(value)
 
+
 @register.filter
 def dec_to_int(value):
     try:
-        value = str(value) 
+        value = str(value)
         if "," in value:
             value = value.split(",")[0]
-        
-        return int(value)  
+
+        return int(value)
     except (ValueError, TypeError):
         return value
