@@ -46,7 +46,7 @@ class UserProfile(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, unique=True, db_index=True)
     is_default = models.BooleanField(default=False)
 
 

@@ -184,24 +184,6 @@ document.getElementById('recurrence-frequency').addEventListener('change', funct
   }
 });
 
-  function saveCustomCategory() {
-    const categoryName = document.getElementById('custom-category-name').value;
-    const categoryColor = document.getElementById('custom-category-color-input').value;
-
-    // TODO: Create new category database entry for this
-    console.log("Category Name:", categoryName);
-    console.log("Category Color:", categoryColor);
-
-    closeCustomCategoryModal();
-}
-
-function closeCustomCategoryModal() {
-    const customCategoryModal = bootstrap.Modal.getInstance(document.getElementById('custom-category-modal'));
-    customCategoryModal.hide();
-    const previousModal = bootstrap.Modal.getInstance(document.getElementById('transaction-modal'));
-    previousModal.show();
-}
-
 function saveRecurrenceSettings() {
   const recurrenceFrequency = document.getElementById('recurrence-frequency-modal').value;
   const weeklyDay = document.getElementById('weekly-day').value;
