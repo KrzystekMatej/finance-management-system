@@ -1,10 +1,8 @@
 from django import template
-from collections import defaultdict
 
 register = template.Library()
 
-# Converts string "69 420" to float 69420
-@register.filter
+# Converts string "69 420" to float 69420 @register.filter
 def to_number(value):
     try:
         return float(value.replace(" ", ""))
@@ -34,18 +32,9 @@ def dec_to_float(value):
 def dec_to_int(value):
     try:
         value = str(value)
-        value = value.replace(",", ".")
-        return value
-    except (ValueError, TypeError):
-        return str(value)
-
-@register.filter
-def dec_to_int(value):
-    try:
-        value = str(value) 
         if "," in value:
             value = value.split(",")[0]
-        
-        return int(value)  
+
+        return int(value)
     except (ValueError, TypeError):
         return value

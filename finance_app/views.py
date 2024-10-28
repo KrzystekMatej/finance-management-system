@@ -16,7 +16,7 @@ def get_monthly_summaries(request):
     )
 
     month_names = [
-        "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", 
+        "Leden", "Únor", "Březen", "Duben", "Květen", "Červen",
         "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"
     ]
 
@@ -50,7 +50,7 @@ def get_monthly_summaries(request):
         ]
 
         total_income = sum(incoming_totals.values())
-        total_expenses = sum(abs(total) for total in outcoming_totals.values()) 
+        total_expenses = sum(abs(total) for total in outcoming_totals.values())
 
         monthly_summaries.append({
             "year": year,
