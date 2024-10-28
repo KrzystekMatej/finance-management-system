@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <div class="modal fade"
      id="transaction-modal"
+     data-create-transaction-url="{% url 'create-transaction' %}"
      tabindex="-1"
      aria-labelledby="transaction-modal-label"
      aria-hidden="true">
@@ -13,7 +14,7 @@
                 data-bs-dismiss="modal"
                 aria-label="Close"></button>
       </div>
-      <form method="post" action="{% url 'create-transaction' %}">
+      <form id="create-transaction-form" method="post" action="">
         {% csrf_token %}
         <div class="modal-body">
           <!-- Transaction amount -->
@@ -38,11 +39,11 @@
             <label for="transaction-category" class="form-label">Kategorie</label>
             <div class="d-flex">
               <select class="form-select" id="transaction-category" name="category">
-                <option value="" disabled selected>Select a category</option>
+                <option value="" disabled selected>Vyber si kategorii</option>
                 <!-- Default option -->
                 {% if categories %}
                   {% for category_preference in categories %}
-                    <option value="{{ category_preference.id }}">{{ category_preference.category.name }}</option>
+                    <option value="{{ category_preference.category.id }}">{{ category_preference.category.name }}</option>
                   {% endfor %}
                 {% else %}
                   <option value="" disabled>No categories available</option>
@@ -94,7 +95,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Vytvořit transakci</button>
+          <button type="button" class="btn btn-primary" id="submit-transaction-btn">Vytvořit transakci</button>
         </div>
       </form>
     </div>

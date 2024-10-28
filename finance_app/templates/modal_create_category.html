@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <div class="modal fade"
      id="custom-category-modal"
+     data-create-category-url="{% url 'create-category' %}"
      tabindex="-1"
      aria-labelledby="custom-category-modal-label"
      aria-hidden="true">
@@ -13,7 +14,7 @@
                 onclick="closeCustomCategoryModal()"
                 aria-label="Close"></button>
       </div>
-      <form method="post" action="{% url 'create-category' %}">
+      <form id="create-category-form" method="post" action="">
         {% csrf_token %}
         <div class="modal-body">
           <div class="mb-3">
@@ -26,14 +27,17 @@
           </div>
           <div class="mb-3">
             <label for="custom-category-color-input" class="form-label">Barva kategorie</label>
-            <input type="color" class="form-control" id="custom-category-color-input">
+            <input type="color"
+                   class="form-control"
+                   id="custom-category-color-input"
+                   name="color">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button"
                   class="btn btn-secondary"
                   onclick="closeCustomCategoryModal()">Zavřít a zahodit</button>
-          <button type="submit" class="btn btn-primary" onclick="saveCustomCategory()">Uložit jako novou kategorii</button>
+          <button type="button" class="btn btn-primary" id="submit-category-btn">Uložit jako novou kategorii</button>
         </div>
       </form>
     </div>

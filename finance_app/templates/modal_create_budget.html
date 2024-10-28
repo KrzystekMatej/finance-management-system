@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<div class="modal fade"
+     id="budget-modal"
+     tabindex="-1"
+     aria-labelledby="budget-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="budget-modal-label">Vytvořit nový rozpočet</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <form method="post" action="">
+        <!--{% csrf_token %}-->
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="budget-name" class="form-label">Název rozpočtu</label>
+            <input type="text"
+                   class="form-control"
+                   id="budget-name"
+                   name="name"
+                   placeholder="Volejbal s kamarády">
+          </div>
+          <div class="mb-3">
+            <label for="budget-limit" class="form-label">Limit (Kč)</label>
+            <input type="decimal"
+                   class="form-control"
+                   id="budget-limit"
+                   name="limit"
+                   placeholder="Zadejte limit">
+          </div>
+          <div class="mb-3">
+            <label for="budget-from" class="form-label">Limit od</label>
+            <input type="date" class="form-control" id="budget-from" name="from">
+          </div>
+          <div class="mb-3">
+            <label for="budget-to" class="form-label">Limit do</label>
+            <input type="date" class="form-control" id="budget-to" name="to">
+          </div>
+          <div class="mb-3">
+            <label for="budget-category" class="form-label">Kategorie</label>
+            <div id="category-container">
+              <select class="form-select" id="budget-category" name="categories[]">
+                <option value="" disabled selected>Select a category</option>
+                {% if categories %}
+                  {% for category in categories %}<option value="{{ category.id }}">{{ category.category.name }}</option>{% endfor %}
+                {% else %}
+                  <option value="" disabled>No categories available</option>
+                {% endif %}
+              </select>
+            </div>
+            <button type="button" class="btn btn-primary mt-2" id="add-category">Přidat další kategorii</button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Vytvořit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('add-category').addEventListener('click', function() {
+        const container = document.getElementById('category-container');
+
+        const newSelect = document.createElement('select');
+        newSelect.className = 'form-select mt-2';
+        newSelect.name = 'categories[]';
+        newSelect.innerHTML = `
+            <option value="" disabled selected>Select a category</option>
+            {% if categories %}
+                {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.category.name }}</option>
+                {% endfor %}
+            {% else %}
+                <option value="" disabled>No categories available</option>
+            {% endif %}
+        `;
+
+        container.appendChild(newSelect);
+    });
+</script>

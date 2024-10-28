@@ -1,15 +1,25 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
-from finance_app.forms import RegistrationForm, LoginForm, TransactionForm, CategoryForm
+from finance_app.forms import (
+    RegistrationForm,
+    LoginForm,
+    CreateTransactionForm,
+    CreateCategoryForm,
+)
 from finance_app.models import (
     Transaction,
     UserProfile,
     CategoryPreference,
+    Budget,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def get_transactions_by_month(transactions):
+def split_transactions_by_month(transactions):
     monthly_summaries = []
     current_month = None
     current_month_transactions = []
@@ -32,7 +42,7 @@ def get_transactions_by_month(transactions):
 
 
 def get_monthly_summaries(request):
-    all_transactions = get_transactions_by_month(
+    all_transactions = split_transactions_by_month(
         Transaction.objects.filter(user_id=request.user.id)
     )
     month_names = [
@@ -74,48 +84,48 @@ def get_monthly_summaries(request):
 def main_page(request):
     context = {
         "monthly_summaries": get_monthly_summaries(request),
-        "categories": CategoryPreference.objects.filter(user_id=request.user.id),
-        "user_profile": UserProfile.objects.get(id=request.user.id),
+        "categories": CategoryPreference.objects.filter(user=request.user),
+        "user_profile": UserProfile.objects.get(user=request.user),
+        "budgets": Budget.objects.filter(owner=request.user),
     }
 
     return render(request, "main_page.html", context)
 
 
+@login_required(login_url="login")
 def create_transaction(request):
-
     if request.method == "POST":
-        form = TransactionForm(request.POST)
+        form = CreateTransactionForm(request.POST)
         if form.is_valid():
             transaction = form.save(commit=False)
-            transaction.user_id = request.user.id
+            transaction.user = request.user
             transaction.save()
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": True})
             return redirect("main_page")
         else:
-            print(form.errors)
+            if request.headers.get("x-requested-with") == "XMLHttpRequest":
+                return JsonResponse({"success": False, "errors": form.errors})
     else:
-        form = TransactionForm()
+        form = CreateTransactionForm()
 
-    # Render the form with categories on both GET and POST
-    return render(
-        request,
-        "modal_create_transaction.html",
-        {
-            "form": form,
-            "categories": CategoryPreference.objects.filter(user_id=request.user.id),
-        },
-    )
+    # TODO: optional - redirect to main page with transaction modal window
+    return redirect("main_page")
 
 
+@login_required(login_url="login")
 def create_category(request):
     if request.method == "POST":
-        form = CategoryForm(request.POST)
+        form = CreateCategoryForm(request.POST, user=request.user)
         if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.save()
-            # main_page(request)
-            return redirect("main_page")
-        else:
-            print(form.errors)
+            category, preference = form.save()
+            return JsonResponse({"success": True, "category_name": category.name})
+        return JsonResponse({"success": False, "errors": form.errors})
+    else:
+        form = CreateCategoryForm()
+
+    # TODO: optional - redirect to main page with category modal window
+    return redirect("main_page")
 
 
 def register_page(request):
