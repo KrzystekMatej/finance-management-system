@@ -2,12 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from finance_app.forms import RegistrationForm, LoginForm, TransactionForm, CategoryForm
-from finance_app.models import (
-    Transaction,
-    UserProfile,
-    CategoryPreference,
-    Budget
-)
+from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
 
 
 def get_monthly_summaries(request):
