@@ -40,14 +40,14 @@ function toggleBalance() {
 function renderBalance() {
   const balanceContainer = document.getElementById('balance-container');
   if (!hideBalance) {
-      const balance = 69420; // TODO: Fetch balance
+      const balance = parseFloat(balanceContainer.getAttribute('data-balance'));
       const formattedBalance = new Intl.NumberFormat('cs-CZ').format(balance); // 69420 -> 69 420
 
       balanceContainer.innerHTML = `<div onclick="toggleBalance()" id="balance">` + formattedBalance + ` Kč</div>`;
     }else{
-      const balance = document.getElementById('balance');
-      if (balance){
-        balance.remove();
+      const balanceElement = document.getElementById('balance');
+      if (balanceElement){
+        balanceElement.remove();
       }
 
     }

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from finance_app.models import UserProfile
+from finance_app.models import Transaction, Category
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
@@ -30,7 +30,6 @@ class RegistrationForm(UserCreationForm):
         user.email = self.cleaned_data["email"]
         if commit:
             user.save()
-            UserProfile.objects.create(user=user)
         return user
 
 
@@ -39,3 +38,15 @@ class LoginForm(AuthenticationForm):
         "invalid_login": _("Nesprávné uživatelské jméno nebo heslo."),
         "inactive": _("Tento účet je neaktivní."),
     }
+
+
+class TransactionForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ["amount", "performed_at", "category", "name", "description"]
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ["name"]

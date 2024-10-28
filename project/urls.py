@@ -20,9 +20,11 @@ from django.urls import path
 from finance_app import views
 
 urlpatterns = [
+    path("login/", views.login_page, name="login"),
     path("admin/", admin.site.urls),
     path("register/", views.register_page, name="register"),
-    path("login/", views.login_page, name="login"),
     path("logout/", views.logout_page, name="logout"),
+    path("create-category/", views.create_category, name="create-category"),
+    path("create-transaction/", views.create_transaction, name="create-transaction"),
     path("", views.main_page, name="main_page"),
 ]

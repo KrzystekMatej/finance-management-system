@@ -19,10 +19,10 @@
       <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
           <div class="col-md-4 vert-center">
-            <span class="transaction-date">{{ transaction.date }}</span>
+            <span class="transaction-date">{{ transaction.performed_at }}</span>
           </div>
           <div class="col-md-4 vert-center">
-            <span class="transaction-source">{{ transaction.source }}</span>
+            <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
           <div class="col-md-4 vert-center">
             <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">

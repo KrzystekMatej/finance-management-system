@@ -7,10 +7,10 @@
         <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
       </div>
       <div class="col-md-3 vert-center">
-        <span class="income positive">+{{ summary.positive_income | spaced_number }} Kč</span>
+        <span class="income positive">+{{ summary.income | spaced_number }} Kč</span>
       </div>
       <div class="col-md-3 vert-center">
-        <span class="income negative">-{{ summary.negative_income | spaced_number }} Kč</span>
+        <span class="income negative">-{{ summary.expanses | spaced_number }} Kč</span>
       </div>
       <div class="col-md-3 vert-center">
         <button type="button"
@@ -22,16 +22,17 @@
   </div>
   <div class="summary-body">
     {% for transaction in summary.transactions %}
+      <hr class="divider-line">
       <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
           <div class="col-md-3 vert-center">
-            <span class="transaction-date">{{ transaction.date }}</span>
+            <span class="transaction-date">{{ transaction.performed_at }}</span>
           </div>
           <div class="col-md-3 vert-center">
-            <span class="transaction.title">{{ transaction.title }}</span>
+            <span class="transaction.title">{{ transaction.name }}</span>
           </div>
           <div class="col-md-3 vert-center">
-            <span class="transaction-source">{{ transaction.source }}</span>
+            <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
           <div class="col-md-3 vert-center">
             <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
@@ -45,5 +46,6 @@
         </div>
       </div>
     {% endfor %}
+    <hr class="divider-line">
   </div>
 </div>

@@ -13,8 +13,8 @@
                 data-bs-dismiss="modal"
                 aria-label="Close"></button>
       </div>
-      <form method="post" action="">
-        <!--{% csrf_token %}-->
+      <form method="post" action="{% url 'create-transaction' %}">
+        {% csrf_token %}
         <div class="modal-body">
           <!-- Transaction amount -->
           <div class="mb-3">
@@ -31,18 +31,23 @@
             <input type="date"
                    class="form-control"
                    id="transaction-date"
-                   name="transaction_date">
+                   name="performed_at">
           </div>
           <!-- Transaction category -->
           <div class="mb-3">
             <label for="transaction-category" class="form-label">Kategorie</label>
             <div class="d-flex">
               <select class="form-select" id="transaction-category" name="category">
-                <option value="grocery">Potraviny</option>
-                <option value="salary">Plat</option>
-                <option value="entertainment">Zábava</option>
-                <option value="utilities">Služby</option>
-                <option value="other" selected>Ostatní</option>
+                <option value="" disabled selected>Select a category</option>
+                <!-- Default option -->
+                {% if categories %}
+                  {% for category_preference in categories %}
+                    <option value="{{ category_preference.id }}">{{ category_preference.category.name }}</option>
+                  {% endfor %}
+                {% else %}
+                  <option value="" disabled>No categories available</option>
+                  <!-- Display message if no categories -->
+                {% endif %}
               </select>
               <button type="button"
                       class="btn btn-primary ms-2 width-100"
@@ -59,12 +64,12 @@
                    name="name"
                    placeholder="Zadejte název transakce">
           </div>
-          <!-- Transaction note -->
+          <!-- Transaction description -->
           <div class="mb-3">
             <label for="transaction-note" class="form-label">Poznámka</label>
             <textarea class="form-control"
                       id="transaction-note"
-                      name="note"
+                      name="description"
                       rows="3"
                       placeholder="Zadejte poznámku k transakci"></textarea>
           </div>

@@ -49,3 +49,10 @@
 .transaction-date, .transaction-source, .transaction-amount {
   flex: 1;
 }
+
+.divider-line {
+    margin: 0;
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+}

@@ -47,6 +47,7 @@ class UserProfile(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    is_default = models.BooleanField(default=False)
 
 
 class CategoryPreference(models.Model):
@@ -63,6 +64,9 @@ class Transaction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-performed_at"]
 
 
 class RecurringTransaction(Transaction):

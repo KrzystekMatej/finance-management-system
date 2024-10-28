@@ -25,7 +25,7 @@ class UserProfileTests(TestCase):
         )
         user.save()
 
-        user_profile = UserProfile.objects.create(user=user)
+        user_profile = UserProfile.objects.get(user=user)
         user_profile.balance = 100
         user_profile.global_notification_mode = NotificationMode.APP_EMAIL
         user_profile.save()
