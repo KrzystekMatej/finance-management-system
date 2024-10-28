@@ -8,10 +8,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="statistics-modal-label">Statistika za měsíc {{ summary.month }}</h5>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
@@ -19,212 +16,124 @@
             <div class="text-center mb-3">
               <h6>Příchozí platby dle kategorie</h6>
             </div>
+
             <!-- PIE INCOMING -->
-            <canvas id="summary-pie-incoming-{{ summary.month }}-{{ summary.year }}"
-                    width="400"
-                    height="400"></canvas>
+            <canvas id="summary-pie-incoming-{{ summary.month }}-{{ summary.year }}" width="400" height="400"></canvas>
+
             <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const incomingCanvas = document.getElementById('summary-pie-incoming-{{ summary.month }}-{{ summary.year }}');
+              document.addEventListener("DOMContentLoaded", function() {
+                const incomingCanvas = document.getElementById('summary-pie-incoming-{{ summary.month }}-{{ summary.year }}');
 
-                    const incomingBackgroundColors = [{
-                            %
-                            for data in summary.aggregated_data.incoming %
-                        } {
-                            %
-                            for category in categories %
-                        } {
-                            %
-                            if category.category.name == data.name %
-                        }
-                        "{{ category.color }}" {
-                            %
-                            if not forloop.last %
-                        }, {
-                            %
-                            endif %
-                        } {
-                            %
-                            endif %
-                        } {
-                            %
-                            endfor %
-                        } {
-                            %
-                            endfor %
-                        }
-                    ];
+                const incomingBackgroundColors = [
+                {% for data in summary.aggregated_data.incoming %}
+                    {% for category in categories %}
+                        {% if category.category.name == data.name %}
+                            "{{ category.color }}"{% if not forloop.last %}, {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                ];
 
-                    const incomingLabels = [{
-                            %
-                            for data in summary.aggregated_data.incoming %
-                        }
-                        "{{ data.name }}" {
-                            %
-                            if not forloop.last %
-                        }, {
-                            %
-                            endif %
-                        } {
-                            %
-                            endfor %
-                        }
-                    ];
+                const incomingLabels = [
+                    {% for data in summary.aggregated_data.incoming %}
+                        "{{ data.name }}"{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                ];
+            
+                const incomingData = [
+                {% for data in summary.aggregated_data.incoming %}
+                    {% if not data.total == 0 %}
+                        {{ data.total|dec_to_int }}{% if not forloop.last %}, {% endif %}
+                    {% endif %}
+                {% endfor %}
+                ];
 
-                    const incomingData = [{
-                        %
-                        for data in summary.aggregated_data.incoming %
-                    } {
-                        %
-                        if not data.total == 0 %
-                    } {
-                        {
-                            data.total | dec_to_int
-                        }
-                    } {
-                        %
-                        if not forloop.last %
-                    }, {
-                        %
-                        endif %
-                    } {
-                        %
-                        endif %
-                    } {
-                        %
-                        endfor %
-                    }];
+                console.log(incomingBackgroundColors);
+                console.log(incomingLabels);
+                console.log(incomingData);
 
-                    console.log(incomingBackgroundColors);
-                    console.log(incomingLabels);
-                    console.log(incomingData);
+                if (incomingCanvas) {
+                  const incoming = incomingCanvas.getContext('2d');
 
-                    if (incomingCanvas) {
-                        const incoming = incomingCanvas.getContext('2d');
-
-                        new Chart(incoming, {
-                            type: 'pie',
-                            data: {
-                                labels: incomingLabels,
-                                datasets: [{
-                                    label: 'Incoming transactions by categories',
-                                    data: incomingData,
-                                    backgroundColor: incomingBackgroundColors,
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: false
-                            }
-                        });
-                    }
-                });
+                  new Chart(incoming, {
+                    type: 'pie',
+                    data: {
+                      labels: incomingLabels,
+                      datasets: [{
+                        label: 'Incoming transactions by categories',
+                        data: incomingData,
+                        backgroundColor: incomingBackgroundColors,
+                        borderWidth: 1
+                      }]
+                    },
+                    options: { responsive: false }
+                  });
+                }
+              });
             </script>
           </div>
           <div class="col-md-6 d-flex flex-column align-items-center">
             <div class="text-center mb-3">
               <h6>Odchozí platby dle kategorie</h6>
             </div>
+
             <!-- PIE OUTCOMING -->
-            <canvas id="summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}"
-                    width="400"
-                    height="400"></canvas>
+            <canvas id="summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}" width="400" height="400"></canvas>
+            
+            
             <script>
-                document.addEventListener("DOMContentLoaded", function() {
-                    const outcomingCanvas = document.getElementById('summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}');
+              document.addEventListener("DOMContentLoaded", function() {
+                const outcomingCanvas = document.getElementById('summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}');
 
-                    const outcomingBackgroundColors = [{
-                            %
-                            for data in summary.aggregated_data.outcoming %
-                        } {
-                            %
-                            for category in categories %
-                        } {
-                            %
-                            if category.category.name == data.name %
-                        }
-                        "{{ category.color }}" {
-                            %
-                            if not forloop.last %
-                        }, {
-                            %
-                            endif %
-                        } {
-                            %
-                            endif %
-                        } {
-                            %
-                            endfor %
-                        } {
-                            %
-                            endfor %
-                        }
-                    ];
+                const outcomingBackgroundColors = [
+                {% for data in summary.aggregated_data.outcoming %}
+                    {% for category in categories %}
+                        {% if category.category.name == data.name %}
+                            "{{ category.color }}"{% if not forloop.last %}, {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                ];
 
-                    const outcomingLabels = [{
-                            %
-                            for data in summary.aggregated_data.outcoming %
-                        }
-                        "{{ data.name }}" {
-                            %
-                            if not forloop.last %
-                        }, {
-                            %
-                            endif %
-                        } {
-                            %
-                            endfor %
-                        }
-                    ];
+                const outcomingLabels = [
+                    {% for data in summary.aggregated_data.outcoming %}
+                        "{{ data.name }}"{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                ];
+            
+                const outcomingData = [
+                {% for data in summary.aggregated_data.outcoming %}
+                    {% if not data.total == 0 %}
+                        {{ data.total|dec_to_int }}{% if not forloop.last %}, {% endif %}
+                    {% endif %}
+                {% endfor %}
+                ];
 
-                    const outcomingData = [{
-                        %
-                        for data in summary.aggregated_data.outcoming %
-                    } {
-                        %
-                        if not data.total == 0 %
-                    } {
-                        {
-                            data.total | dec_to_int
-                        }
-                    } {
-                        %
-                        if not forloop.last %
-                    }, {
-                        %
-                        endif %
-                    } {
-                        %
-                        endif %
-                    } {
-                        %
-                        endfor %
-                    }];
+                if (outcomingCanvas) {
+                  const outcoming = outcomingCanvas.getContext('2d');
 
-                    if (outcomingCanvas) {
-                        const outcoming = outcomingCanvas.getContext('2d');
-
-                        new Chart(outcoming, {
-                            type: 'pie',
-                            data: {
-                                labels: outcomingLabels,
-                                datasets: [{
-                                    label: 'outcoming transactions by categories',
-                                    data: outcomingData,
-                                    backgroundColor: outcomingBackgroundColors,
-                                    borderWidth: 1
-                                }]
-                            },
-                            options: {
-                                responsive: false
-                            }
-                        });
-                    }
-                });
+                  new Chart(outcoming, {
+                    type: 'pie',
+                    data: {
+                      labels: outcomingLabels,
+                      datasets: [{
+                        label: 'outcoming transactions by categories',
+                        data: outcomingData,
+                        backgroundColor: outcomingBackgroundColors,
+                        borderWidth: 1
+                      }]
+                    },
+                    options: { responsive: false }
+                  });
+                }
+              });
             </script>
+
           </div>
           <div class="container py-3 py-md-5 mobile-padding">
-            <div class="row w-100">{% include "monthly_summary_statistics.html" %}</div>
+            <div class="row w-100">
+                  {% include "monthly_summary_statistics.html" %}
+            </div>
           </div>
         </div>
       </div>

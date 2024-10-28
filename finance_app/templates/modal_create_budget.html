@@ -66,7 +66,6 @@
 <script>
     document.getElementById('add-category').addEventListener('click', function() {
         const container = document.getElementById('category-container');
-
         const newSelect = document.createElement('select');
         newSelect.className = 'form-select mt-2';
         newSelect.name = 'categories[]';
@@ -80,7 +79,6 @@
                 <option value="" disabled>No categories available</option>
             {% endif %}
         `;
-
         container.appendChild(newSelect);
     });
 </script>
