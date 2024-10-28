@@ -2,11 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from finance_app.forms import RegistrationForm, LoginForm, TransactionForm, CategoryForm
-from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
-
+from finance_app.models import (
+    Transaction,
+    UserProfile,
+    CategoryPreference,
+    Budget
+)
 
 def get_monthly_summaries(request):
-
+    # Fetch all transactions for the user
     all_transactions = get_transactions_by_month(
         Transaction.objects.filter(user_id=request.user.id)
     )
@@ -27,7 +31,6 @@ def get_monthly_summaries(request):
 
         for transaction in month_transactions:
             amount = float(transaction.amount)
-            print(amount)
             category_name = transaction.category.name
             if amount >= 0:
                 if category_name not in incoming_totals:
@@ -46,21 +49,19 @@ def get_monthly_summaries(request):
         ]
 
         total_income = sum(incoming_totals.values())
-        total_expenses = sum(abs(total) for total in outcoming_totals.values())
+        total_expenses = sum(abs(total) for total in outcoming_totals.values()) 
 
-        monthly_summaries.append(
-            {
-                "year": year,
-                "month": month,
-                "income": total_income,
-                "expanses": total_expenses,
-                "transactions": month_transactions,
-                "aggregated_data": {
-                    "incoming": aggregated_incoming,
-                    "outcoming": aggregated_outcoming,
-                },
+        monthly_summaries.append({
+            "year": year,
+            "month": month,
+            "income": total_income,
+            "expanses": total_expenses,
+            "transactions": month_transactions,
+            "aggregated_data": {
+                "incoming": aggregated_incoming,
+                "outcoming": aggregated_outcoming,
             }
-        )
+        })
 
     return monthly_summaries
 
@@ -85,7 +86,6 @@ def get_transactions_by_month(transactions):
         monthly_summaries.append(current_month_transactions)
 
     return monthly_summaries
-
 
 @login_required(login_url="login")
 def main_page(request):

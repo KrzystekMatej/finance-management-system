@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 {% load custom_filters %}
 <div class="summary-module parallax">
@@ -28,19 +29,21 @@
             <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
           {% if transaction.amount > 0 %}
-            <div class="col-md-3 vert-center">
-              <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
+          <div class="col-md-3 vert-center">
+            <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
                 +{{ transaction.amount|spaced_number }} Kč
-              </span>
-            </div>
-            <div class="col-md-3 vert-center"></div>
+            </span>
+          </div>
+          <div class="col-md-3 vert-center">
+          </div>
           {% else %}
-            <div class="col-md-3 vert-center"></div>
-            <div class="col-md-3 vert-center">
-              <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
-                -{{ transaction.amount|spaced_number }} Kč
-              </span>
-            </div>
+          <div class="col-md-3 vert-center">
+          </div>
+          <div class="col-md-3 vert-center">
+            <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
+                {{ transaction.amount|spaced_number }} Kč
+            </span>
+          </div>
           {% endif %}
         </div>
       </div>
