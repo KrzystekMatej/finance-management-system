@@ -10,7 +10,6 @@ from finance_app.models import (
 
 
 def get_monthly_summaries(request):
-    # Fetch all transactions for the user
     all_transactions = get_transactions_by_month(
         Transaction.objects.filter(user_id=request.user.id)
     )
@@ -107,6 +106,7 @@ def main_page(request):
         "monthly_summaries": get_monthly_summaries(request),
         "categories": CategoryPreference.objects.filter(user_id=request.user.id),
         "user_profile": UserProfile.objects.get(id=request.user.id),
+        "budgets": Budget.objects.filter(owner=request.user),
     }
 
     return render(request, "main_page.html", context)
