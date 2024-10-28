@@ -31,7 +31,6 @@ def dec_to_float(value):
     except (ValueError, TypeError):
         return str(value)
 
-
 @register.filter
 def dec_to_int(value):
     try:
