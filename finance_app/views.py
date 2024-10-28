@@ -6,6 +6,7 @@ from finance_app.models import (
     Transaction,
     UserProfile,
     CategoryPreference,
+    Budget
 )
 
 
