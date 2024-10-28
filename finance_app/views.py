@@ -8,6 +8,7 @@ from finance_app.models import (
     CategoryPreference,
 )
 
+
 def get_monthly_summaries(request):
     # Fetch all transactions for the user
     all_transactions = get_transactions_by_month(
@@ -15,8 +16,18 @@ def get_monthly_summaries(request):
     )
 
     month_names = [
-        "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", 
-        "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"
+        "Leden",
+        "Únor",
+        "Březen",
+        "Duben",
+        "Květen",
+        "Červen",
+        "Červenec",
+        "Srpen",
+        "Září",
+        "Říjen",
+        "Listopad",
+        "Prosinec",
     ]
 
     monthly_summaries = []
@@ -49,19 +60,21 @@ def get_monthly_summaries(request):
         ]
 
         total_income = sum(incoming_totals.values())
-        total_expenses = sum(abs(total) for total in outcoming_totals.values()) 
+        total_expenses = sum(abs(total) for total in outcoming_totals.values())
 
-        monthly_summaries.append({
-            "year": year,
-            "month": month,
-            "income": total_income,
-            "expanses": total_expenses,
-            "transactions": month_transactions,
-            "aggregated_data": {
-                "incoming": aggregated_incoming,
-                "outcoming": aggregated_outcoming,
+        monthly_summaries.append(
+            {
+                "year": year,
+                "month": month,
+                "income": total_income,
+                "expanses": total_expenses,
+                "transactions": month_transactions,
+                "aggregated_data": {
+                    "incoming": aggregated_incoming,
+                    "outcoming": aggregated_outcoming,
+                },
             }
-        })
+        )
 
     return monthly_summaries
 
@@ -86,6 +99,7 @@ def get_transactions_by_month(transactions):
         monthly_summaries.append(current_month_transactions)
 
     return monthly_summaries
+
 
 @login_required(login_url="login")
 def main_page(request):
