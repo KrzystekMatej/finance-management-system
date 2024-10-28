@@ -102,7 +102,7 @@ function showNotification(message) {
 // ----------------------
 // 5. Charts
 // ----------------------
-
+/*
 document.addEventListener("DOMContentLoaded", function() {
   const incoming = document.getElementById('summary-pie-incoming').getContext('2d');
   const outcoming = document.getElementById('summary-pie-outcoming').getContext('2d');
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 });
-
+*/
 // ----------------------
 // 6. Create transaction functions
 // ----------------------
@@ -254,3 +254,4 @@ function updateRecurrenceOptions() {
       document.getElementById('yearly-options-modal').style.display = 'block';
   }
 }
+

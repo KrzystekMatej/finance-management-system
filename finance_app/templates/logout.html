@@ -4,10 +4,10 @@
   Logout
 {% endblock title %}
 {% block content %}
-  <div class="container y-75">
+  <div class="container max-height">
     <div class="row login-container align-items-center">
       <h2 class="text-center mb-4">Byli jste odhlášeni</h2>
-      <a href="{% url 'login' %}">Zpět na přihlášení</a>
+      <a href="{% url 'login' %}"><i class="fas fa-arrow-left spacer-right"></i>Zpět na přihlášení</a>
     </div>
   </div>
 {% endblock content %}

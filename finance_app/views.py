@@ -6,8 +6,64 @@ from finance_app.models import (
     Transaction,
     UserProfile,
     CategoryPreference,
-    Budget,
 )
+
+def get_monthly_summaries(request):
+    # Fetch all transactions for the user
+    all_transactions = get_transactions_by_month(
+        Transaction.objects.filter(user_id=request.user.id)
+    )
+
+    month_names = [
+        "Leden", "Únor", "Březen", "Duben", "Květen", "Červen", 
+        "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"
+    ]
+
+    monthly_summaries = []
+
+    for month_transactions in all_transactions:
+        year = month_transactions[0].performed_at.year
+        month = month_names[month_transactions[0].performed_at.month - 1]
+
+        incoming_totals = {}
+        outcoming_totals = {}
+
+        for transaction in month_transactions:
+            amount = float(transaction.amount)
+            print(amount)
+            category_name = transaction.category.name
+            if amount >= 0:
+                if category_name not in incoming_totals:
+                    incoming_totals[category_name] = 0
+                incoming_totals[category_name] += amount
+            else:
+                if category_name not in outcoming_totals:
+                    outcoming_totals[category_name] = 0
+                outcoming_totals[category_name] += amount
+
+        aggregated_incoming = [
+            {"name": cat, "total": total} for cat, total in incoming_totals.items()
+        ]
+        aggregated_outcoming = [
+            {"name": cat, "total": total} for cat, total in outcoming_totals.items()
+        ]
+
+        total_income = sum(incoming_totals.values())
+        total_expenses = sum(abs(total) for total in outcoming_totals.values()) 
+
+        monthly_summaries.append({
+            "year": year,
+            "month": month,
+            "income": total_income,
+            "expanses": total_expenses,
+            "transactions": month_transactions,
+            "aggregated_data": {
+                "incoming": aggregated_incoming,
+                "outcoming": aggregated_outcoming,
+            }
+        })
+
+    return monthly_summaries
 
 
 def get_transactions_by_month(transactions):
@@ -31,53 +87,12 @@ def get_transactions_by_month(transactions):
 
     return monthly_summaries
 
-
-def get_monthly_summaries(request):
-    all_transactions = get_transactions_by_month(
-        Transaction.objects.filter(user_id=request.user.id)
-    )
-    month_names = [
-        "Leden",
-        "Únor",
-        "Březen",
-        "Duben",
-        "Květen",
-        "Červen",
-        "Červenec",
-        "Srpen",
-        "Září",
-        "Říjen",
-        "Listopad",
-        "Prosinec",
-    ]
-    monthly_summaries = []
-
-    for month_transactions in all_transactions:
-        year = month_transactions[0].performed_at.year
-        month = month_names[month_transactions[0].performed_at.month - 1]
-        income = sum(t.amount for t in month_transactions if t.amount >= 0)
-        expanses = sum(t.amount for t in month_transactions if t.amount < 0)
-        transactions = month_transactions
-        monthly_summaries.append(
-            {
-                "year": year,
-                "month": month,
-                "income": income,
-                "expanses": expanses,
-                "transactions": transactions,
-            }
-        )
-
-    return monthly_summaries
-
-
 @login_required(login_url="login")
 def main_page(request):
     context = {
         "monthly_summaries": get_monthly_summaries(request),
-        "categories": CategoryPreference.objects.filter(user=request.user),
-        "user_profile": UserProfile.objects.get(user=request.user),
-        "budgets": Budget.objects.filter(owner=request.user),
+        "categories": CategoryPreference.objects.filter(user_id=request.user.id),
+        "user_profile": UserProfile.objects.get(id=request.user.id),
     }
 
     return render(request, "main_page.html", context)
