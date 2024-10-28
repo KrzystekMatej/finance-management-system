@@ -6,7 +6,7 @@ from finance_app.models import Transaction, UserProfile, CategoryPreference, Bud
 
 
 def get_monthly_summaries(request):
-    # Fetch all transactions for the user
+
     all_transactions = get_transactions_by_month(
         Transaction.objects.filter(user_id=request.user.id)
     )
