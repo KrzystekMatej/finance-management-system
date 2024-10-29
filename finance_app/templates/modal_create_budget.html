@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <div class="modal fade"
      id="budget-modal"
+     data-create-budget-url="{% url 'create-budget' %}"
      tabindex="-1"
      aria-labelledby="budget-modal-label"
      aria-hidden="true">
@@ -13,8 +14,8 @@
                 data-bs-dismiss="modal"
                 aria-label="Close"></button>
       </div>
-      <form method="post" action="">
-        <!--{% csrf_token %}-->
+      <form id="create-budget-form" method="post" action="">
+        {% csrf_token %}
         <div class="modal-body">
           <div class="mb-3">
             <label for="budget-name" class="form-label">Název rozpočtu</label>
@@ -34,29 +35,35 @@
           </div>
           <div class="mb-3">
             <label for="budget-from" class="form-label">Limit od</label>
-            <input type="date" class="form-control" id="budget-from" name="from">
+            <input type="date" class="form-control" id="budget-from" name="period_start">
           </div>
           <div class="mb-3">
             <label for="budget-to" class="form-label">Limit do</label>
-            <input type="date" class="form-control" id="budget-to" name="to">
+            <input type="date" class="form-control" id="budget-to" name="period_end">
           </div>
           <div class="mb-3">
-            <label for="budget-category" class="form-label">Kategorie</label>
-            <div id="category-container">
-              <select class="form-select" id="budget-category" name="categories[]">
-                <option value="" disabled selected>Select a category</option>
-                {% if categories %}
-                  {% for category in categories %}<option value="{{ category.id }}">{{ category.category.name }}</option>{% endfor %}
-                {% else %}
-                  <option value="" disabled>No categories available</option>
-                {% endif %}
-              </select>
-            </div>
-            <button type="button" class="btn btn-primary mt-2" id="add-category">Přidat další kategorii</button>
+            <label for="budget-categories" class="form-label">Kategorie</label>
+            <select class="form-select" id="budget-categories" name="categories" multiple>
+              {% if categories %}
+                {% for category_preference in categories %}
+                  <option value="{{ category_preference.category.id }}">{{ category_preference.category.name }}</option>
+                {% endfor %}
+              {% else %}
+                <option value="" disabled>Nejsou dostupné žádné kategorie</option>
+              {% endif %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="budget-description" class="form-label">Poznámka</label>
+            <textarea class="form-control"
+                      id="budget-description"
+                      name="description"
+                      rows="3"
+                      placeholder="Zadejte poznámku k rozpočtu"></textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Vytvořit</button>
+          <button type="button" class="btn btn-primary" id="submit-budget-btn">Vytvořit</button>
         </div>
       </form>
     </div>

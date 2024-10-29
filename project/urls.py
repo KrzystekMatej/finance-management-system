@@ -26,5 +26,7 @@ urlpatterns = [
     path("logout/", views.logout_page, name="logout"),
     path("create-category/", views.create_category, name="create-category"),
     path("create-transaction/", views.create_transaction, name="create-transaction"),
+    path("create-budget/", views.create_budget, name="create-budget"),
     path("", views.main_page, name="main_page"),
+    path("budget/<int:budget_id>/", views.budget_view, name="budget_view"),
 ]

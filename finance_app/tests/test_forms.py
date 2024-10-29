@@ -16,11 +16,37 @@ class RegistrationFormTest(TestCase):
         form_data = {
             "username": "newuser",
             "email": "newuser@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
             "password1": "complexpassword123",
             "password2": "complexpassword123",
         }
         form = RegistrationForm(data=form_data)
         self.assertTrue(form.is_valid())
+
+    def test_registration_form_missing_first_name(self):
+        form_data = {
+            "username": "newuser",
+            "email": "newuser@example.com",
+            "last_name": "Doe",
+            "password1": "complexpassword123",
+            "password2": "complexpassword123",
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("first_name", form.errors)
+
+    def test_registration_form_missing_last_name(self):
+        form_data = {
+            "username": "newuser",
+            "email": "newuser@example.com",
+            "first_name": "John",
+            "password1": "complexpassword123",
+            "password2": "complexpassword123",
+        }
+        form = RegistrationForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("last_name", form.errors)
 
     def test_registration_form_invalid_email(self):
         get_user_model().objects.create(
@@ -28,7 +54,9 @@ class RegistrationFormTest(TestCase):
         )
         form_data = {
             "username": "newuser",
-            "email": "test@example.com",  # Tento email je již používán
+            "email": "test@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
             "password1": "complexpassword123",
             "password2": "complexpassword123",
         }
@@ -40,6 +68,8 @@ class RegistrationFormTest(TestCase):
         form_data = {
             "username": "newuser",
             "email": "newuser@example.com",
+            "first_name": "John",
+            "last_name": "Doe",
             "password1": "complexpassword123",
             "password2": "differentpassword",
         }
