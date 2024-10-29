@@ -1,5 +1,6 @@
 const createTransactionUrl = document.getElementById("transaction-modal").getAttribute("data-create-transaction-url");
 const createCategoryUrl = document.getElementById("custom-category-modal").getAttribute("data-create-category-url");
+const createBudgetUrl = document.getElementById("budget-modal").getAttribute("data-create-budget-url");
 
 document.getElementById("submit-transaction-btn").addEventListener("click", function () {
     const form = document.getElementById("create-transaction-form");
@@ -60,3 +61,30 @@ function closeCustomCategoryModal() {
     const previousModal = bootstrap.Modal.getInstance(document.getElementById('transaction-modal'));
     previousModal.show();
 }
+
+document.getElementById("submit-budget-btn").addEventListener("click", function () {
+    event.preventDefault();
+
+    const form = document.getElementById("create-budget-form");
+    const formData = new FormData(form);
+
+    fetch(createBudgetUrl, {
+        method: "POST",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
+        },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Rozpočet byl vytvořen!");
+            $('#budget-modal').modal('hide');
+            location.reload();
+        } else {
+            alert("Došlo k chybě při vytváření rozpočtu.");
+        }
+    })
+    .catch(error => console.error("Error:", error));
+});

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -7,13 +7,9 @@ from finance_app.forms import (
     LoginForm,
     CreateTransactionForm,
     CreateCategoryForm,
+    CreateBudgetForm,
 )
-from finance_app.models import (
-    Transaction,
-    UserProfile,
-    CategoryPreference,
-    Budget,
-)
+from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
 import logging
 
 logger = logging.getLogger(__name__)
@@ -41,10 +37,9 @@ def split_transactions_by_month(transactions):
     return monthly_summaries
 
 
-def get_monthly_summaries(request):
-    all_transactions = split_transactions_by_month(
-        Transaction.objects.filter(user_id=request.user.id)
-    )
+def get_monthly_summaries(request, all_transactions):
+    transactions_by_month = split_transactions_by_month(all_transactions)
+
     month_names = [
         "Leden",
         "Únor",
@@ -61,19 +56,46 @@ def get_monthly_summaries(request):
     ]
     monthly_summaries = []
 
-    for month_transactions in all_transactions:
+    for month_transactions in transactions_by_month:
         year = month_transactions[0].performed_at.year
         month = month_names[month_transactions[0].performed_at.month - 1]
-        income = sum(t.amount for t in month_transactions if t.amount >= 0)
-        expanses = sum(t.amount for t in month_transactions if t.amount < 0)
-        transactions = month_transactions
+
+        incoming_totals = {}
+        outcoming_totals = {}
+
+        for transaction in month_transactions:
+            amount = float(transaction.amount)
+            category_name = transaction.category.name
+            if amount >= 0:
+                if category_name not in incoming_totals:
+                    incoming_totals[category_name] = 0
+                incoming_totals[category_name] += amount
+            else:
+                if category_name not in outcoming_totals:
+                    outcoming_totals[category_name] = 0
+                outcoming_totals[category_name] += amount
+
+        aggregated_incoming = [
+            {"name": cat, "total": total} for cat, total in incoming_totals.items()
+        ]
+        aggregated_outcoming = [
+            {"name": cat, "total": total} for cat, total in outcoming_totals.items()
+        ]
+
+        total_income = sum(incoming_totals.values())
+        total_expenses = sum(abs(total) for total in outcoming_totals.values())
+
         monthly_summaries.append(
             {
                 "year": year,
                 "month": month,
-                "income": income,
-                "expanses": expanses,
-                "transactions": transactions,
+                "income": total_income,
+                "expanses": total_expenses,
+                "transactions": month_transactions,
+                "aggregated_data": {
+                    "incoming": aggregated_incoming,
+                    "outcoming": aggregated_outcoming,
+                },
             }
         )
 
@@ -83,7 +105,9 @@ def get_monthly_summaries(request):
 @login_required(login_url="login")
 def main_page(request):
     context = {
-        "monthly_summaries": get_monthly_summaries(request),
+        "monthly_summaries": get_monthly_summaries(
+            request, Transaction.objects.filter(user_id=request.user.id)
+        ),
         "categories": CategoryPreference.objects.filter(user=request.user),
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": Budget.objects.filter(owner=request.user),
@@ -106,11 +130,8 @@ def create_transaction(request):
         else:
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        form = CreateTransactionForm()
 
-    # TODO: optional - redirect to main page with transaction modal window
-    return redirect("main_page")
+    return JsonResponse({"success": False, "errors": "Invalid request method."})
 
 
 @login_required(login_url="login")
@@ -120,12 +141,41 @@ def create_category(request):
         if form.is_valid():
             category, preference = form.save()
             return JsonResponse({"success": True, "category_name": category.name})
-        return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        form = CreateCategoryForm()
+        else:
+            return JsonResponse({"success": False, "errors": form.errors})
 
-    # TODO: optional - redirect to main page with category modal window
-    return redirect("main_page")
+    return JsonResponse({"success": False, "errors": "Invalid request method."})
+
+
+@login_required(login_url="login")
+def create_budget(request):
+    if request.method == "POST":
+        form = CreateBudgetForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"success": True})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors})
+
+    return JsonResponse({"success": False, "errors": "Invalid request method."})
+
+
+@login_required(login_url="login")
+def budget_view(request, budget_id):
+    budget = get_object_or_404(Budget, id=budget_id, owner=request.user)
+
+    transactions_for_budget = Transaction.objects.filter(
+        user=request.user, category__in=budget.categories.all()
+    )
+
+    context = {
+        "monthly_summaries": get_monthly_summaries(request, transactions_for_budget),
+        "categories": CategoryPreference.objects.filter(user=request.user),
+        "user_profile": UserProfile.objects.get(user=request.user),
+        "budgets": Budget.objects.filter(owner=request.user),
+    }
+
+    return render(request, "main_page.html", context)
 
 
 def register_page(request):

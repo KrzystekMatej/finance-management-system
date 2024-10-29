@@ -66,7 +66,6 @@
 <div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
 {% include "modal_create_transaction.html" %}
 {% include "modal_create_category.html" %}
-{% include "modal_show_statistics.html" %}
 {% include "modal_create_budget.html" %}
 <div class="w-100 py-3 py-md-5 mobile-padding">
   <div class="row ps-4">
@@ -74,11 +73,15 @@
       <div class="py-md-0">
         <ul class="list-group">
           <li class="list-group-item border-0 color-bg-primary">
-            <button class="btn btn-primary w-100" href="#">Kompletní rozpočet</button>
+            <button class="btn btn-primary w-100"
+                    onclick="window.location.href='{% url 'main_page' %}'">Kompletní rozpočet</button>
           </li>
           {% for budget in budgets %}
             <li class="list-group-item border-0 color-bg-primary">
-              <button class="btn btn-primary w-100" href="#">{{ budget.name }}</button>
+              <button class="btn btn-primary w-100"
+                      onclick="window.location.href='{% url 'budget_view' budget_id=budget.id %}'">
+                {{ budget.name }}
+              </button>
             </li>
           {% endfor %}
           <li class="list-group-item border-0 color-bg-primary">
@@ -93,13 +96,22 @@
       </div>
     </div>
     <div class="col-md-2"></div>
-    <div class="col-md-10">
-      <div class="row w-90 container px-5">
-        {% for summary in monthly_summaries %}
-          {% include "monthly_summary.html" %}
-        {% endfor %}
+    <!-- This centers tutorial to screen if it's visible (md-2 md-8 md-2) -->
+    <!-- If it's not, it shows transactions with md-10 which is unaligned to screen -->
+    {% if monthly_summaries %}
+      <div class="col-md-10">
+        <div class="row w-90 container px-5">
+          {% for summary in monthly_summaries %}
+            {% include "monthly_summary.html" %}
+          {% endfor %}
+        </div>
       </div>
-    </div>
+    {% else %}
+      <div class="col-md-8">
+        <div class="row w-90 container px-5">{% include "tutorial.html" %}</div>
+      </div>
+      <div class="col-md-2"></div>
+    {% endif %}
   </div>
 </div>
 {% endblock content %}

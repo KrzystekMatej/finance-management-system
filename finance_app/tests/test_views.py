@@ -19,6 +19,8 @@ class RegisterPageTest(TestCase):
             {
                 "username": "newuser",
                 "email": "newuser@example.com",
+                "first_name": "John",
+                "last_name": "Doe",
                 "password1": "complexpassword123",
                 "password2": "complexpassword123",
             },
@@ -32,6 +34,8 @@ class RegisterPageTest(TestCase):
             {
                 "username": "newuser",
                 "email": "newuser@example.com",
+                "first_name": "John",
+                "last_name": "Doe",
                 "password1": "complexpassword123",
                 "password2": "differentpassword",
             },

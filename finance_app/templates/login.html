@@ -4,7 +4,7 @@
   Login
 {% endblock title %}
 {% block content %}
-  <div class="container y-50">
+  <div class="container max-height">
     <div class="row login-container align-items-center">
       <h2 class="text-center mb-4">Přihlásit se</h2>
       <form method="post">
@@ -35,7 +35,7 @@
         </div>
         <a href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
         <br>
-        <a href="{% url 'main_page' %}">DEBUG: Přeskočit přihlášení</a>
+        <br>
         <button type="submit" class="btn btn-primary w-100">Přihlásit</button>
       </form>
     </div>

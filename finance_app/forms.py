@@ -1,19 +1,31 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from finance_app.models import Transaction, Category, CategoryPreference
+from finance_app.models import Transaction, Category, CategoryPreference, Budget
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RegistrationForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, label="Jméno")
+    last_name = forms.CharField(max_length=30, required=True, label="Příjmení")
     email = forms.EmailField(required=True, label="Email")
 
     class Meta:
         model = get_user_model()
-        fields = ["username", "email", "password1", "password2"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        ]
         error_messages = {
             "username": {
                 "unique": gettext_lazy("Toto uživatelské jméno je již používáno."),
@@ -101,3 +113,35 @@ class CreateCategoryForm(forms.Form):
             preference.save()
 
         return self.category, preference
+
+
+class CreateBudgetForm(forms.ModelForm):
+    class Meta:
+        model = Budget
+        fields = [
+            "name",
+            "limit",
+            "period_start",
+            "period_end",
+            "description",
+            "categories",
+        ]
+
+    def __init__(self, *args, user=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean_period_end(self):
+        period_start = self.cleaned_data.get("period_start")
+        period_end = self.cleaned_data.get("period_end")
+        if period_end and period_start and period_end <= period_start:
+            raise ValidationError("Konec období musí být po začátku období.")
+        return period_end
+
+    def save(self, commit=True):
+        budget = super().save(commit=False)
+        budget.owner = self.user
+        if commit:
+            budget.save()
+            self.save_m2m()
+        return budget

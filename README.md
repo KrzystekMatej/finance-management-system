@@ -6,15 +6,20 @@ python -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py populate_db
 python manage.py runserver
 ```
 
 ## If project is already setup
 ```bash
 .\env\Scripts\activate
+python manage.py clear_db
 python manage.py migrate
+python manage.py populate_db
 python manage.py runserver
 ```
+
+If you have problems with database, you can try deleting the ```db.sqlite3``` file
 
 ## If you want to check the website on your phone
 1. Run server on 0.0.0.0:8000

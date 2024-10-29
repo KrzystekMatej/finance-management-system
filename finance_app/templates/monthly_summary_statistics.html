@@ -3,14 +3,17 @@
 <div class="summary-module parallax">
   <div class="summary-header">
     <div class="row width-100">
-      <div class="col-md-4 vert-center">
+      <div class="col-md-3 vert-center">
         <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
       </div>
-      <div class="col-md-4 vert-center">
-        <span class="income positive">+{{ summary.positive_income | spaced_number }} Kč</span>
+      <div class="col-md-3 vert-center">
+        <span class="month bold">Category</span>
       </div>
-      <div class="col-md-4 vert-center">
-        <span class="income negative">-{{ summary.negative_income | spaced_number }} Kč</span>
+      <div class="col-md-3 vert-center">
+        <span class="income positive">+{{ summary.income|spaced_number }} Kč</span>
+      </div>
+      <div class="col-md-3 vert-center">
+        <span class="income negative">-{{ summary.expanses|spaced_number }} Kč</span>
       </div>
     </div>
   </div>
@@ -18,21 +21,27 @@
     {% for transaction in summary.transactions %}
       <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
-          <div class="col-md-4 vert-center">
+          <div class="col-md-3 vert-center">
             <span class="transaction-date">{{ transaction.performed_at }}</span>
           </div>
-          <div class="col-md-4 vert-center">
+          <div class="col-md-3 vert-center">
             <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
-          <div class="col-md-4 vert-center">
-            <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
-              {% if transaction.amount > 0 %}
+          {% if transaction.amount > 0 %}
+            <div class="col-md-3 vert-center">
+              <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
                 +{{ transaction.amount|spaced_number }} Kč
-              {% else %}
+              </span>
+            </div>
+            <div class="col-md-3 vert-center"></div>
+          {% else %}
+            <div class="col-md-3 vert-center"></div>
+            <div class="col-md-3 vert-center">
+              <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
                 {{ transaction.amount|spaced_number }} Kč
-              {% endif %}
-            </span>
-          </div>
+              </span>
+            </div>
+          {% endif %}
         </div>
       </div>
     {% endfor %}
