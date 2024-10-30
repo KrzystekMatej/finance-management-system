@@ -3,16 +3,19 @@
 <div class="summary-module parallax">
   <div class="summary-header">
     <div class="row width-100">
-      <div class="col-md-3 vert-center">
+      <div class="col-md-2 vert-center">
         <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
       </div>
       <div class="col-md-3 vert-center">
-        <span class="month bold">Category</span>
+        <span class="month bold">Název transakce</span>
       </div>
-      <div class="col-md-3 vert-center">
+      <div class="col-md-2 vert-center">
+        <span class="month bold">Kategorie</span>
+      </div>
+      <div class="col-md-2 vert-center">
         <span class="income positive">+{{ summary.income|spaced_number }} Kč</span>
       </div>
-      <div class="col-md-3 vert-center">
+      <div class="col-md-2 vert-center">
         <span class="income negative">-{{ summary.expanses|spaced_number }} Kč</span>
       </div>
     </div>
@@ -21,25 +24,38 @@
     {% for transaction in summary.transactions %}
       <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
-          <div class="col-md-3 vert-center">
+          <div class="col-md-2 vert-center">
             <span class="transaction-date">{{ transaction.performed_at }}</span>
           </div>
           <div class="col-md-3 vert-center">
+            <span class="transaction-name">{{ transaction.name }}</span>
+          </div>
+          <div class="col-md-2 vert-center">
             <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
           {% if transaction.amount > 0 %}
-            <div class="col-md-3 vert-center">
+            <div class="col-md-2 vert-center">
               <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
                 +{{ transaction.amount|spaced_number }} Kč
               </span>
             </div>
-            <div class="col-md-3 vert-center"></div>
+            <div class="col-md-2 vert-center"></div>
+            <div class="col-md-1 vert-center">
+              <button type="button" class="btn btn-link" title="Detail transakce" data-bs-toggle="modal" data-bs-target="#edit-transaction-modal">
+                <i class="fas fa-ellipsis-h" style="color: var(--color-text-tertiary);"></i>
+              </button>
+            </div>
           {% else %}
-            <div class="col-md-3 vert-center"></div>
-            <div class="col-md-3 vert-center">
+            <div class="col-md-2 vert-center"></div>
+            <div class="col-md-2 vert-center">
               <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
                 {{ transaction.amount|spaced_number }} Kč
               </span>
+            </div>
+            <div class="col-md-1 vert-center">
+              <button type="button" class="btn btn-link" title="Detail transakce" data-bs-toggle="modal" data-bs-target="#edit-transaction-modal">
+                <i class="fas fa-ellipsis-h" style="color: var(--color-text-tertiary);"></i>
+              </button>
             </div>
           {% endif %}
         </div>

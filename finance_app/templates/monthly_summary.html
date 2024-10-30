@@ -34,7 +34,7 @@
           <div class="col-md-3 vert-center">
             <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
-          <div class="col-md-3 vert-center">
+          <div class="col-md-2 vert-center">
             <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
               {% if transaction.amount > 0 %}
                 +{{ transaction.amount|spaced_number }} Kč
@@ -42,6 +42,11 @@
                 {{ transaction.amount|spaced_number }} Kč
               {% endif %}
             </span>
+          </div>
+          <div class="col-md-1 vert-center">
+            <button type="button" class="btn btn-link" title="Detail transakce" data-bs-toggle="modal" data-bs-target="#edit-transaction-modal">
+              <i class="fas fa-ellipsis-h" style="color: var(--color-text-tertiary);"></i>
+            </button>
           </div>
         </div>
       </div>
