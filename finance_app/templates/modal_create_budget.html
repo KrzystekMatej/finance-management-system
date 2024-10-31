@@ -40,6 +40,9 @@
           <div class="mb-3">
             <label for="budget-to" class="form-label">Limit do</label>
             <input type="date" class="form-control" id="budget-to" name="period_end">
+            <div class="invalid-feedback">
+              Pokud chcete zadat limit, vyplňte všechna tři předešlá pole. Jinak je nechejte prázdná.
+            </div>
           </div>
           <div class="mb-3">
             <label for="budget-categories" class="form-label">Kategorie</label>
@@ -52,6 +55,7 @@
                 <option value="" disabled>Nejsou dostupné žádné kategorie</option>
               {% endif %}
             </select>
+            <div class="invalid-feedback">Musí být vybrána alespoň jedna kategorie.</div>
           </div>
           <div class="mb-3">
             <label for="budget-description" class="form-label">Poznámka</label>

@@ -43,3 +43,15 @@ body.dark-mode {
 .color-bg-secondary{
   background-color: var(--color-bg-secondary)
 }
+
+.icon-primary {
+  color: var(--color-text-primary)
+}
+
+.icon-secondary {
+  color: var(--color-text-secondary)
+}
+
+.icon-tertiary {
+  color: var(--color-text-tertiary);
+}
