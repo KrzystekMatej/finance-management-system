@@ -102,14 +102,6 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
     }
 });
 
-function closeCustomCategoryModal() {
-    const customCategoryModal = bootstrap.Modal.getInstance(document.getElementById('custom-category-modal'));
-    customCategoryModal.hide();
-    console.log("close custom")
-    const previousModal = bootstrap.Modal.getInstance(document.getElementById('transaction-modal'));
-    previousModal.show();
-}
-
 document.getElementById("submit-budget-btn").addEventListener("click", function (event) {
     event.preventDefault();
 

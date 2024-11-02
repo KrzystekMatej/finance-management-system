@@ -12,6 +12,14 @@ def to_number(value):
         return 0
 
 
+@register.filter
+def to_lowercase(value):
+    try:
+        return str(value).lower()
+    except (ValueError, AttributeError):
+        return value
+
+
 # Formats numbers with spaces as thousand separators
 @register.filter
 def spaced_number(value):
