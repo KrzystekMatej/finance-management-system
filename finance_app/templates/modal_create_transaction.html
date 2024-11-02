@@ -41,7 +41,7 @@
            the <input type="hidden"> element -->
           <div class="mb-3">
             <label for="transaction-amount" class="form-label">Částka (Kč)</label>
-            <input type="number"
+            <input type="decimal"
                    step="0.01"
                    class="form-control"
                    id="transaction-amount"
@@ -298,28 +298,35 @@
         const outcomingTransaction = document.getElementById("outcoming-transaction");
         let previousSigned = '';
         let previousAmount = '';
+        let previousChar = "";
         
+        // In case we end up using only integers, half of this can be removed
         function updateAmount() {
             let amount = amountInput.value;
+            let char = amount.slice(-1);
 
-            // TODO: Possibly add support for float
-            // Right now it won't accept ".", and then it will need to handle weird
-            // cases like "123.", which might need some checks on backend or before sending form
-            if (isNaN(amount) && amount.charAt(amount.length - 1) != ".") {
-                signedAmountInput.value = previousSigned;
+            if (isNaN(amount) && char != ".") {
                 amountInput.value = previousAmount;
                 return;
             }
 
+            if ((amount.match(/\./g) || []).length > 1){
+              amountInput.value = previousAmount;
+              return;
+            }
+
+            amount = parseFloat(amount);
+
+            // signed is the actual value that gets sent in form
             if (outcomingTransaction.checked) {
                 signedAmountInput.value = -Math.abs(amount);
             } else {
                 signedAmountInput.value = Math.abs(amount);
             }
 
-            amountInput.value = Math.abs(amount);
             previousSigned = signedAmountInput.value;
             previousAmount = amountInput.value;
+            previousChar = char;
         }
 
         amountInput.addEventListener("input", updateAmount);
