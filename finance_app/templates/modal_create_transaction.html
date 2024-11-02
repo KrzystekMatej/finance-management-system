@@ -299,7 +299,7 @@
         let previousSigned = '';
         let previousAmount = '';
         let previousChar = "";
-        
+
         // In case we end up using only integers, half of this can be removed
         function updateAmount() {
             let amount = amountInput.value;
@@ -310,9 +310,9 @@
                 return;
             }
 
-            if ((amount.match(/\./g) || []).length > 1){
-              amountInput.value = previousAmount;
-              return;
+            if ((amount.match(/\./g) || []).length > 1) {
+                amountInput.value = previousAmount;
+                return;
             }
 
             amount = parseFloat(amount);
