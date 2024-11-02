@@ -296,12 +296,18 @@
         const signedAmountInput = document.getElementById("signed-amount");
         const incomingTransaction = document.getElementById("incoming-transaction");
         const outcomingTransaction = document.getElementById("outcoming-transaction");
-
+        let previousSigned = '';
+        let previousAmount = '';
+        
         function updateAmount() {
-            let amount = parseFloat(amountInput.value);
+            let amount = amountInput.value;
 
-            if (isNaN(amount)) {
-                signedAmountInput.value = '';
+            // TODO: Possibly add support for float
+            // Right now it won't accept ".", and then it will need to handle weird
+            // cases like "123.", which might need some checks on backend or before sending form
+            if (isNaN(amount) && amount.charAt(amount.length - 1) != ".") {
+                signedAmountInput.value = previousSigned;
+                amountInput.value = previousAmount;
                 return;
             }
 
@@ -312,6 +318,8 @@
             }
 
             amountInput.value = Math.abs(amount);
+            previousSigned = signedAmountInput.value;
+            previousAmount = amountInput.value;
         }
 
         amountInput.addEventListener("input", updateAmount);
