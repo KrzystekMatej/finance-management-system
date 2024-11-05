@@ -26,14 +26,14 @@
                    id="incoming-transaction"
                    autocomplete="off"
                    checked>
-            <label class="transaction-toggle btn btn-primary" for="incoming-transaction">Příchozí transakce</label>
+            <label class="transaction-toggle btn btn-primary" for="incoming-transaction">Příjem</label>
             <input type="radio"
                    class="btn-check"
                    name="options"
                    id="outcoming-transaction"
                    autocomplete="off">
             <label class="transaction-toggle btn btn-primary"
-                   for="outcoming-transaction">Odchozí transakce</label>
+                   for="outcoming-transaction">Výdaj</label>
           </div>
           <!-- Visible Transaction Amount -->
           <!-- This value is effectively just for user, it only shows absolute value
@@ -76,7 +76,6 @@
               <button type="button"
                       class="btn btn-primary ms-2 width-100"
                       id="open-custom-category-modal">Vytvořit kategorii</button>
-              <!--<button type="button" class="btn btn-primary ms-2 width-100" data-bs-toggle="modal" data-bs-target="#custom-category-modal">Vytvořit novou kategorii</button>
             -->
             </div>
           </div>
@@ -110,8 +109,6 @@
               <label class="form-check-label no-select" for="recurrent-transaction">Rekurentní transakce</label>
             </div>
             <!-- Button to open the recurrence modal -->
-            <!--
-            <button type="button" class="btn btn-primary flex-grow-1" id="set-recurrence-btn" data-bs-toggle="modal" data-bs-target="#recurrence-modal" disabled>Nastavení rekurence</button>-->
             <button type="button"
                     class="btn btn-primary ms-2 flex-grow-1"
                     id="open-recurrence-modal"
@@ -141,7 +138,7 @@
                 id="close-custom-category-modal-top"
                 aria-label="Close"></button>
       </div>
-      <form id="create-category-form" method="post" action="">
+      <form id="create-category-form" method="post" action="" data-categories="{{ categories }}">
         {% csrf_token %}
         <div class="modal-body">
           <div class="mb-3">
@@ -164,8 +161,11 @@
           <button type="button"
                   class="btn btn-secondary"
                   id="close-custom-category-modal-bot">Close</button>
-          <button type="button" class="btn btn-primary" id="submit-category-btn">Uložit jako novou kategorii</button>
-        </div>
+          <button type="button" class="btn btn-primary" id="submit-category-btn"
+          data-create-transaction-url="{% url 'create-transaction' %}">
+          Uložit jako novou kategorii
+        </button>
+    </div>
       </form>
     </div>
   </div>
