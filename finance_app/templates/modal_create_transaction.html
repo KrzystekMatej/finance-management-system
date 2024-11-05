@@ -76,7 +76,7 @@
               <button type="button"
                       class="btn btn-primary ms-2 width-100"
                       id="open-custom-category-modal">Vytvořit kategorii</button>
-            -->
+              -->
             </div>
           </div>
           <!-- Transaction name -->
@@ -138,7 +138,10 @@
                 id="close-custom-category-modal-top"
                 aria-label="Close"></button>
       </div>
-      <form id="create-category-form" method="post" action="" data-categories="{{ categories }}">
+      <form id="create-category-form"
+            method="post"
+            action=""
+            data-categories="{{ categories }}">
         {% csrf_token %}
         <div class="modal-body">
           <div class="mb-3">
@@ -161,11 +164,11 @@
           <button type="button"
                   class="btn btn-secondary"
                   id="close-custom-category-modal-bot">Close</button>
-          <button type="button" class="btn btn-primary" id="submit-category-btn"
-          data-create-transaction-url="{% url 'create-transaction' %}">
-          Uložit jako novou kategorii
-        </button>
-    </div>
+          <button type="button"
+                  class="btn btn-primary"
+                  id="submit-category-btn"
+                  data-create-transaction-url="{% url 'create-transaction' %}">Uložit jako novou kategorii</button>
+        </div>
       </form>
     </div>
   </div>
