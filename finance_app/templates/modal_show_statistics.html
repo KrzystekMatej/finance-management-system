@@ -8,7 +8,7 @@
   <div class="modal-dialog modal-xxl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="statistics-modal-label">Statistika za měsíc {{ summary.month }}</h5>
+        <h5 class="modal-title" id="statistics-modal-label">Statistika za měsíc <b>{{ summary.month|to_lowercase }}</b></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -21,9 +21,14 @@
             <!-- PIE INCOMING -->
             <canvas id="summary-pie-incoming-{{ summary.month }}-{{ summary.year }}" width="400" height="400"></canvas>
 
+            {% if not summary.aggregated_data.incoming %}
+            V tomto měsíci nebyly žádné příchozí transakce
+            {% endif %}
+
             <script>
               document.addEventListener("DOMContentLoaded", function() {
-                const incomingCanvas = document.getElementById('summary-pie-incoming-{{ summary.month }}-{{ summary.year }}');
+
+                const incomingCanvas = document.getElementById('summary-pie-incoming-{{ summary.month }}-{{ summary.year }}');                
 
                 const incomingBackgroundColors = [
                 {% for data in summary.aggregated_data.incoming %}
@@ -52,6 +57,11 @@
                 if (incomingCanvas) {
                   const incoming = incomingCanvas.getContext('2d');
 
+                  if (incomingData.length === 0){
+                    // No transaction message will appear right where pie would be
+                    incomingCanvas.height = 200;
+                  }
+
                   new Chart(incoming, {
                     type: 'pie',
                     data: {
@@ -77,10 +87,14 @@
             <!-- PIE OUTCOMING -->
             <canvas id="summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}" width="400" height="400"></canvas>
             
+            {% if not summary.aggregated_data.outcoming %}
+            V tomto měsíci nebyly žádné odchozí transakce
+            {% endif %}
+
             <script>
               document.addEventListener("DOMContentLoaded", function() {
-                const outcomingCanvas = document.getElementById('summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}');
 
+                const outcomingCanvas = document.getElementById('summary-pie-outcoming-{{ summary.month }}-{{ summary.year }}');
                 const outcomingBackgroundColors = [
                 {% for data in summary.aggregated_data.outcoming %}
                     {% for category in categories %}
@@ -107,6 +121,11 @@
 
                 if (outcomingCanvas) {
                   const outcoming = outcomingCanvas.getContext('2d');
+
+                  if (outcomingData.length === 0){
+                    // No transaction message will appear right where pie would be
+                    outcomingCanvas.height = 200;
+                  }
 
                   new Chart(outcoming, {
                     type: 'pie',

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- CREATE NEW TRANSACTION MODAL -->
 <div class="modal fade"
      id="transaction-modal"
      data-create-transaction-url="{% url 'create-transaction' %}"
@@ -17,15 +18,37 @@
       <form id="create-transaction-form" method="post" action="">
         {% csrf_token %}
         <div class="modal-body">
-          <!-- Transaction amount -->
+          <!-- Incoming/Outgoing Toggle -->
+          <div class="mb-3 no-select d-flex justify-content-evenly align-items-center">
+            <input type="radio"
+                   class="btn-check"
+                   name="options"
+                   id="incoming-transaction"
+                   autocomplete="off"
+                   checked>
+            <label class="transaction-toggle btn btn-primary" for="incoming-transaction">Příjem</label>
+            <input type="radio"
+                   class="btn-check"
+                   name="options"
+                   id="outcoming-transaction"
+                   autocomplete="off">
+            <label class="transaction-toggle btn btn-primary"
+                   for="outcoming-transaction">Výdaj</label>
+          </div>
+          <!-- Visible Transaction Amount -->
+          <!-- This value is effectively just for user, it only shows absolute value
+           even with outcoming (negative) transactions. The real negative value is then sent using
+           the <input type="hidden"> element -->
           <div class="mb-3">
             <label for="transaction-amount" class="form-label">Částka (Kč)</label>
             <input type="decimal"
+                   step="0.01"
                    class="form-control"
                    id="transaction-amount"
-                   name="amount"
                    placeholder="Zadejte částku">
           </div>
+          <!-- Hidden Signed Amount to Send with Form -->
+          <input type="hidden" id="signed-amount" name="amount">
           <!-- Transaction date -->
           <div class="mb-3">
             <label for="transaction-date" class="form-label">Datum transakce</label>
@@ -52,8 +75,8 @@
               </select>
               <button type="button"
                       class="btn btn-primary ms-2 width-100"
-                      data-bs-toggle="modal"
-                      data-bs-target="#custom-category-modal">Vytvořit novou kategorii</button>
+                      id="open-custom-category-modal">Vytvořit kategorii</button>
+              -->
             </div>
           </div>
           <!-- Transaction name -->
@@ -87,11 +110,9 @@
             </div>
             <!-- Button to open the recurrence modal -->
             <button type="button"
-                    class="btn btn-primary flex-grow-1"
-                    id="set-recurrence-btn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#recurrence-modal"
-                    disabled>Nastavení rekurence</button>
+                    class="btn btn-primary ms-2 flex-grow-1"
+                    id="open-recurrence-modal"
+                    disabled>Nastavit rekurenci</button>
           </div>
         </div>
         <div class="modal-footer">
@@ -101,5 +122,218 @@
     </div>
   </div>
 </div>
-{% include "modal_create_category.html" %}
-{% include "modal_create_reccurent_transaction.html" %}
+<!-- CREATE NEW CATEGORY MODAL -->
+<div class="modal fade"
+     id="custom-category-modal"
+     data-create-category-url="{% url 'create-category' %}"
+     tabindex="-1"
+     aria-labelledby="custom-category-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="custom-category-modal-label">Vytvořit novou kategorii</h5>
+        <button type="button"
+                class="btn-close"
+                id="close-custom-category-modal-top"
+                aria-label="Close"></button>
+      </div>
+      <form id="create-category-form"
+            method="post"
+            action=""
+            data-categories="{{ categories }}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="custom-category-name" class="form-label">Název kategorie</label>
+            <input type="text"
+                   class="form-control"
+                   id="custom-category-name"
+                   name="name"
+                   placeholder="Zadejte název kategorie">
+          </div>
+          <div class="mb-3">
+            <label for="custom-category-color-input" class="form-label">Barva kategorie</label>
+            <input type="color"
+                   class="form-control"
+                   id="custom-category-color-input"
+                   name="color">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-secondary"
+                  id="close-custom-category-modal-bot">Close</button>
+          <button type="button"
+                  class="btn btn-primary"
+                  id="submit-category-btn"
+                  data-create-transaction-url="{% url 'create-transaction' %}">Uložit jako novou kategorii</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- CREATE NEW RECURRENT TRANSACTION MODAL -->
+<!DOCTYPE html>
+<div class="modal fade"
+     id="recurrence-modal"
+     tabindex="-1"
+     aria-labelledby="recurrence-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="recurrence-modal-label">Nastavit opakující se transakci</h5>
+        <button type="button"
+                class="btn-close"
+                id="close-recurrence-modal-top"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Recurrent transaction frequency -->
+        <div class="mb-3">
+          <label for="recurrence-frequency" class="form-label">Frekvence opakování</label>
+          <select class="form-select"
+                  id="recurrence-frequency-modal"
+                  name="recurrence_frequency"
+                  onchange="updateRecurrenceOptions()">
+            <option value="daily">Každý den</option>
+            <option value="weekly">Každý týden</option>
+            <option value="monthly">Každý měsíc</option>
+            <option value="yearly">Každý rok</option>
+          </select>
+        </div>
+        <!-- Weekly recurrence day selection -->
+        <div class="mb-3" id="weekly-options-modal">
+          <label for="weekly-day" class="form-label">Vyberte den v týdnu</label>
+          <select class="form-select" id="weekly-day" name="weekly_day">
+            <option value="monday">Pondělí</option>
+            <option value="tuesday">Úterý</option>
+            <option value="wednesday">Středa</option>
+            <option value="thursday">Čtvrtek</option>
+            <option value="friday">Pátek</option>
+            <option value="saturday">Sobota</option>
+            <option value="sunday">Neděle</option>
+          </select>
+        </div>
+        <!-- Monthly recurrence day selection -->
+        <div class="mb-3" id="monthly-options-modal">
+          <label for="monthly-day" class="form-label">Vyberte den v měsíci</label>
+          <input type="number"
+                 class="form-control"
+                 id="monthly-day"
+                 name="monthly_day"
+                 min="1"
+                 value="15"
+                 max="27"
+                 placeholder="Zadejte den v měsíci">
+        </div>
+        <!-- Yearly recurrence date selection -->
+        <div class="mb-3" id="yearly-options-modal">
+          <label for="yearly-date" class="form-label">Vyberte datum</label>
+          <input type="date" class="form-control" id="yearly-date" name="yearly_date">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+                class="btn btn-secondary"
+                id="close-recurrence-modal-bot">Close</button>
+        <button type="button"
+                class="btn btn-primary"
+                onclick="saveRecurrenceSettings()">Uložit nastavení</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const transactionModal = new bootstrap.Modal(document.getElementById('transaction-modal'));
+        const customCategoryModal = new bootstrap.Modal(document.getElementById('custom-category-modal'));
+        const recurrenceModal = new bootstrap.Modal(document.getElementById('recurrence-modal'));
+
+        document.getElementById('open-custom-category-modal').addEventListener('click', function() {
+            transactionModal.hide();
+            customCategoryModal.show();
+        });
+
+        document.getElementById('open-recurrence-modal').addEventListener('click', function() {
+            transactionModal.hide();
+            recurrenceModal.show();
+        });
+
+        // Go back to previous modal by clicking X button on top right
+        document.getElementById('close-custom-category-modal-top').addEventListener('click', function() {
+            customCategoryModal.hide();
+            transactionModal.show();
+        });
+        document.getElementById('close-recurrence-modal-top').addEventListener('click', function() {
+            recurrenceModal.hide();
+            transactionModal.show();
+        });
+
+        // Go back to previous modal by clicking close button on bottom of modal
+        document.getElementById('close-custom-category-modal-bot').addEventListener('click', function() {
+            customCategoryModal.hide();
+            transactionModal.show();
+        });
+        document.getElementById('close-recurrence-modal-bot').addEventListener('click', function() {
+            recurrenceModal.hide();
+            transactionModal.show();
+        });
+
+        // Go back to previous modal by clicking outside of the modal
+        document.getElementById('custom-category-modal').addEventListener('hidden.bs.modal', function() {
+            transactionModal.show();
+        });
+        document.getElementById('recurrence-modal').addEventListener('hidden.bs.modal', function() {
+            transactionModal.show();
+        });
+    });
+
+
+    // Update value in form depending whether it's incoming or outcoming transaction
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const amountInput = document.getElementById("transaction-amount");
+        const signedAmountInput = document.getElementById("signed-amount");
+        const incomingTransaction = document.getElementById("incoming-transaction");
+        const outcomingTransaction = document.getElementById("outcoming-transaction");
+        let previousSigned = '';
+        let previousAmount = '';
+        let previousChar = "";
+
+        function updateAmount() {
+            let amount = amountInput.value;
+            let char = amount.slice(-1);
+
+            if (isNaN(amount) && char != ".") {
+                amountInput.value = previousAmount;
+                return;
+            }
+
+            if ((amount.match(/\./g) || []).length > 1) {
+                amountInput.value = previousAmount;
+                return;
+            }
+
+            amount = parseFloat(amount);
+
+            // signed is the actual value that gets sent in form
+            if (outcomingTransaction.checked) {
+                signedAmountInput.value = -Math.abs(amount);
+            } else {
+                signedAmountInput.value = Math.abs(amount);
+            }
+
+            previousSigned = signedAmountInput.value;
+            previousAmount = amountInput.value;
+            previousChar = char;
+        }
+
+        amountInput.addEventListener("input", updateAmount);
+        incomingTransaction.addEventListener("change", updateAmount);
+        outcomingTransaction.addEventListener("change", updateAmount);
+
+    });
+</script>

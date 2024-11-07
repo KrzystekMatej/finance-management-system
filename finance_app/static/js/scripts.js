@@ -105,20 +105,26 @@ function showNotification(message) {
 
 document.getElementById('recurrent-transaction').addEventListener('change', function () {
   const recurrenceOptions = document.getElementById('recurrence-options');
-  recurrenceOptions.style.display = this.checked ? 'block' : 'none';
+  if (recurrenceOptions){
+    recurrenceOptions.style.display = this.checked ? 'block' : 'none';
+  }
 });
 
-document.getElementById('recurrence-frequency').addEventListener('change', function () {
+document.getElementById('recurrence-frequency-modal').addEventListener('change', function () {
   const weeklyOptions = document.getElementById('weekly-options');
   const monthlyOptions = document.getElementById('monthly-options');
   
   // Reset options display
-  weeklyOptions.style.display = 'none';
-  monthlyOptions.style.display = 'none';
+  if (weeklyOptions){
+    weeklyOptions.style.display = 'none';
+  }
+  if (monthlyOptions){
+    monthlyOptions.style.display = 'none';
+  } 
 
-  if (this.value === 'weekly') {
+  if (this.value === 'weekly' && weeklyOptions) {
     weeklyOptions.style.display = 'block';
-  } else if (this.value === 'monthly') {
+  } else if (this.value === 'monthly' && monthlyOptions) {
     monthlyOptions.style.display = 'block';
   }
 });
@@ -154,7 +160,7 @@ function closeRecurrenceModal() {
 
 function toggleRecurrenceModal() {
   const isChecked = document.getElementById('recurrent-transaction').checked;
-  const setRecurrenceButton = document.getElementById('set-recurrence-btn');
+  const setRecurrenceButton = document.getElementById('open-recurrence-modal');
   
   setRecurrenceButton.disabled = !isChecked;
 }

@@ -14,3 +14,27 @@
   height: 100%;
 }
 
+    .transaction-toggle {
+      transition: background-color 0.3s, border-color 0.3s;
+      color: var(--color-text-primary);
+  }
+
+  #incoming-transaction:checked + .transaction-toggle {
+      background-color: green;
+      border-color: green;
+  }
+
+  #outcoming-transaction:checked + .transaction-toggle {
+      background-color: red;
+      border-color: red;
+  }
+
+    #incoming-transaction + .transaction-toggle {
+      background-color: rgb(180, 255, 180);
+      border-color: rgb(180, 255, 180)
+  }
+
+  #outcoming-transaction + .transaction-toggle {
+      background-color: rgb(255, 180, 180);
+      border-color: rgb(255, 180, 180);
+  }

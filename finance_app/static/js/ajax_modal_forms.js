@@ -92,7 +92,8 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
         .then(data => {
             if (data.success) {
                 alert("Kategorie byla vytvořena!");
-                closeCustomCategoryModal()
+                console.log(data);
+                //const form = document.getElementById("create-category-form").getAttribute("data-create-budget-url");
                 location.reload(); // ToDo: close only the category modal and show updated transaction modal
             } else {
                 alert("Došlo k chybě při vytváření kategorie.");
@@ -101,14 +102,6 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
         .catch(error => console.error("Error:", error));
     }
 });
-
-function closeCustomCategoryModal() {
-    const customCategoryModal = bootstrap.Modal.getInstance(document.getElementById('custom-category-modal'));
-    customCategoryModal.hide();
-    console.log("close custom")
-    const previousModal = bootstrap.Modal.getInstance(document.getElementById('transaction-modal'));
-    previousModal.show();
-}
 
 document.getElementById("submit-budget-btn").addEventListener("click", function (event) {
     event.preventDefault();
