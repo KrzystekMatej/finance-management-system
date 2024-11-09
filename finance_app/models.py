@@ -49,7 +49,6 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, db_index=True)
     is_default = models.BooleanField(default=False)
 
-
 class CategoryPreference(models.Model):
     color = models.CharField(max_length=7)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
