@@ -16,13 +16,41 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from finance_app import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("login/", views.login_page, name="login"),
     path("admin/", admin.site.urls),
     path("register/", views.register_page, name="register"),
+    path(
+        "password-reset/",
+        auth_views.PasswordResetView.as_view(template_name="password_reset_form.html"),
+        name="password_reset",
+    ),
+    path(
+        "password-reset-done/",
+        auth_views.PasswordResetDoneView.as_view(
+            template_name="password_reset_done.html"
+        ),
+        name="password_reset_done",
+    ),
+    path(
+        "password-reset-confirm/<uidb64>/<token>/",
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name="password_reset_confirm.html"
+        ),
+        name="password_reset_confirm",
+    ),
+    path(
+        "password-reset-complete/",
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name="password_reset_complete.html"
+        ),
+        name="password_reset_complete",
+    ),
+    path("verification/", include("verify_email.urls")),
     path("logout/", views.logout_page, name="logout"),
     path("create-category/", views.create_category, name="create-category"),
     path("create-transaction/", views.create_transaction, name="create-transaction"),
