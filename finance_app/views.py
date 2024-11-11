@@ -56,7 +56,7 @@ def get_monthly_summaries(request, all_transactions):
         "Prosinec",
     ]
     monthly_summaries = []
-    
+
     category_preferences = CategoryPreference.objects.filter(user=request.user)
     color_map = {pref.category_id: pref.color for pref in category_preferences}
 
@@ -71,9 +71,9 @@ def get_monthly_summaries(request, all_transactions):
             amount = float(transaction.amount)
             category_name = transaction.category.name
             category_id = transaction.category.id if transaction.category else None
-            
+
             transaction.category_color = color_map.get(category_id, "#fff")
-            
+
             if amount >= 0:
                 if category_name not in incoming_totals:
                     incoming_totals[category_name] = 0
