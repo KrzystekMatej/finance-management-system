@@ -18,7 +18,10 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
     }
 
     const dateField = document.getElementById("transaction-date");
-    if (!dateField.value) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDate = new Date(dateField.value);
+    if (!dateField.value || selectedDate > today) {
         dateField.classList.add("is-invalid");
         isValid = false;
     } else {

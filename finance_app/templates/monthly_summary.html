@@ -31,7 +31,8 @@
           <div class="col-md-3 vert-center">
             <span class="transaction.title">{{ transaction.name }}</span>
           </div>
-          <div class="col-md-3 vert-center">
+          <div class="col-md-3 vert-center display-flex">
+            <div class="color-box" style="background-color: {{ transaction.category_color }}; width: 20px; height: 20px; margin-right: 10px; border-radius: 5px;"></div>
             <span class="transaction-source">{{ transaction.category.name }}</span>
           </div>
           <div class="col-md-2 vert-center">

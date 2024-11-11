@@ -46,6 +46,7 @@
                    class="form-control"
                    id="transaction-amount"
                    placeholder="Zadejte částku">
+            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
           </div>
           <!-- Hidden Signed Amount to Send with Form -->
           <input type="hidden" id="signed-amount" name="amount">
@@ -56,11 +57,12 @@
                    class="form-control"
                    id="transaction-date"
                    name="performed_at">
+            <div class="invalid-feedback">Je třeba zadat datum, nelze vybrat datum v budoucnosti.</div>
           </div>
           <!-- Transaction category -->
           <div class="mb-3">
             <label for="transaction-category" class="form-label">Kategorie</label>
-            <div class="d-flex">
+            <div class="d-flex flex-column gap-1">
               <select class="form-select" id="transaction-category" name="category">
                 <option value="" disabled selected>Vyber si kategorii</option>
                 <!-- Default option -->
@@ -74,8 +76,9 @@
                 {% endif %}
               </select>
               <button type="button"
-                      class="btn btn-primary ms-2 width-100"
+                      class="btn btn-primary width-100"
                       id="open-custom-category-modal">Vytvořit kategorii</button>
+              <div class="invalid-feedback">Je třeba vybrat jednu kategorii.</div>
             </div>
           </div>
           <!-- Transaction name -->
@@ -86,6 +89,7 @@
                    id="transaction-name"
                    name="name"
                    placeholder="Zadejte název transakce">
+            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
           </div>
           <!-- Transaction description -->
           <div class="mb-3">
@@ -150,6 +154,7 @@
                    id="custom-category-name"
                    name="name"
                    placeholder="Zadejte název kategorie">
+            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
           </div>
           <div class="mb-3">
             <label for="custom-category-color-input" class="form-label">Barva kategorie</label>
