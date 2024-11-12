@@ -101,14 +101,18 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
         .then(data => {
             if (data.success) {
                 alert("Kategorie byla vytvořena!");
-                const newCategory = data.category_preference;
+                const newCategoryPreference = data.category_preference;
                 const categorySelect = document.getElementById("transaction-category-select");
                 const newOption = document.createElement("option");
-                newOption.value = newCategory.category.id;
-                newOption.textContent = newCategory.category.name;
+                newOption.value = newCategoryPreference.category.id;
+                newOption.textContent = newCategoryPreference.category.name;
                 categorySelect.appendChild(newOption);
-                console.log(newCategory)
+                console.log(newCategoryPreference)
                 document.getElementById("close-custom-category-modal-top").click();
+
+                document.getElementById('transaction-modal').addEventListener('shown.bs.modal', function () {
+                    categorySelect.value = newCategoryPreference.category.id;
+                }, { once: true });
             } else {
                 alert("Došlo k chybě při vytváření kategorie.");
             }

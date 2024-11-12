@@ -145,7 +145,9 @@ def create_category(request):
         if form.is_valid():
             preference = form.save()
             preference_data = CategoryPreferenceSerializer(preference).data
-            return JsonResponse({"success": True, "category_preference": preference_data})
+            return JsonResponse(
+                {"success": True, "category_preference": preference_data}
+            )
         else:
             return JsonResponse({"success": False, "errors": form.errors})
 
