@@ -12,6 +12,7 @@ from finance_app.forms import (
 from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
 import logging
 from .serializers import CategoryPreferenceSerializer
+from verify_email.email_handler import ActivationMailManager
 
 logger = logging.getLogger(__name__)
 
