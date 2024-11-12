@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "livereload",
     "finance_app",
+    "verify_email.apps.VerifyEmailConfig",
 ]
 
 MIDDLEWARE = [
@@ -104,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Prague"
 
 USE_I18N = True
 USE_L10N = True
@@ -113,9 +114,9 @@ LANGUAGE_CODE = "cs"
 
 USE_TZ = True
 
-LOGIN_URL = "/login/"
+LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/login/"
+LOGOUT_REDIRECT_URL = "login"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -142,3 +143,14 @@ LOGGING = {
         },
     },
 }
+# Email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "systemfinance5@gmail.com"
+EMAIL_HOST_PASSWORD = "uvef josg edpi vcwa"
+
+# Verification - maybe not required
+DEFAULT_DOMAIN = "https://127.0.0.1:8000/"
+DOMAIN = "127.0.0.1:8000"

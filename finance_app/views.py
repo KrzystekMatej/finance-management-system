@@ -190,7 +190,14 @@ def register_page(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            inactive_user = form.save(commit=False)
+            inactive_user.is_active = False
+            inactive_user.save()
+
+            # Send verification email with the correct domain and full URL
+            ActivationMailManager.send_verification_link(
+                inactive_user=inactive_user, form=form, request=request
+            )
             return redirect("login")
     else:
         form = RegistrationForm()
