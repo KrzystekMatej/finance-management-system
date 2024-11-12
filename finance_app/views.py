@@ -11,6 +11,7 @@ from finance_app.forms import (
 )
 from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
 import logging
+from .serializers import CategoryPreferenceSerializer
 from verify_email.email_handler import ActivationMailManager
 
 logger = logging.getLogger(__name__)
@@ -105,11 +106,14 @@ def get_monthly_summaries(request, all_transactions):
 
 @login_required(login_url="login")
 def main_page(request):
+    categories = CategoryPreference.objects.filter(user=request.user)
+
     context = {
         "monthly_summaries": get_monthly_summaries(
             request, Transaction.objects.filter(user_id=request.user.id)
         ),
-        "categories": CategoryPreference.objects.filter(user=request.user),
+        "categories": categories,
+        "categories_json": CategoryPreferenceSerializer(categories, many=True).data,
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": Budget.objects.filter(owner=request.user),
     }
@@ -140,8 +144,11 @@ def create_category(request):
     if request.method == "POST":
         form = CreateCategoryForm(request.POST, user=request.user)
         if form.is_valid():
-            category, preference = form.save()
-            return JsonResponse({"success": True, "category_name": category.name})
+            preference = form.save()
+            preference_data = CategoryPreferenceSerializer(preference).data
+            return JsonResponse(
+                {"success": True, "category_preference": preference_data}
+            )
         else:
             return JsonResponse({"success": False, "errors": form.errors})
 

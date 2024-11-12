@@ -8,7 +8,7 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
     const form = document.getElementById("create-transaction-form");
     const formData = new FormData(form);
     let isValid = true;
-
+    // ToDo - messages
     const amountField = document.getElementById("transaction-amount");
     if (!amountField.value || isNaN(amountField.value)) {
         amountField.classList.add("is-invalid");
@@ -22,10 +22,19 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
         dateField.classList.add("is-invalid");
         isValid = false;
     } else {
-        dateField.classList.remove("is-invalid");
+        const inputDate = new Date(dateField.value);
+        const currentDate = new Date();
+
+        if (inputDate > currentDate) {
+            dateField.classList.add("is-invalid");
+            isValid = false;
+            // ToDo - message - "Datum a čas transakce nesmí být v budoucnosti."
+        } else {
+            dateField.classList.remove("is-invalid");
+        }
     }
 
-    const categoryField = document.getElementById("transaction-category");
+    const categoryField = document.getElementById("transaction-category-select");
     if (!categoryField.value) {
         categoryField.classList.add("is-invalid");
         isValid = false;
@@ -92,9 +101,18 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
         .then(data => {
             if (data.success) {
                 alert("Kategorie byla vytvořena!");
-                console.log(data);
-                //const form = document.getElementById("create-category-form").getAttribute("data-create-budget-url");
-                location.reload(); // ToDo: close only the category modal and show updated transaction modal
+                const newCategoryPreference = data.category_preference;
+                const categorySelect = document.getElementById("transaction-category-select");
+                const newOption = document.createElement("option");
+                newOption.value = newCategoryPreference.category.id;
+                newOption.textContent = newCategoryPreference.category.name;
+                categorySelect.appendChild(newOption);
+                console.log(newCategoryPreference)
+                document.getElementById("close-custom-category-modal-top").click();
+
+                document.getElementById('transaction-modal').addEventListener('shown.bs.modal', function () {
+                    categorySelect.value = newCategoryPreference.category.id;
+                }, { once: true });
             } else {
                 alert("Došlo k chybě při vytváření kategorie.");
             }
