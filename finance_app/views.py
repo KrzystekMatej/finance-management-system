@@ -121,6 +121,14 @@ def main_page(request):
     return render(request, "main_page.html", context)
 
 
+def delete_transaction(request, transaction_id):
+    if request.method == "POST":
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+        transaction.delete()
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False}, status=400)
+
+
 @login_required(login_url="login")
 def create_transaction(request):
     if request.method == "POST":

@@ -186,3 +186,43 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
         .catch(error => console.error("Error:", error));
     }
 });
+
+  // Delete transaction
+  $(document).ready(function() {
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  $('.delete-transaction').on('click', function() {
+    const transactionId = $(this).data('transaction-id');
+    if (confirm('Are you sure you want to delete this transaction?')) {
+      $.ajax({
+        url: `/delete-transaction/${transactionId}/`,
+        type: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        success: function(response) {
+          if (response.success) {
+            alert('Transaction deleted successfully.');
+            // Optionally reload the page or remove the deleted element
+            location.reload();
+          }
+        },
+        error: function(xhr) {
+          console.error('An error occurred while deleting the transaction.');
+        }
+      });
+    }
+  });
+});

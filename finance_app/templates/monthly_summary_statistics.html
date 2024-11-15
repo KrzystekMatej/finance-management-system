@@ -4,19 +4,22 @@
   <div class="summary-header">
     <div class="row width-100">
       <div class="col-md-2 vert-center">
-        <span class="month bold">{{ summary.month }} {{ summary.year }}</span>
+        <span class="month bold truncate-text"
+              title="{{ summary.month }} {{ summary.year }}">{{ summary.month }} {{ summary.year }}</span>
       </div>
       <div class="col-md-3 vert-center">
-        <span class="month bold">Název transakce</span>
+        <span class="month bold truncate-text" title="Název transakce">Název transakce</span>
       </div>
       <div class="col-md-2 vert-center">
-        <span class="month bold">Kategorie</span>
+        <span class="month bold truncate-text" title="Kategorie">Kategorie</span>
       </div>
       <div class="col-md-2 vert-center">
-        <span class="income positive">+{{ summary.income|spaced_number }} Kč</span>
+        <span class="income positive truncate-text"
+              title="+{{ summary.income|spaced_number }} Kč">+{{ summary.income|spaced_number }} Kč</span>
       </div>
       <div class="col-md-2 vert-center">
-        <span class="income negative">-{{ summary.expanses|spaced_number }} Kč</span>
+        <span class="income negative truncate-text"
+              title="-{{ summary.income|spaced_number }} Kč">-{{ summary.expanses|spaced_number }} Kč</span>
       </div>
     </div>
   </div>
@@ -25,19 +28,23 @@
       <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
           <div class="col-md-2 vert-center">
-            <span class="transaction-date">{{ transaction.performed_at }}</span>
+            <span class="transaction-date truncate-text"
+                  title="{{ transaction.performed_at }}">{{ transaction.performed_at }}</span>
           </div>
           <div class="col-md-3 vert-center">
-            <span class="transaction-name">{{ transaction.name }}</span>
+            <span class="transaction-name truncate-text" title="{{ transaction.name }}">{{ transaction.name }}</span>
           </div>
           <div class="col-md-2 vert-center">
-            <span class="transaction-source">{{ transaction.category.name }}</span>
+            <span class="transaction-source truncate-text"
+                  title="{{ transaction.category.name }}">{{ transaction.category.name }}</span>
           </div>
           {% if transaction.amount > 0 %}
             <div class="col-md-2 vert-center">
-              <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
-                +{{ transaction.amount|spaced_number }} Kč
-              </span>
+              {% if transaction.amount > 0 %}
+                <span class="transaction-amount positive truncate-text">+{{ transaction.amount|spaced_number }} Kč</span>
+              {% else %}
+                <span class="transaction-amount negative truncate-text">{{ transaction.amount|spaced_number }} Kč</span>
+              {% endif %}
             </div>
             <div class="col-md-2 vert-center"></div>
             <div class="col-md-1 vert-center">
@@ -63,6 +70,12 @@
                       data-bs-toggle="modal"
                       data-bs-target="#edit-transaction-modal">
                 <i class="fas fa-ellipsis-h icon-tertiary"></i>
+              </button>
+              <button type="button"
+                      class="btn btn-link delete-transaction"
+                      data-transaction-id="{{ transaction.id }}"
+                      title="Delete Transaction">
+                <i class="fas fa-trash-alt icon-tertiary"></i>
               </button>
             </div>
           {% endif %}

@@ -13,6 +13,7 @@ python manage.py runserver
 ## If project is already setup
 ```bash
 .\env\Scripts\activate
+del db.sqlite3
 python manage.py clear_db
 python manage.py migrate
 python manage.py populate_db
