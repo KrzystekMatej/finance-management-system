@@ -207,20 +207,20 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
 
   $('.delete-transaction').on('click', function() {
     const transactionId = $(this).data('transaction-id');
-    if (confirm('Are you sure you want to delete this transaction?')) {
+    if (confirm('Opravdu chcete smazat tuhle transakci?')) {
       $.ajax({
         url: `/delete-transaction/${transactionId}/`,
         type: 'POST',
         headers: { 'X-CSRFToken': csrftoken },
         success: function(response) {
           if (response.success) {
-            alert('Transaction deleted successfully.');
-            // Optionally reload the page or remove the deleted element
+            alert('Transakce smazána. Obnovuji stránku [TODO livereload?]');
+            // TODO: Livereload
             location.reload();
           }
         },
         error: function(xhr) {
-          console.error('An error occurred while deleting the transaction.');
+          console.error('Nastala chyba při mazání transakce.');
         }
       });
     }

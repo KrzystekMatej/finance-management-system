@@ -40,45 +40,35 @@
           </div>
           {% if transaction.amount > 0 %}
             <div class="col-md-2 vert-center">
-              {% if transaction.amount > 0 %}
-                <span class="transaction-amount positive truncate-text">+{{ transaction.amount|spaced_number }} Kč</span>
-              {% else %}
-                <span class="transaction-amount negative truncate-text">{{ transaction.amount|spaced_number }} Kč</span>
-              {% endif %}
+              <span class="transaction-amount positive truncate-text"
+                    title="+{{ transaction.amount|spaced_number }} Kč">
+                +{{ transaction.amount|spaced_number }} Kč
+              </span>
             </div>
             <div class="col-md-2 vert-center"></div>
-            <div class="col-md-1 vert-center">
-              <button type="button"
-                      class="btn btn-link"
-                      title="Detail transakce"
-                      data-bs-toggle="modal"
-                      data-bs-target="#edit-transaction-modal">
-                <i class="fas fa-ellipsis-h icon-tertiary"></i>
-              </button>
-            </div>
           {% else %}
             <div class="col-md-2 vert-center"></div>
             <div class="col-md-2 vert-center">
-              <span class="transaction-amount {% if transaction.amount > 0 %}positive{% else %}negative{% endif %}">
-                {{ transaction.amount|spaced_number }} Kč
-              </span>
-            </div>
-            <div class="col-md-1 vert-center">
-              <button type="button"
-                      class="btn btn-link"
-                      title="Detail transakce"
-                      data-bs-toggle="modal"
-                      data-bs-target="#edit-transaction-modal">
-                <i class="fas fa-ellipsis-h icon-tertiary"></i>
-              </button>
-              <button type="button"
-                      class="btn btn-link delete-transaction"
-                      data-transaction-id="{{ transaction.id }}"
-                      title="Delete Transaction">
-                <i class="fas fa-trash-alt icon-tertiary"></i>
-              </button>
+              <span class="transaction-amount negative truncate-text"
+                    title="{{ transaction.amount|spaced_number }} Kč">{{ transaction.amount|spaced_number }} Kč</span>
             </div>
           {% endif %}
+          <div class="col-md-1 vert-center">
+            <button type="button"
+                    class="btn btn-link"
+                    title="Detail transakce"
+                    data-bs-toggle="modal"
+                    data-bs-target="#edit-transaction-modal"
+                    data-transaction-id="{{ transaction.id }}">
+              <i class="fas fa-ellipsis-h icon-tertiary"></i>
+            </button>
+            <button type="button"
+                    class="btn btn-link delete-transaction"
+                    data-transaction-id="{{ transaction.id }}"
+                    title="Smazat transakci">
+              <i class="fas fa-trash-alt icon-tertiary"></i>
+            </button>
+          </div>
         </div>
       </div>
     {% endfor %}

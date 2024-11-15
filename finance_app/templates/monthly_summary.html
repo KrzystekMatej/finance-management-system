@@ -53,15 +53,17 @@
           </div>
           <div class="col-md-1 vert-center">
             <button type="button"
-                    class="btn btn-link edit-transaction"
-                    data-transaction-id="{{ transaction.id }}"
-                    title="Edit Transaction">
-              <i class="fas fa-edit icon-tertiary"></i>
+                    class="btn btn-link"
+                    title="Detail transakce"
+                    data-bs-toggle="modal"
+                    data-bs-target="#edit-transaction-modal"
+                    data-transaction-id="{{ transaction.id }}">
+              <i class="fas fa-ellipsis-h icon-tertiary"></i>
             </button>
             <button type="button"
                     class="btn btn-link delete-transaction"
                     data-transaction-id="{{ transaction.id }}"
-                    title="Delete Transaction">
+                    title="Smazat transakci">
               <i class="fas fa-trash-alt icon-tertiary"></i>
             </button>
           </div>
