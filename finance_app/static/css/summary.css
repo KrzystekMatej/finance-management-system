@@ -58,15 +58,10 @@
 .transaction {
   display: flex;
   justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: 1px solid var(--color-secondary);
+  flex: 1;
 }
 
-.transaction:last-child {
-  border-bottom: none;
-}
-
-.transaction-date, .transaction-source, .transaction-amount {
+.transaction-date, .transaction-category, .transaction-amount {
   flex: 1;
 }
 
