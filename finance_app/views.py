@@ -206,7 +206,7 @@ def register_page(request):
             ActivationMailManager.send_verification_link(
                 inactive_user=inactive_user, form=form, request=request
             )
-            return redirect("login")
+            return render(request, "register_success.html")
     else:
         form = RegistrationForm()
 
