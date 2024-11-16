@@ -26,7 +26,7 @@ class RegisterPageTest(TestCase):
             },
         )
         # self.assertRedirects(response, reverse("login"))
-        # Functionality changed, now it renders registration_success.html instead of 
+        # Functionality changed, now it renders registration_success.html instead of
         # just redirecting to login
         self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
 
