@@ -60,19 +60,23 @@
 }
 
 .spacer-left{
-  margin-left: 12px;
+  margin-left: 10px;
 }
 
 .spacer-right{
-  margin-right: 12px;
+  margin-right: 10px;
+}
+
+.small-spacer-right{
+  margin-right: 4px;
 }
 
 .spacer-top{
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 .spacer-bottom{
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .max-height{
@@ -83,4 +87,12 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.opacity-half {
+  opacity: 0.5;
+}
+
+.opacity-full {
+  opacity: 1.0;
 }

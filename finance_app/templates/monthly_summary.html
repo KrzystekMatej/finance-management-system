@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 {% load custom_filters %}
-<div class="summary-module parallax">
-  <div class="summary-header">
+<div class="summary-module spacer-bottom">
+
+  <!-- First header containing summed up data about month -->
+  <div class="summary-meta horizontal-line">
     <div class="row width-100">
       <div class="col-md-3 vert-center">
         <span class="month bold truncate-text"
               title="{{ summary.month }} {{ summary.year }}">{{ summary.month }} {{ summary.year }}</span>
       </div>
       <div class="col-md-3 vert-center">
-        <span class="income positive truncate-text"
+        <span class="income bold positive truncate-text"
               title="+{{ summary.income | spaced_number }} Kč">+{{ summary.income | spaced_number }} Kč</span>
       </div>
       <div class="col-md-3 vert-center">
-        <span class="income negative truncate-text"
+        <span class="income bold negative truncate-text"
               title="-{{ summary.expanses | spaced_number }} Kč">-{{ summary.expanses | spaced_number }} Kč</span>
       </div>
-      <div class="col-md-3 vert-center">
+      <div class="col-md-3 d-flex justify-content-center align-items-center">
         <button type="button"
                 class="btn btn-primary show-statistics"
                 data-bs-toggle="modal"
@@ -23,9 +25,95 @@
       </div>
     </div>
   </div>
+
+  <hr class="thick-divider-line spacer-top">
+
+
+  <!-- Second header with column names and for sorting -->
+  <div class="summary-header spacer-top">
+    <div class="row width-100" id="sort-control-{{ summary.month }}-{{ summary.year }}">
+      <div class="col-md-3 vert-center">
+        <span class="month bold truncate-text spacer-right"
+              title="Datum">Datum</span>
+
+              <i
+              title="Řadit od nejstarší"
+              class="small-spacer-right fa-regular fa-calendar-plus  opacity-half"
+              data-sort="date-asc"
+              onclick="sortTransactions('date-asc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+
+              <i
+              title="Řadit od nejmladší"
+              class="small-spacer-right fa-regular fa-calendar-minus opacity-half"
+              data-sort="date-desc"
+              onclick="sortTransactions('date-desc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+      </div>
+      <div class="col-md-3 vert-center">
+        <span class="income bold truncate-text spacer-right"
+              title="Název transakce">Název transakce</span>
+
+              <i title="Řadit sestupně dle abecedy"
+              class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+              data-sort="name-asc"
+              onclick="sortTransactions('name-asc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+
+              <i title="Řadit vzestupně dle abecedy"
+              class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+              data-sort="name-desc"
+              onclick="sortTransactions('name-desc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+
+      </div>
+      <div class="col-md-3 vert-center">
+        <span class="income bold truncate-text spacer-right"
+              title="Kategorie">Kategorie</span>
+
+              <i title="Řadit sestupně dle abecedy"
+              class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+              data-sort="category-asc"
+              onclick="sortTransactions('category-asc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+
+              <i title="Řadit vzestupně dle abecedy"
+              class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+              data-sort="category-desc"
+              onclick="sortTransactions('category-desc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+
+      </div>
+      <div class="col-md-2 vert-center">
+        <span class="income bold truncate-text spacer-right"
+              title="Částka">Částka</span>
+
+              <i title="Řadit od nejmenší"
+              class="small-spacer-right fas fa-arrow-down-1-9 opacity-half"
+              data-sort="amount-asc"
+              onclick="sortTransactions('amount-asc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+
+              <i title="Řadit od největší"
+              class="small-spacer-right fas fa-arrow-down-9-1 opacity-half"
+              data-sort="amount-desc"
+              onclick="sortTransactions('amount-desc', this, '{{ summary.month }}', '{{ summary.year }}')"
+              ></i>
+      </div>
+      <div class="col-md-1 vert-center d-flex justify-content-center align-items-center">
+        <!-- TODO: Perhaps try to find better icon -->
+        <i title="Zrušit řazení"
+        class="fas fa-filter-circle-xmark opacity-full"
+        data-sort="reset-sort"
+        onclick="sortTransactions('reset-sort', this, '{{ summary.month }}', '{{ summary.year }}')"
+        ></i>
+      </div>
+    </div>
+  </div>
+
   <div class="summary-body">
+    <hr class="thick-divider-line">
     {% for transaction in summary.transactions %}
-      <hr class="divider-line">
       <div class="transaction-amount {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
           <div class="col-md-3 vert-center">
@@ -69,8 +157,31 @@
           </div>
         </div>
       </div>
+      <hr class="divider-line">
     {% endfor %}
-    <hr class="divider-line">
   </div>
 </div>
+
+<script>
+function sortTransactions(sortType, clickedIcon, month, year) {
+  const id = "sort-control-" + month + "-" + year;
+  const sortControl = document.getElementById(id);
+  
+  const allIcons = sortControl.querySelectorAll('i');
+  allIcons.forEach(icon => {
+    icon.classList.add('opacity-half');
+    icon.classList.remove('opacity-full');
+  });
+
+  clickedIcon.classList.remove('opacity-half');
+  clickedIcon.classList.add('opacity-full');
+  
+  console.log('Sorting by:', sortType);
+  
+  // TODO: Actual logic for sorting all of this
+
+}
+  
+</script>
+
 {% include "modal_show_statistics.html" %}
