@@ -110,6 +110,7 @@ def get_monthly_summaries(request, all_transactions):
     return monthly_summaries
 
 
+
 def transaction_detail(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id)
     user_profile = UserProfile.objects.get(user=request.user)
