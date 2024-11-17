@@ -109,14 +109,33 @@ def get_monthly_summaries(request, all_transactions):
 
     return monthly_summaries
 
+
 def transaction_detail(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id)
     user_profile = UserProfile.objects.get(user=request.user)
-    return render(request, 'transaction_detail.html', {
-        'transaction': transaction,
-        'user_profile': user_profile,
-    })
+    categories = CategoryPreference.objects.filter(user=request.user)
+    return render(
+        request,
+        "transaction_detail.html",
+        {
+            "transaction": transaction,
+            "user_profile": user_profile,
+            "categories": categories,
+        },
+    )
 
+
+def categories_view(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    categories = CategoryPreference.objects.filter(user=request.user)
+    return render(
+        request,
+        "categories.html",
+        {
+            "user_profile": user_profile,
+            "categories": categories,
+        },
+    )
 
 
 @login_required(login_url="login")

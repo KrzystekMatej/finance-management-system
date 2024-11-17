@@ -1,7 +1,6 @@
-<!DOCTYPE html>
 {% extends "base.html" %}
 {% block title %}
-  Finance app
+  Kategorie
 {% endblock title %}
 {% block content %}
   <div id="header">
@@ -9,9 +8,7 @@
       <div class="col-md-3 mobile-centering ps-4">
         <div id="balance-container"
              class="no-select white"
-             data-balance="{{ user_profile.balance }}">
-          <!-- Controlled by JS script -->
-        </div>
+             data-balance="{{ user_profile.balance }}"></div>
       </div>
       <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
         <div id="header-functions">
@@ -70,54 +67,59 @@
   </div>
 </div>
 </div>
-<div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-{% include "modal_create_transaction.html" %}
-{% include "modal_create_budget.html" %}
-<div class="w-100 py-3 py-md-5 mobile-padding">
-  <div class="row ps-4">
-    <div id="sidemenu" class="col-md-2">
-      <div class="py-md-0">
-        <ul class="list-group">
-          <li class="list-group-item border-0 color-bg-primary">
-            <button class="btn btn-primary w-100"
-                    onclick="window.location.href='{% url 'main_page' %}'">Kompletní rozpočet</button>
-          </li>
-          {% for budget in budgets %}
-            <li class="list-group-item border-0 color-bg-primary">
-              <button class="btn btn-primary w-100"
-                      onclick="window.location.href='{% url 'budget_view' budget_id=budget.id %}'">
-                {{ budget.name }}
-              </button>
-            </li>
-          {% endfor %}
-          <li class="list-group-item border-0 color-bg-primary">
+<div class="container mt-5 d-flex flex-column align-items-center">
+  <table class="mb-3"
+         style="border-collapse: separate;
+                border-spacing: 15px 10px">
+    <thead>
+      <tr>
+        <th>Název kategorie</th>
+        <th>Barva</th>
+      </tr>
+    </thead>
+    <tbody id="categories-table-body">
+      {% for preference in categories %}
+        <tr data-category-id="{{ preference.category.id }}">
+          <td>
+            {% if preference.category.is_default == False %}
+              <input type="text"
+                     class="form-control category-name"
+                     value="{{ preference.category.name }}">
+            {% endif %}
+            {% if preference.category.is_default == True %}
+              <input type="text"
+                     class="form-control category-name"
+                     value="{{ preference.category.name }}"
+                     disabled>
+            {% endif %}
+          </td>
+          <td class="d-flex align-items-center">
+            <input type="color"
+                   class="form-control form-control-color category-color me-2"
+                   value="{{ preference.color }}">
+          </td>
+          <td class="text-center">
+            <!-- Ikona pro úpravu -->
             <button type="button"
-                    class="btn w-100 border color-bg-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#budget-modal">
-              <i class="fas fa-plus"></i>
+                    class="btn btn-link p-0 edit-category"
+                    data-category-id="{{ preference.category.id }}">
+              <i class="fas fa-save text-primary"></i>
             </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-md-2"></div>
-    <!-- This centers tutorial to screen if it's visible (md-2 md-8 md-2) -->
-    <!-- If it's not, it shows transactions with md-10 which is unaligned to screen -->
-    {% if monthly_summaries %}
-      <div class="col-md-10">
-        <div class="row w-90 container px-5">
-          {% for summary in monthly_summaries %}
-            {% include "monthly_summary.html" %}
-          {% endfor %}
-        </div>
-      </div>
-    {% else %}
-      <div class="col-md-8">
-        <div class="row w-90 container px-5">{% include "tutorial.html" %}</div>
-      </div>
-      <div class="col-md-2"></div>
-    {% endif %}
-  </div>
+          </td>
+          <td class="text-center">
+            <!-- Ikona pro smazání -->
+            {% if preference.category.is_default == False %}
+              <button type="button"
+                      class="btn btn-link p-0 delete-category"
+                      data-category-id="{{ preference.category.id }}">
+                <i class="fas fa-trash-alt text-danger"></i>
+              </button>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
+{% include "modal_create_transaction.html" %}
 {% endblock content %}

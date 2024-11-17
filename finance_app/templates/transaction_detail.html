@@ -1,92 +1,144 @@
 {% extends "base.html" %}
-
-{% block title %}Detail Transakce{% endblock title %}
-
+{% block title %}
+  Detail Transakce
+{% endblock title %}
 {% block content %}
-<div id="header">
-  <div class="row">
-    <div class="col-md-3 mobile-centering ps-4">
-      <div id="balance-container" class="no-select white" data-balance="{{ user_profile.balance }}">
+  <div id="header">
+    <div class="row">
+      <div class="col-md-3 mobile-centering ps-4">
+        <div id="balance-container"
+             class="no-select white"
+             data-balance="{{ user_profile.balance }}"></div>
       </div>
-    </div>
-    <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
-      <div id="header-functions">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#custom-category-modal">Vytvořit kategorii</button>
-        <button type="button" class="btn btn-primary">Čudlík test 2</button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#transaction-modal">Vytvořit transakci</button>
-        <button type="button" class="btn btn-primary">Čudlík test 3</button>
-        <button type="button" class="btn btn-primary">Čudlík test 4</button>
+      <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
+        <div id="header-functions">
+          <button type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#custom-category-modal">Vytvořit kategorii</button>
+          <a href="{% url 'main_page' %}"
+             class="btn btn-primary no-highlight"
+             style="color: var(--color-always-white) !important">Hlavní stránka</a>
+          <button type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#transaction-modal">Vytvořit transakci</button>
+          <button type="button" class="btn btn-primary">Čudlík test 3</button>
+          <a href="{% url 'categories' %}"
+             class="btn btn-primary no-highlight"
+             style="color: var(--color-always-white) !important">Kategorie</a>
+        </div>
       </div>
-    </div>
-    <div class="col-md-3 text-end">
-      <div id="header-user" class="no-select">
+      <div class="col-md-3 text-end">
+        <div id="header-user" class="no-select">
         <span class="white bold mobile-centering">{{ request.user.first_name }} {{ request.user.last_name }}<i class="spacer-left fas fa-chevron-down"></i>
-        </span>
-        <div class="dropdown-menu no-select">
-          <div class="dropdown-menu-item ps-3 pe-3 d-flex" id="user-id" data-user-id="{{ request.user.username }}">
-            Vaše unikátní ID: <b class="ms-auto">{{ request.user.username }}</b>
-          </div>
-          <label for="toggle-checkbox-dark-mode" class="d-flex align-items-center w-100">
-            <div class="dropdown-menu-item ps-3 pe-3">
-              Tmavý režim
-              <div class="ms-auto">
-                <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
-                <span class="slider round"></span>
-              </div>
-            </div>
-          </label>
-          <label for="toggle-checkbox-hide-balance" class="d-flex align-items-center w-100">
-            <div class="dropdown-menu-item ps-3 pe-3">
-              Skrýt zůstatek
-              <div class="ms-auto">
-                <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
-                <span class="slider round"></span>
-              </div>
-            </div>
-          </label>
-          <a class="no-highlight" href="{% url 'logout' %}">
-            <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
-          </a>
+      </span>
+      <div class="dropdown-menu no-select">
+        <div class="dropdown-menu-item ps-3 pe-3 d-flex"
+             id="user-id"
+             data-user-id="{{ request.user.username }}">
+          Vaše unikátní ID: <b class="ms-auto">{{ request.user.username }}</b>
         </div>
+        <label for="toggle-checkbox-dark-mode"
+               class="d-flex align-items-center w-100">
+          <div class="dropdown-menu-item ps-3 pe-3">
+            Tmavý režim
+            <div class="ms-auto">
+              <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
+              <span class="slider round"></span>
+            </div>
+          </div>
+        </label>
+        <label for="toggle-checkbox-hide-balance"
+               class="d-flex align-items-center w-100">
+          <div class="dropdown-menu-item ps-3 pe-3">
+            Skrýt zůstatek
+            <div class="ms-auto">
+              <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
+              <span class="slider round"></span>
+            </div>
+          </div>
+        </label>
+        <a class="no-highlight" href="{% url 'logout' %}">
+          <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
+        </a>
       </div>
     </div>
   </div>
 </div>
-
+</div>
 <div class="container mt-5 d-flex flex-column">
-    <h1>Detail Transakce</h1>
-    <form id="edit-transaction-form">
-        <div class="mb-3">
-            <label for="transaction-name" class="form-label"><strong>Název:</strong></label>
-            <input type="text" class="form-control" id="transaction-name" value="{{ transaction.name }}">
-        </div>
-        <div class="mb-3">
-            <label for="transaction-amount" class="form-label"><strong>Částka:</strong></label>
-            <input type="decimal" class="form-control" id="transaction-amount" value="{{ transaction.amount }}">
-        </div>
-        <div class="mb-3">
-            <label for="transaction-category" class="form-label"><strong>Kategorie:</strong></label>
-            <input type="text" class="form-control" id="transaction-category" value="{{ transaction.category.name }}" readonly>
-        </div>
-        <div class="mb-3">
-            <label for="transaction-performed-at" class="form-label"><strong>Datum transakce:</strong></label>
-            <input type="date" class="form-control" id="transaction-performed-at" value="{{ transaction.performed_at|date:'Y-m-d' }}">
-        </div>
-        <div class="mb-3">
-            <label for="transaction-created-at" class="form-label"><strong>Datum vytvoření:</strong></label>
-            <input type="date" class="form-control" id="transaction-created-at" value="{{ transaction.created_at|date:'Y-m-d' }}">
-        </div>
-        <div class="mb-3">
-            <label for="transaction-description" class="form-label"><strong>Poznámka:</strong></label>
-            <textarea class="form-control" id="transaction-description">{{ transaction.description }}</textarea>
-        </div>
-    </form>
-    <div class="d-flex flex-row gap-3">
-      <button type="button" class="btn btn-primary">Smazat</button>
-      <button type="button" class="btn btn-primary" id="edit-transaction-button">Upravit</button>
-      <a href="{% url 'main_page' %}" class="btn btn-primary no-highlight" style="color: var(--color-always-white) !important;">Zpět</a>
+  <form id="edit-transaction-form">
+    <div class="mb-3">
+      <label for="transaction-name" class="form-label">
+        <strong>Název:</strong>
+      </label>
+      <input type="text"
+             class="form-control"
+             id="transaction-name"
+             value="{{ transaction.name }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-amount" class="form-label">
+        <strong>Částka:</strong>
+      </label>
+      <input type="decimal"
+             class="form-control"
+             id="transaction-amount"
+             value="{{ transaction.amount }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-category" class="form-label">
+        <strong>Kategorie:</strong>
+      </label>
+      <div class="d-flex flex-column gap-1">
+        <select class="form-select" id="transaction-category" name="category">
+          <option value="" disabled>Vyber si kategorii</option>
+          {% if categories %}
+            {% for category_preference in categories %}
+              <option value="{{ category_preference.category.id }}"
+                      {% if transaction.category.id == category_preference.category.id %}selected{% endif %}>
+                {{ category_preference.category.name }}
+              </option>
+            {% endfor %}
+          {% else %}
+            <option value="" disabled>No categories available</option>
+          {% endif %}
+        </select>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="transaction-performed-at" class="form-label">
+        <strong>Datum transakce:</strong>
+      </label>
+      <input type="date"
+             class="form-control"
+             id="transaction-performed-at"
+             value="{{ transaction.performed_at|date:'Y-m-d' }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-created-at" class="form-label">
+        <strong>Datum vytvoření:</strong>
+      </label>
+      <input type="date"
+             class="form-control"
+             id="transaction-created-at"
+             value="{{ transaction.created_at|date:'Y-m-d' }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-description" class="form-label">
+        <strong>Poznámka:</strong>
+      </label>
+      <textarea class="form-control" id="transaction-description">{{ transaction.description }}</textarea>
+    </div>
+  </form>
+  <div class="d-flex flex-row gap-3">
+    <button type="button" class="btn btn-primary">Smazat</button>
+    <button type="button" class="btn btn-primary" id="edit-transaction-button">Uložit změny</button>
+    <a href="{% url 'main_page' %}"
+       class="btn btn-primary no-highlight"
+       style="color: var(--color-always-white) !important">Zpět</a>
   </div>
 </div>
-
 {% include "modal_create_transaction.html" %}
 {% endblock content %}
