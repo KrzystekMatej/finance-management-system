@@ -58,6 +58,13 @@ urlpatterns = [
     path("", views.main_page, name="main_page"),
     path("budget/<int:budget_id>/", views.budget_view, name="budget_view"),
     path(
+        "transaction/<int:transaction_id>/",
+        views.transaction_detail,
+        name="transaction_detail",
+    ),
+    path("categories/", views.categories_view, name="categories"),
+    path("budgets-details/", views.budgets_details, name="budgets_details"),
+    path(
         "delete-transaction/<int:transaction_id>/",
         views.delete_transaction,
         name="delete-transaction",

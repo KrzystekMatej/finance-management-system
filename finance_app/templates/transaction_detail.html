@@ -1,7 +1,6 @@
-<!DOCTYPE html>
 {% extends "base.html" %}
 {% block title %}
-  Finance app
+  Detail Transakce
 {% endblock title %}
 {% block content %}
   <div id="header">
@@ -9,9 +8,7 @@
       <div class="col-md-3 mobile-centering ps-4">
         <div id="balance-container"
              class="no-select white"
-             data-balance="{{ user_profile.balance }}">
-          <!-- Controlled by JS script -->
-        </div>
+             data-balance="{{ user_profile.balance }}"></div>
       </div>
       <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
         <div id="header-functions">
@@ -72,56 +69,78 @@
   </div>
 </div>
 </div>
-<div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-{% include "modal_create_transaction.html" %}
-{% include "modal_create_budget.html" %}
-<div class="py-3 pb-md-5 mobile-padding">
-  <div class="row">
-    <div id="sidemenu" class="col-md-2">
-      <div class="py-md-0">
-        <ul class="list-group">
-          <li class="list-group-item border-0 color-bg-primary">
-            <button class="btn btn-primary w-100"
-                    onclick="window.location.href='{% url 'main_page' %}'">Kompletní rozpočet</button>
-          </li>
-          {% for budget in budgets %}
-            <li class="list-group-item border-0 color-bg-primary">
-              <button class="btn btn-primary w-100"
-                      onclick="window.location.href='{% url 'budget_view' budget_id=budget.id %}'">
-                {{ budget.name }}
-              </button>
-            </li>
-          {% endfor %}
-          <li class="list-group-item border-0 color-bg-primary">
-            <button type="button"
-                    class="btn w-100 border color-bg-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#budget-modal">
-              <i class="fas fa-plus"></i>
-            </button>
-          </li>
-        </ul>
+<div class="container mt-5 d-flex flex-column">
+  <form id="edit-transaction-form">
+    <div class="mb-3">
+      <label for="transaction-name" class="form-label">
+        <strong>Název:</strong>
+      </label>
+      <input type="text"
+             class="form-control"
+             id="transaction-name"
+             value="{{ transaction.name }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-amount" class="form-label">
+        <strong>Částka:</strong>
+      </label>
+      <input type="decimal"
+             class="form-control"
+             id="transaction-amount"
+             value="{{ transaction.amount }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-category" class="form-label">
+        <strong>Kategorie:</strong>
+      </label>
+      <div class="d-flex flex-column gap-1">
+        <select class="form-select" id="transaction-category" name="category">
+          <option value="" disabled>Vyber si kategorii</option>
+          {% if categories %}
+            {% for category_preference in categories %}
+              <option value="{{ category_preference.category.id }}"
+                      {% if transaction.category.id == category_preference.category.id %}selected{% endif %}>
+                {{ category_preference.category.name }}
+              </option>
+            {% endfor %}
+          {% else %}
+            <option value="" disabled>No categories available</option>
+          {% endif %}
+        </select>
       </div>
     </div>
-    <!-- This col-md-2 is workaround for sidemenu. Because sidemenu has fixed position, -->
-    <!-- it fails to reserve it's screen space, so this second empty col-md-2 fixes it. -->
-    <div class="col-md-2"></div>
-    <!-- This centers tutorial to screen if it's visible (md-2 md-8 md-2) -->
-    <!-- If it's not, it shows transactions with md-10 which is unaligned to screen -->
-    {% if monthly_summaries %}
-      <div class="col-md-10 pe-5">
-        <div class="row">
-          {% for summary in monthly_summaries %}
-            {% include "monthly_summary.html" %}
-          {% endfor %}
-        </div>
-      </div>
-    {% else %}
-      <div class="col-md-8">
-        <div class="row w-100 container px-5">{% include "tutorial.html" %}</div>
-      </div>
-      <div class="col-md-2"></div>
-    {% endif %}
+    <div class="mb-3">
+      <label for="transaction-performed-at" class="form-label">
+        <strong>Datum transakce:</strong>
+      </label>
+      <input type="date"
+             class="form-control"
+             id="transaction-performed-at"
+             value="{{ transaction.performed_at|date:'Y-m-d' }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-created-at" class="form-label">
+        <strong>Datum vytvoření:</strong>
+      </label>
+      <input type="date"
+             class="form-control"
+             id="transaction-created-at"
+             value="{{ transaction.created_at|date:'Y-m-d' }}">
+    </div>
+    <div class="mb-3">
+      <label for="transaction-description" class="form-label">
+        <strong>Poznámka:</strong>
+      </label>
+      <textarea class="form-control" id="transaction-description">{{ transaction.description }}</textarea>
+    </div>
+  </form>
+  <div class="d-flex flex-row gap-3">
+    <button type="button" class="btn btn-primary">Smazat</button>
+    <button type="button" class="btn btn-primary" id="edit-transaction-button">Uložit změny</button>
+    <a href="{% url 'main_page' %}"
+       class="btn btn-primary no-highlight"
+       style="color: var(--color-always-white) !important">Zpět</a>
   </div>
 </div>
+{% include "modal_create_transaction.html" %}
 {% endblock content %}
