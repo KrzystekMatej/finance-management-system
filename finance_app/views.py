@@ -109,6 +109,15 @@ def get_monthly_summaries(request, all_transactions):
 
     return monthly_summaries
 
+def transaction_detail(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    user_profile = UserProfile.objects.get(user=request.user)
+    return render(request, 'transaction_detail.html', {
+        'transaction': transaction,
+        'user_profile': user_profile,
+    })
+
+
 
 @login_required(login_url="login")
 def main_page(request):

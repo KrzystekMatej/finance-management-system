@@ -50,13 +50,9 @@
             </span>
           </div>
           <div class="col-md-1 vert-center">
-            <button type="button"
-                    class="btn btn-link"
-                    title="Detail transakce"
-                    data-bs-toggle="modal"
-                    data-bs-target="#edit-transaction-modal">
+            <a href="{% url 'transaction_detail' transaction.id %}" class="btn btn-link" title="Detail transakce">
               <i class="fas fa-ellipsis-h icon-tertiary"></i>
-            </button>
+          </a>
           </div>
         </div>
       </div>

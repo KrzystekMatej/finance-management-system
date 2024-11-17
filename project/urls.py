@@ -57,4 +57,5 @@ urlpatterns = [
     path("create-budget/", views.create_budget, name="create-budget"),
     path("", views.main_page, name="main_page"),
     path("budget/<int:budget_id>/", views.budget_view, name="budget_view"),
+    path('transaction/<int:transaction_id>/', views.transaction_detail, name='transaction_detail'),
 ]
