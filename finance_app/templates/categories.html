@@ -23,7 +23,9 @@
                   class="btn btn-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#transaction-modal">Vytvořit transakci</button>
-          <button type="button" class="btn btn-primary">Čudlík test 3</button>
+          <a href="{% url 'budgets_details' %}"
+             class="btn btn-primary no-highlight"
+             style="color: var(--color-always-white) !important">Správa rozpočtů</a>
           <a href="{% url 'categories' %}"
              class="btn btn-primary no-highlight"
              style="color: var(--color-always-white) !important">Kategorie</a>

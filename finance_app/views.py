@@ -138,6 +138,21 @@ def categories_view(request):
     )
 
 
+def budgets_details(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    budgets = Budget.objects.filter(owner=request.user)
+    categories = CategoryPreference.objects.filter(user=request.user)
+    return render(
+        request,
+        "budgets_details.html",
+        {
+            "user_profile": user_profile,
+            "budgets": budgets,
+            "categories": categories,
+        },
+    )
+
+
 @login_required(login_url="login")
 def main_page(request):
     context = {
