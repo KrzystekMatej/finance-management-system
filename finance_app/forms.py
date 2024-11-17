@@ -112,7 +112,7 @@ class CreateCategoryForm(forms.Form):
         if commit:
             preference.save()
 
-        return self.category, preference
+        return preference
 
 
 class CreateBudgetForm(forms.ModelForm):

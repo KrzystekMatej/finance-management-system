@@ -33,9 +33,13 @@
           <input type="checkbox" class="form-check-input" id="remember-me">
           <label class="form-check-label" for="remember-me">Pamatovat si mě</label>
         </div>
-        <div>
-          <a class="d-block" href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
-          <a class="d-block" href="{% url 'password_reset' %}">Zapomněl jsem heslo</a>
+        <div class="row">
+          <div class="col-md-6">
+            <a href="{% url 'register' %}">Nemáte účet? Registrujte se</a>
+          </div>
+          <div class="col-md-6 text-end">
+            <a href="{% url 'password_reset' %}">Zapomněl jsem heslo</a>
+          </div>
         </div>
         <br>
         <button type="submit" class="btn btn-primary w-100">Přihlásit</button>

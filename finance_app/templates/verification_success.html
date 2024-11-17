@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
 {% block title %}
-  Obnova hesla hotova
+  Verification success
 {% endblock title %}
 {% block content %}
   <div class="container max-height">
     <div class="row login-container align-items-center">
-      <h2 class="text-center mb-4">Reset hesla</h2>
-      <p class="text-center mb-4">Jestliže existuje účet s tímto emailem, tak se tam poslal email na obnovení hesla.</p>
+      <h2 class="text-center mb-4">Verifikace byla úspěšná</h2>
+      <p class="text-center mb-4">Můžete začít používat svůj účet.</p>
       <a href="{% url 'login' %}"><i class="fas fa-arrow-left spacer-right"></i>Zpět na přihlašovací stránku</a>
     </div>
   </div>

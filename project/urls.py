@@ -64,4 +64,9 @@ urlpatterns = [
     ),
     path("categories/", views.categories_view, name="categories"),
     path("budgets-details/", views.budgets_details, name="budgets_details"),
+    path(
+        "delete-transaction/<int:transaction_id>/",
+        views.delete_transaction,
+        name="delete-transaction",
+    ),
 ]

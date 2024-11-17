@@ -1,20 +1,40 @@
 .summary-module {
   border: 3px solid var(--color-tertiary);
   border-radius: 20px;
-  margin: 20px 0;
   padding: 10px;
   opacity: 1;
+}
+
+.summary-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  opacity: 1;
+  z-index: 1;
+  padding: 10px;
+  position: relative;
+  background-color: var(--color-secondary);
+  border-radius: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .summary-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid var(--color-primary);
-  padding-bottom: 10px;
   opacity: 1;
   z-index: 1;
   position: relative;
+}
+
+.thick-horizontal-line{
+  opacity: 1;
+  border-bottom: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.horizontal-line{
+  border-bottom: 2px solid var(--color-primary);
 }
 
 .income {
@@ -22,11 +42,11 @@
 }
 
 .positive {
-  color: rgb(66 148 66);
+  color: rgb(60, 124, 60)
 }
 
 .negative {
-  color: rgb(255 81 81);
+  color: rgb(220 81 81);
 }
 
 .summary-body {
@@ -38,15 +58,18 @@
 .transaction {
   display: flex;
   justify-content: space-between;
-  padding: 5px 0;
+  flex: 1;
+}
+
+.transaction:nth-child(2n) {
+  border-bottom: 1px solid var(--color-primary);
+}
+
+.transaction:nth-child(2n+1) {
   border-bottom: 1px solid var(--color-secondary);
 }
 
-.transaction:last-child {
-  border-bottom: none;
-}
-
-.transaction-date, .transaction-source, .transaction-amount {
+.transaction-date, .transaction-category, .transaction-amount {
   flex: 1;
 }
 
@@ -55,4 +78,11 @@
     border: none;
     height: 1px;
     background-color: #ccc;
+}
+
+.thick-divider-line {
+  margin: 0;
+  border: none;
+  height: 3px;
+  background-color: var(--color-bg-secondary);
 }

@@ -11,6 +11,7 @@ from finance_app.forms import (
 )
 from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
 import logging
+from .serializers import CategoryPreferenceSerializer
 from verify_email.email_handler import ActivationMailManager
 
 logger = logging.getLogger(__name__)
@@ -155,16 +156,27 @@ def budgets_details(request):
 
 @login_required(login_url="login")
 def main_page(request):
+    categories = CategoryPreference.objects.filter(user=request.user)
+
     context = {
         "monthly_summaries": get_monthly_summaries(
             request, Transaction.objects.filter(user_id=request.user.id)
         ),
-        "categories": CategoryPreference.objects.filter(user=request.user),
+        "categories": categories,
+        "categories_json": CategoryPreferenceSerializer(categories, many=True).data,
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": Budget.objects.filter(owner=request.user),
     }
 
     return render(request, "main_page.html", context)
+
+
+def delete_transaction(request, transaction_id):
+    if request.method == "POST":
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+        transaction.delete()
+        return JsonResponse({"success": True})
+    return JsonResponse({"success": False}, status=400)
 
 
 @login_required(login_url="login")
@@ -190,8 +202,11 @@ def create_category(request):
     if request.method == "POST":
         form = CreateCategoryForm(request.POST, user=request.user)
         if form.is_valid():
-            category, preference = form.save()
-            return JsonResponse({"success": True, "category_name": category.name})
+            preference = form.save()
+            preference_data = CategoryPreferenceSerializer(preference).data
+            return JsonResponse(
+                {"success": True, "category_preference": preference_data}
+            )
         else:
             return JsonResponse({"success": False, "errors": form.errors})
 
@@ -241,7 +256,7 @@ def register_page(request):
             ActivationMailManager.send_verification_link(
                 inactive_user=inactive_user, form=form, request=request
             )
-            return redirect("login")
+            return render(request, "register_success.html")
     else:
         form = RegistrationForm()
 
