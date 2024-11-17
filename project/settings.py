@@ -151,6 +151,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "systemfinance5@gmail.com"
 EMAIL_HOST_PASSWORD = "uvef josg edpi vcwa"
 
+VERIFICATION_SUCCESS_TEMPLATE = "verification_success.html"
+
 # Verification - maybe not required
 DEFAULT_DOMAIN = "https://127.0.0.1:8000/"
 DOMAIN = "127.0.0.1:8000"

@@ -73,7 +73,7 @@
                  {% if form.confirm_password.errors %}oninvalid="this.classList.add('is-invalid')" oninput="this.classList.remove('is-invalid')" {% endif %}>
           {{ form.confirm_password.errors }}
         </div>
-        <a href="{% url 'login' %}">Již máte účet? Zpět na přihlašovací stránku</a>
+        <a href="{% url 'login' %}"><i class="fas fa-arrow-left spacer-right"></i>Již máte účet? Zpět na přihlašovací stránku</a>
         <button type="submit" class="btn btn-primary w-100 spacer-top">Registrovat</button>
       </form>
     </div>

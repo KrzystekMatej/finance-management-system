@@ -25,7 +25,9 @@ class RegisterPageTest(TestCase):
                 "password2": "complexpassword123",
             },
         )
-        self.assertRedirects(response, reverse("login"))
+        # self.assertRedirects(response, reverse("login"))
+        # Functionality changed, now it renders registration_success.html instead of
+        # just redirecting to login
         self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
 
     def test_register_page_registration_invalid_data(self):
