@@ -14,17 +14,17 @@ class RegisterPageTest(TestCase):
         self.assertIsInstance(response.context["form"], RegistrationForm)
 
     def test_register_page_successful_registration(self):
-        # response = self.client.post(
-        #     reverse("register"),
-        #     {
-        #         "username": "newuser",
-        #         "email": "newuser@example.com",
-        #         "first_name": "John",
-        #         "last_name": "Doe",
-        #         "password1": "complexpassword123",
-        #         "password2": "complexpassword123",
-        #     },
-        # )
+        response = self.client.post(
+            reverse("register"),
+            {
+                "username": "newuser",
+                "email": "newuser@example.com",
+                "first_name": "John",
+                "last_name": "Doe",
+                "password1": "complexpassword123",
+                "password2": "complexpassword123",
+            },
+        )
         # self.assertRedirects(response, reverse("login"))
         # Functionality changed, now it renders registration_success.html instead of
         # just redirecting to login
