@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
 import logging
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +65,30 @@ class CreateTransactionForm(forms.ModelForm):
         if performed_at and performed_at > timezone.now():
             raise ValidationError("Datum provedení transakce nemůže být v budoucnosti.")
         return performed_at
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get("amount")
+        logger.info(amount)
+        if amount is None:
+            raise ValidationError("Částka je povinná.")
+
+        try:
+            amount = Decimal(amount)
+        except (InvalidOperation, TypeError, ValueError):
+            raise ValidationError("Částka musí být platné desetinné číslo.")
+
+        field = Transaction._meta.get_field("amount")
+        max_digits = field.max_digits
+        decimal_places = field.decimal_places
+
+        max_value = Decimal(f"9{'9' * (max_digits - decimal_places - 1)}.{decimal_places * '9'}")
+        if abs(amount) > max_value:
+            raise ValidationError(f"Částka nesmí přesáhnout {max_value}.")
+
+        rounding_factor = Decimal(f"1.{'0' * decimal_places}")
+        amount = amount.quantize(rounding_factor, rounding=ROUND_HALF_UP)
+
+        return amount
 
 
 class CreateCategoryForm(forms.Form):

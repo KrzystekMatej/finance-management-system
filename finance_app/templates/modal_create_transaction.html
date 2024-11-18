@@ -2,7 +2,6 @@
 <!-- CREATE NEW TRANSACTION MODAL -->
 <div class="modal fade"
      id="transaction-modal"
-     data-create-transaction-url="{% url 'create-transaction' %}"
      tabindex="-1"
      aria-labelledby="transaction-modal-label"
      aria-hidden="true">
@@ -341,3 +340,6 @@
 
     });
 </script>
+{% load static %}
+<script src="{% static 'js/transaction_modal.js' %}" defer></script>
+<script src="{% static 'js/category_modal.js' %}" defer></script>
