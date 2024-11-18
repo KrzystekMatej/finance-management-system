@@ -18,17 +18,17 @@
                   data-bs-target="#custom-category-modal">Vytvořit kategorii</button>
           <a href="{% url 'main_page' %}"
              class="btn btn-primary no-highlight"
-             style="color: var(--color-always-white) !important">Hlavní stránka</a>
+             id="link_button">Hlavní stránka</a>
           <button type="button"
                   class="btn btn-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#transaction-modal">Vytvořit transakci</button>
           <a href="{% url 'budgets_details' %}"
              class="btn btn-primary no-highlight"
-             style="color: var(--color-always-white) !important">Správa rozpočtů</a>
+             id="link_button">Správa rozpočtů</a>
           <a href="{% url 'categories' %}"
              class="btn btn-primary no-highlight"
-             style="color: var(--color-always-white) !important">Kategorie</a>
+             id="link_button">Kategorie</a>
         </div>
       </div>
       <div class="col-md-3 text-end">
@@ -71,76 +71,89 @@
 </div>
 <div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
 <div class="container mt-5 d-flex flex-column align-items-center">
-  <table class="mb-3"
-         style="border-collapse: separate;
-                border-spacing: 10px 40px">
-    <thead>
-      <tr>
-        <th>Název</th>
-        <th>Limit</th>
-        <th>Období od</th>
-        <th>Období do</th>
-        <th>Kategorie</th>
-        <th>Popis</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for budget in budgets %}
-        <tr>
-          <td>
-            <input type="text" class="form-control" value="{{ budget.name }}">
-          </td>
-          <td>
-            <input type="decimal" class="form-control" value="{{ budget.limit }}">
-          </td>
-          <td>
-            <input type="date"
-                   class="form-control"
-                   value="{{ budget.period_start|date:"Y-m-d" }}">
-          </td>
-          <td>
-            <input type="date"
-                   class="form-control"
-                   value="{{ budget.period_end|date:"Y-m-d" }}">
-          </td>
-          <td>
-            <div class="form-check">
-              {% for category_preference in categories %}
-                <label class="form-check-label">
-                  <input type="checkbox"
-                         class="form-check-input"
-                         name="categories"
-                         value="{{ category_preference.category.id }}"
-                         {% if category_preference.category in budget.categories.all %}checked{% endif %}>
-                  {{ category_preference.category.name }}
-                </label>
-                <br>
-              {% endfor %}
-            </div>
-          </td>
-          <td>
-            <input class="form-control" value="{{ budget.description }}">
-          </td>
-          <td class="text-center">
-            <!-- Ikona pro úpravu -->
-            <button type="button"
-                    class="btn btn-link p-0 edit-category"
-                    data-category-id="{{ preference.category.id }}">
-              <i class="fas fa-save text-primary"></i>
-            </button>
-          </td>
-          <td class="text-center">
-            <!-- Ikona pro smazání -->
-            <button type="button"
-                    class="btn btn-link p-0 delete-category"
-                    data-category-id="{{ preference.category.id }}">
-              <i class="fas fa-trash-alt text-danger"></i>
-            </button>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="container mt-5 d-flex flex-column align-items-center">
+    <table class="mb-3" id="table_view">
+      <tbody>
+        {% for budget in budgets %}
+          <tr>
+            <td rowspan="2">
+              <div>
+                <b>Kategorie</b>
+                <div class="form-check">
+                  {% for category_preference in categories %}
+                    <label class="form-check-label">
+                      <input type="checkbox"
+                             class="form-check-input"
+                             name="categories"
+                             value="{{ category_preference.category.id }}"
+                             {% if category_preference.category in budget.categories.all %}checked{% endif %}>
+                      {{ category_preference.category.name }}
+                    </label>
+                    <br>
+                  {% endfor %}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div>
+                <b>Název</b>
+                <input type="text" class="form-control" value="{{ budget.name }}">
+              </div>
+            </td>
+            <td>
+              <div>
+                <b>Limit</b>
+                <input type="decimal" class="form-control" value="{{ budget.limit }}">
+              </div>
+            </td>
+            <td>
+              <div>
+                <b>Období od</b>
+                <input type="date"
+                       class="form-control"
+                       value="{{ budget.period_start|date:"Y-m-d" }}">
+              </div>
+            </td>
+            <td>
+              <div>
+                <b>Období do</b>
+                <input type="date"
+                       class="form-control"
+                       value="{{ budget.period_end|date:"Y-m-d" }}">
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <div>
+                <b>Popis</b>
+                <textarea class="form-control" rows="3">{{ budget.description }}</textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5" class="text-end">
+              <button type="button"
+                      class="btn btn-link p-0 edit-category fa-lg"
+                      data-category-id="{{ preference.category.id }}">
+                <i class="fas fa-save text-primary"></i>
+              </button>
+              <button type="button"
+                      class="btn btn-link p-0 delete-category fa-lg"
+                      data-category-id="{{ preference.category.id }}">
+                <i class="fas fa-trash-alt text-danger"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5">
+              <hr>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% include "modal_create_transaction.html" %}
 {% endblock content %}

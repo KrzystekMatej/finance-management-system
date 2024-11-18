@@ -18,17 +18,17 @@
                   data-bs-target="#custom-category-modal">Vytvořit kategorii</button>
           <a href="{% url 'main_page' %}"
              class="btn btn-primary no-highlight"
-             style="color: var(--color-always-white) !important">Hlavní stránka</a>
+             id="link_button">Hlavní stránka</a>
           <button type="button"
                   class="btn btn-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#transaction-modal">Vytvořit transakci</button>
           <a href="{% url 'budgets_details' %}"
              class="btn btn-primary no-highlight"
-             style="color: var(--color-always-white) !important">Správa rozpočtů</a>
+             id="link_button">Správa rozpočtů</a>
           <a href="{% url 'categories' %}"
              class="btn btn-primary no-highlight"
-             style="color: var(--color-always-white) !important">Kategorie</a>
+             id="link_button">Kategorie</a>
         </div>
       </div>
       <div class="col-md-3 text-end">
@@ -71,9 +71,7 @@
 </div>
 <div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
 <div class="container mt-5 d-flex flex-column align-items-center">
-  <table class="mb-3"
-         style="border-collapse: separate;
-                border-spacing: 15px 10px">
+  <table class="mb-3" id="table_view_2">
     <thead>
       <tr>
         <th>Název kategorie</th>

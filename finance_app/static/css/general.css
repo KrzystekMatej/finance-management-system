@@ -57,3 +57,12 @@ a.no-highlight {
   }
 }
 
+#table_view {
+  border-collapse: separate;
+  border-spacing: 10px 20px;
+}
+
+#table_view_2 {
+  border-collapse: separate;
+  border-spacing: 15px 10px;
+}
