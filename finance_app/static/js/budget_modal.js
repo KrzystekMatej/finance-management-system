@@ -42,7 +42,7 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
     }
 
     if(isValid){
-        fetch("create-budget/", {
+        fetch("/create-budget/", {
             method: "POST",
             headers: {
                 "X-Requested-With": "XMLHttpRequest",

@@ -95,10 +95,11 @@ class CreateCategoryForm(forms.Form):
     name = forms.CharField(label="Název kategorie", max_length=100, required=True)
     color = forms.CharField(label="Barva", max_length=7, required=True)
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, user=None, existing_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
         self.category = None
+        self.existing_id = existing_id
 
     def clean_color(self):
         color = self.cleaned_data.get("color")
@@ -133,6 +134,9 @@ class CreateCategoryForm(forms.Form):
         preference = CategoryPreference(
             color=self.cleaned_data["color"], user=self.user, category=self.category
         )
+
+        if self.existing_id is not None:
+            preference.id = self.existing_id
 
         if commit:
             preference.save()

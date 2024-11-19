@@ -18,7 +18,7 @@
           <button type="button"
                   class="btn btn-primary"
                   data-bs-toggle="modal"
-                  data-bs-target="#custom-category-modal">Vytvořit kategorii</button>
+                  data-bs-target="#category-modal">Vytvořit kategorii</button>
           <a href="{% url 'main_page' %}"
              class="btn btn-primary no-highlight"
              style="color: var(--color-always-white) !important">Hlavní stránka</a>
@@ -124,6 +124,6 @@
     {% endif %}
   </div>
 </div>
-{% endblock content %}
 {% load static %}
-<script src="{% static 'js/delete_transaction.js' %}" defer></script>
+<script src="{% static 'js/main_page.js' %}" defer></script>
+{% endblock content %}

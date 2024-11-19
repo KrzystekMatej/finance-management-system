@@ -69,4 +69,14 @@ urlpatterns = [
         views.delete_transaction,
         name="delete-transaction",
     ),
+    path(
+        "delete-category/<int:category_preference_id>/",
+        views.delete_category,
+        name="delete-category",
+    ),
+    path(
+        "edit-category/<int:category_preference_id>/",
+        views.edit_category,
+        name="edit-category",
+    ),
 ]
