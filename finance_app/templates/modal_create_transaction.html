@@ -2,7 +2,6 @@
 <!-- CREATE NEW TRANSACTION MODAL -->
 <div class="modal fade"
      id="transaction-modal"
-     data-create-transaction-url="{% url 'create-transaction' %}"
      tabindex="-1"
      aria-labelledby="transaction-modal-label"
      aria-hidden="true">
@@ -52,10 +51,10 @@
           <input type="hidden" id="signed-amount" name="amount">
           <!-- Transaction date -->
           <div class="mb-3">
-            <label for="transaction-date" class="form-label">Datum transakce</label>
+            <label for="transaction-performed-at" class="form-label">Datum transakce</label>
             <input type="datetime-local"
                    class="form-control"
-                   id="transaction-date"
+                   id="transaction-performed-at"
                    name="performed_at">
             <div class="invalid-feedback">Je třeba zadat datum, nelze vybrat datum v budoucnosti.</div>
           </div>
@@ -80,7 +79,7 @@
               </select>
               <button type="button"
                       class="btn btn-primary width-100"
-                      id="open-custom-category-modal">Vytvořit kategorii</button>
+                      id="open-transaction-category-modal">Vytvořit kategorii</button>
               <div class="invalid-feedback">Je třeba vybrat jednu kategorii.</div>
             </div>
           </div>
@@ -129,54 +128,7 @@
   </div>
 </div>
 <!-- CREATE NEW CATEGORY MODAL -->
-<div class="modal fade"
-     id="custom-category-modal"
-     data-create-category-url="{% url 'create-category' %}"
-     tabindex="-1"
-     aria-labelledby="custom-category-modal-label"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="custom-category-modal-label">Vytvořit novou kategorii</h5>
-        <button type="button"
-                class="btn-close"
-                id="close-custom-category-modal-top"
-                aria-label="Close"></button>
-      </div>
-      <form id="create-category-form" method="post" action="">
-        {% csrf_token %}
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="custom-category-name" class="form-label">Název kategorie</label>
-            <input type="text"
-                   class="form-control"
-                   id="custom-category-name"
-                   name="name"
-                   placeholder="Zadejte název kategorie">
-            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
-          </div>
-          <div class="mb-3">
-            <label for="custom-category-color-input" class="form-label">Barva kategorie</label>
-            <input type="color"
-                   class="form-control"
-                   id="custom-category-color-input"
-                   name="color">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button"
-                  class="btn btn-secondary"
-                  id="close-custom-category-modal-bot">Close</button>
-          <button type="button"
-                  class="btn btn-primary"
-                  id="submit-category-btn"
-                  data-create-transaction-url="{% url 'create-transaction' %}">Uložit jako novou kategorii</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+{% include "modal_create_category.html" %}
 <!-- CREATE NEW RECURRENT TRANSACTION MODAL -->
 <!DOCTYPE html>
 <div class="modal fade"
@@ -191,6 +143,7 @@
         <button type="button"
                 class="btn-close"
                 id="close-recurrence-modal-top"
+                data-bs-dismiss="modal"
                 aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -241,6 +194,7 @@
       <div class="modal-footer">
         <button type="button"
                 class="btn btn-secondary"
+                data-bs-dismiss="modal"
                 id="close-recurrence-modal-bot">Close</button>
         <button type="button"
                 class="btn btn-primary"
@@ -249,95 +203,6 @@
     </div>
   </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        const transactionModal = new bootstrap.Modal(document.getElementById('transaction-modal'));
-        const customCategoryModal = new bootstrap.Modal(document.getElementById('custom-category-modal'));
-        const recurrenceModal = new bootstrap.Modal(document.getElementById('recurrence-modal'));
-
-        document.getElementById('open-custom-category-modal').addEventListener('click', function() {
-            transactionModal.hide();
-            customCategoryModal.show();
-        });
-
-        document.getElementById('open-recurrence-modal').addEventListener('click', function() {
-            transactionModal.hide();
-            recurrenceModal.show();
-        });
-
-        // Go back to previous modal by clicking X button on top right
-        document.getElementById('close-custom-category-modal-top').addEventListener('click', function() {
-            customCategoryModal.hide();
-            transactionModal.show();
-        });
-        document.getElementById('close-recurrence-modal-top').addEventListener('click', function() {
-            recurrenceModal.hide();
-            transactionModal.show();
-        });
-
-        // Go back to previous modal by clicking close button on bottom of modal
-        document.getElementById('close-custom-category-modal-bot').addEventListener('click', function() {
-            customCategoryModal.hide();
-            transactionModal.show();
-        });
-        document.getElementById('close-recurrence-modal-bot').addEventListener('click', function() {
-            recurrenceModal.hide();
-            transactionModal.show();
-        });
-
-        // Go back to previous modal by clicking outside of the modal
-        document.getElementById('custom-category-modal').addEventListener('hidden.bs.modal', function() {
-            transactionModal.show();
-        });
-        document.getElementById('recurrence-modal').addEventListener('hidden.bs.modal', function() {
-            transactionModal.show();
-        });
-    });
-
-
-    // Update value in form depending whether it's incoming or outcoming transaction
-    document.addEventListener("DOMContentLoaded", function() {
-
-        const amountInput = document.getElementById("transaction-amount");
-        const signedAmountInput = document.getElementById("signed-amount");
-        const incomingTransaction = document.getElementById("incoming-transaction");
-        const outcomingTransaction = document.getElementById("outcoming-transaction");
-        let previousSigned = '';
-        let previousAmount = '';
-        let previousChar = "";
-
-        function updateAmount() {
-            let amount = amountInput.value;
-            let char = amount.slice(-1);
-
-            if (isNaN(amount) && char != ".") {
-                amountInput.value = previousAmount;
-                return;
-            }
-
-            if ((amount.match(/\./g) || []).length > 1) {
-                amountInput.value = previousAmount;
-                return;
-            }
-
-            amount = parseFloat(amount);
-
-            // signed is the actual value that gets sent in form
-            if (outcomingTransaction.checked) {
-                signedAmountInput.value = -Math.abs(amount);
-            } else {
-                signedAmountInput.value = Math.abs(amount);
-            }
-
-            previousSigned = signedAmountInput.value;
-            previousAmount = amountInput.value;
-            previousChar = char;
-        }
-
-        amountInput.addEventListener("input", updateAmount);
-        incomingTransaction.addEventListener("change", updateAmount);
-        outcomingTransaction.addEventListener("change", updateAmount);
-
-    });
-</script>
+{% load static %}
+<script src="{% static 'js/transaction_modal.js' %}" defer></script>
+<script src="{% static 'js/category_modal.js' %}" defer></script>

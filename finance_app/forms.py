@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
 import logging
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 logger = logging.getLogger(__name__)
 
@@ -65,15 +66,42 @@ class CreateTransactionForm(forms.ModelForm):
             raise ValidationError("Datum provedení transakce nemůže být v budoucnosti.")
         return performed_at
 
+    def clean_amount(self):
+        amount = self.cleaned_data.get("amount")
+        logger.info(amount)
+        if amount is None:
+            raise ValidationError("Částka je povinná.")
+
+        try:
+            amount = Decimal(amount)
+        except (InvalidOperation, TypeError, ValueError):
+            raise ValidationError("Částka musí být platné desetinné číslo.")
+
+        field = Transaction._meta.get_field("amount")
+        max_digits = field.max_digits
+        decimal_places = field.decimal_places
+
+        max_value = Decimal(
+            f"9{'9' * (max_digits - decimal_places - 1)}.{decimal_places * '9'}"
+        )
+        if abs(amount) > max_value:
+            raise ValidationError(f"Částka nesmí přesáhnout {max_value}.")
+
+        rounding_factor = Decimal(f"1.{'0' * decimal_places}")
+        amount = amount.quantize(rounding_factor, rounding=ROUND_HALF_UP)
+
+        return amount
+
 
 class CreateCategoryForm(forms.Form):
     name = forms.CharField(label="Název kategorie", max_length=100, required=True)
     color = forms.CharField(label="Barva", max_length=7, required=True)
 
-    def __init__(self, *args, user=None, **kwargs):
+    def __init__(self, *args, user=None, existing_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
         self.category = None
+        self.existing_id = existing_id
 
     def clean_color(self):
         color = self.cleaned_data.get("color")
@@ -108,6 +136,9 @@ class CreateCategoryForm(forms.Form):
         preference = CategoryPreference(
             color=self.cleaned_data["color"], user=self.user, category=self.category
         )
+
+        if self.existing_id is not None:
+            preference.id = self.existing_id
 
         if commit:
             preference.save()

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<div class="modal fade"
+     id="category-modal"
+     tabindex="-1"
+     aria-labelledby="category-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="category-modal-label">Vytvořit novou kategorii</h5>
+        <button type="button"
+                class="btn-close"
+                id="close-category-modal-top"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <form id="create-category-form" method="post" action="">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="category-name" class="form-label">Název kategorie</label>
+            <input type="text"
+                   class="form-control"
+                   id="category-name"
+                   name="name"
+                   placeholder="Zadejte název kategorie">
+            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
+          </div>
+          <div class="mb-3">
+            <label for="category-color-input" class="form-label">Barva kategorie</label>
+            <input type="color"
+                   class="form-control"
+                   id="category-color-input"
+                   name="color">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  id="close-category-modal-bot">Close</button>
+          <button type="button" class="btn btn-primary" id="submit-category-btn">Uložit jako novou kategorii</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
