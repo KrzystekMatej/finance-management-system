@@ -81,7 +81,9 @@ class CreateTransactionForm(forms.ModelForm):
         max_digits = field.max_digits
         decimal_places = field.decimal_places
 
-        max_value = Decimal(f"9{'9' * (max_digits - decimal_places - 1)}.{decimal_places * '9'}")
+        max_value = Decimal(
+            f"9{'9' * (max_digits - decimal_places - 1)}.{decimal_places * '9'}"
+        )
         if abs(amount) > max_value:
             raise ValidationError(f"Částka nesmí přesáhnout {max_value}.")
 
