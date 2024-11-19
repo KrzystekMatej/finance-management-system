@@ -14,7 +14,7 @@ class RegisterPageTest(TestCase):
         self.assertIsInstance(response.context["form"], RegistrationForm)
 
     def test_register_page_successful_registration(self):
-        self.client.post(
+        response = self.client.post(
             reverse("register"),
             {
                 "username": "newuser",

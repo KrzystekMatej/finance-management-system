@@ -66,6 +66,12 @@ djlint . --lint
 flake8
 ```
 
+## Tests
+You can run tests locally using:
+```bash
+python manage.py test
+```
+
 ## Resources
 
 [Google doc](https://docs.google.com/document/d/1CBFf9SYnnrxeE0lQ2UtjCQK5ZHMXkhcF/edit?usp=sharing&ouid=106305257367534443251&rtpof=true&sd=true)
