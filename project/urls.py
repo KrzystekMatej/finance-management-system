@@ -79,4 +79,9 @@ urlpatterns = [
         views.edit_category,
         name="edit-category",
     ),
+        path(
+        "register-success/",
+        views.register_success,
+        name="register-success",
+    ),
 ]

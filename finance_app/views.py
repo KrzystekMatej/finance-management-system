@@ -325,6 +325,8 @@ def budget_view(request, budget_id):
 
     return render(request, "main_page.html", context)
 
+def register_success(request):
+      return render(request, "register_success.html")
 
 def register_page(request):
     if request.method == "POST":
@@ -338,7 +340,7 @@ def register_page(request):
             ActivationMailManager.send_verification_link(
                 inactive_user=inactive_user, form=form, request=request
             )
-            return render(request, "register_success.html")
+            return redirect("register-success")
     else:
         form = RegistrationForm()
 
