@@ -14,7 +14,7 @@ class RegisterPageTest(TestCase):
         self.assertIsInstance(response.context["form"], RegistrationForm)
 
     def test_register_page_successful_registration(self):
-        response = self.client.post(
+        self.client.post(
             reverse("register"),
             {
                 "username": "newuser",
@@ -149,7 +149,7 @@ class CreateTransactionViewTests(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json().get("success"))
         self.assertEqual(Transaction.objects.count(), 0)
 
@@ -167,7 +167,7 @@ class CreateTransactionViewTests(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json().get("success"))
         self.assertEqual(Transaction.objects.count(), 0)
 
@@ -186,7 +186,7 @@ class CreateTransactionViewTests(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json().get("success"))
         self.assertEqual(Transaction.objects.count(), 0)
 
@@ -232,7 +232,7 @@ class CreateCategoryViewTests(TestCase):
         response = self.client.post(
             self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
         # self.assertIn("Tuto kategorii už máte vytvořenou.", response.json()["errors"])
 
@@ -245,7 +245,7 @@ class CreateCategoryViewTests(TestCase):
         response = self.client.post(
             self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
         # self.assertIn("Neplatný formát barvy.", response.json()["errors"])
 
@@ -257,7 +257,7 @@ class CreateCategoryViewTests(TestCase):
         response = self.client.post(
             self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
         # self.assertIn("Tento údaj je povinný.", response.json()["errors"]["color"])
 
@@ -269,7 +269,7 @@ class CreateCategoryViewTests(TestCase):
         response = self.client.post(
             self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
         # self.assertIn("Tento údaj je povinný.", response.json()["errors"]["name"])
 
@@ -281,6 +281,6 @@ class CreateCategoryViewTests(TestCase):
         response = self.client.post(
             self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
         # self.assertIn("Tento údaj je povinný.", response.json()["errors"]["name"])
