@@ -325,8 +325,10 @@ def budget_view(request, budget_id):
 
     return render(request, "main_page.html", context)
 
+
 def register_success(request):
-      return render(request, "register_success.html")
+    return render(request, "register_success.html")
+
 
 def register_page(request):
     if request.method == "POST":

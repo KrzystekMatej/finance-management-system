@@ -79,7 +79,7 @@ urlpatterns = [
         views.edit_category,
         name="edit-category",
     ),
-        path(
+    path(
         "register-success/",
         views.register_success,
         name="register-success",
