@@ -142,6 +142,16 @@ def budgets_details(request):
 
 
 @login_required(login_url="login")
+def filter(request):
+    return render(request, "filter.html")
+
+
+@login_required(login_url="login")
+def tutorial(request):
+    return render(request, "tutorial.html")
+
+
+@login_required(login_url="login")
 def main_page(request):
     categories = CategoryPreference.objects.filter(user=request.user)
 

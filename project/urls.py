@@ -24,6 +24,8 @@ urlpatterns = [
     path("login/", views.login_page, name="login"),
     path("admin/", admin.site.urls),
     path("register/", views.register_page, name="register"),
+    path("filter/", views.filter, name="filter"),
+    path("tutorial/", views.tutorial, name="tutorial"),
     path(
         "password-reset/",
         auth_views.PasswordResetView.as_view(template_name="password_reset_form.html"),

@@ -3,131 +3,65 @@
   Kategorie
 {% endblock title %}
 {% block content %}
-  <div id="header">
-    <div class="row">
-      <div class="col-md-3 mobile-centering ps-4">
-        <div id="balance-container"
-             class="no-select white"
-             data-balance="{{ user_profile.balance }}"></div>
-      </div>
-      <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
-        <div id="header-functions">
-          <button type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#category-modal">Vytvořit kategorii</button>
-          <a href="{% url 'main_page' %}"
-             class="btn btn-primary no-highlight"
-             id="link_button">Hlavní stránka</a>
-          <button type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#transaction-modal">Vytvořit transakci</button>
-          <a href="{% url 'budgets_details' %}"
-             class="btn btn-primary no-highlight"
-             id="link_button">Správa rozpočtů</a>
-          <a href="{% url 'categories' %}"
-             class="btn btn-primary no-highlight"
-             id="link_button">Kategorie</a>
-        </div>
-      </div>
-      <div class="col-md-3 text-end">
-        <div id="header-user" class="no-select">
-        <span class="white bold mobile-centering">{{ request.user.first_name }} {{ request.user.last_name }}<i class="spacer-left fas fa-chevron-down"></i>
-      </span>
-      <div class="dropdown-menu no-select">
-        <div class="dropdown-menu-item ps-3 pe-3 d-flex"
-             id="user-id"
-             data-user-id="{{ request.user.username }}">
-          Vaše unikátní ID: <b class="ms-auto">{{ request.user.username }}</b>
-        </div>
-        <label for="toggle-checkbox-dark-mode"
-               class="d-flex align-items-center w-100">
-          <div class="dropdown-menu-item ps-3 pe-3">
-            Tmavý režim
-            <div class="ms-auto">
-              <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
-              <span class="slider round"></span>
-            </div>
-          </div>
-        </label>
-        <label for="toggle-checkbox-hide-balance"
-               class="d-flex align-items-center w-100">
-          <div class="dropdown-menu-item ps-3 pe-3">
-            Skrýt zůstatek
-            <div class="ms-auto">
-              <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
-              <span class="slider round"></span>
-            </div>
-          </div>
-        </label>
-        <a class="no-highlight" href="{% url 'logout' %}">
-          <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-<div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-<div class="container mt-5 d-flex flex-column align-items-center">
-  <table class="mb-3" id="table_view_2">
-    <thead>
-      <tr>
-        <th>Název kategorie</th>
-        <th>Barva</th>
-      </tr>
-    </thead>
-    <tbody id="categories-table-body">
-      {% for preference in categories %}
-        <form class="edit-category-form" method="post" action="">
-          {% csrf_token %}
-          <!--ToDo - use divs instead of normal table-->
-          <tr data-category-preference-id="{{ preference.id }}">
-            <td>
-              {% if preference.category.is_default == False %}
-                <input type="text"
-                       name="name"
-                       class="form-control category-name"
-                       value="{{ preference.category.name }}">
-              {% else %}
-                <input type="text"
-                       class="form-control category-name"
-                       value="{{ preference.category.name }}"
-                       disabled>
-              {% endif %}
-            </td>
-            <td class="d-flex align-items-center">
-              <input type="color"
-                     name="color"
-                     class="form-control form-control-color category-color me-2"
-                     value="{{ preference.color }}">
-            </td>
-            <td class="text-center">
-              <!-- Ikona pro úpravu -->
-              <button type="button"
-                      class="btn btn-link p-0 edit-category-btn"
-                      data-category-preference-id="{{ preference.id }}">
-                <i class="fas fa-save text-primary"></i>
-              </button>
-            </td>
-            <td class="text-center">
-              <!-- Ikona pro smazání -->
-              {% if preference.category.is_default == False %}
+  {% include "header.html" %}
+  <div class="container mt-5 d-flex flex-column align-items-center">
+    <table class="mb-3" id="table_view_2">
+      <thead>
+        <tr>
+          <th>Název kategorie</th>
+          <th>Barva</th>
+        </tr>
+      </thead>
+      <tbody id="categories-table-body">
+        {% for preference in categories %}
+          <form class="edit-category-form" method="post" action="">
+            {% csrf_token %}
+            <!--ToDo - use divs instead of normal table-->
+            <tr data-category-preference-id="{{ preference.id }}">
+              <td>
+                {% if preference.category.is_default == False %}
+                  <input type="text"
+                         name="name"
+                         class="form-control category-name"
+                         value="{{ preference.category.name }}">
+                {% else %}
+                  <input type="text"
+                         class="form-control category-name"
+                         value="{{ preference.category.name }}"
+                         disabled>
+                {% endif %}
+              </td>
+              <td class="d-flex align-items-center">
+                <input type="color"
+                       name="color"
+                       class="form-control form-control-color category-color me-2"
+                       value="{{ preference.color }}">
+              </td>
+              <td class="text-center">
+                <!-- Ikona pro úpravu -->
                 <button type="button"
-                        class="btn btn-link p-0 delete-category-btn"
+                        class="btn btn-link p-0 edit-category-btn"
                         data-category-preference-id="{{ preference.id }}">
-                  <i class="fas fa-trash-alt text-danger"></i>
+                  <i class="fas fa-save text-primary"></i>
                 </button>
-              {% endif %}
-            </td>
-          </tr>
-        </form>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-{% include "modal_create_transaction.html" %}
-{% load static %}
-<script src="{% static 'js/categories.js' %}" defer></script>
+              </td>
+              <td class="text-center">
+                <!-- Ikona pro smazání -->
+                {% if preference.category.is_default == False %}
+                  <button type="button"
+                          class="btn btn-link p-0 delete-category-btn"
+                          data-category-preference-id="{{ preference.id }}">
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </button>
+                {% endif %}
+              </td>
+            </tr>
+          </form>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "modal_create_transaction.html" %}
+  {% load static %}
+  <script src="{% static 'js/categories.js' %}" defer></script>
 {% endblock content %}

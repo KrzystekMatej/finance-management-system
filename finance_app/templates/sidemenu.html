@@ -1,0 +1,26 @@
+<div id="sidemenu" class="col-md-2">
+  <div class="py-md-0">
+    <ul class="list-group">
+      <li class="list-group-item border-0 color-bg-primary">
+        <button class="btn btn-primary w-100"
+                onclick="window.location.href='{% url 'main_page' %}'">Kompletní rozpočet</button>
+      </li>
+      {% for budget in budgets %}
+        <li class="list-group-item border-0 color-bg-primary">
+          <button class="btn btn-primary w-100"
+                  onclick="window.location.href='{% url 'budget_view' budget_id=budget.id %}'">
+            {{ budget.name }}
+          </button>
+        </li>
+      {% endfor %}
+      <li class="list-group-item border-0 color-bg-primary">
+        <button type="button"
+                class="btn w-100 border color-bg-secondary"
+                data-bs-toggle="modal"
+                data-bs-target="#budget-modal">
+          <i class="fas fa-plus"></i>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

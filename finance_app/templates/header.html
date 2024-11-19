@@ -1,0 +1,89 @@
+<div id="header">
+  <div class="row">
+    <div class="col-md-3 mobile-centering ps-4">
+      {% if user_profile.balance %}
+        <div id="balance-container"
+             class="no-select white"
+             data-balance="{{ user_profile.balance }}">
+          <!-- Controlled by JS script -->
+        </div>
+      {% endif %}
+    </div>
+    <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
+      <div id="header-functions">
+        <button type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#category-modal">Vytvořit kategorii</button>
+        <button type="button"
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#transaction-modal">Vytvořit transakci</button>
+        <a href="{% url 'filter' %}"
+           class="btn btn-primary no-highlight"
+           id="link_button">Filtrovat transakce</a>
+        <a href="{% url 'main_page' %}"
+           class="btn btn-primary no-highlight"
+           id="link_button">Hlavní stránka</a>
+        <a href="{% url 'budgets_details' %}"
+           class="btn btn-primary no-highlight"
+           id="link_button">Správa rozpočtů</a>
+        <a href="{% url 'categories' %}"
+           class="btn btn-primary no-highlight"
+           id="link_button">Kategorie</a>
+      </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <div class="row">
+        <div class="col-md-2 d-flex justify-content-center align-items-center">
+          <a href="{% url 'tutorial' %}"
+             title="Zobrazit návod na používání aplikace">
+            <i class="fas fa-question-circle"></i>
+          </a>
+        </div>
+        <div class="col-md-10">
+          <div id="header-user" class="no-select">
+            <span class="white bold mobile-centering truncate-text"
+                  title="{{ request.user.first_name }} {{ request.user.last_name }}">{{ request.user.first_name }} {{ request.user.last_name }}
+              <i class="spacer-left fas fa-chevron-down spacer-right"></i>
+            </span>
+            <div class="dropdown-menu no-select">
+              <div class="dropdown-menu-item ps-3 pe-3 d-flex"
+                   id="user-id"
+                   data-user-id="{{ request.user.username }}">
+                Vaše unikátní ID: <b class="ms-auto">{{ request.user.username }}</b>
+              </div>
+              <label for="toggle-checkbox-dark-mode"
+                     class="d-flex align-items-center w-100">
+                <div class="dropdown-menu-item ps-3 pe-3">
+                  Tmavý režim
+                  <div class="ms-auto">
+                    <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
+                    <span class="slider round"></span>
+                  </div>
+                </div>
+              </label>
+              <label for="toggle-checkbox-hide-balance"
+                     class="d-flex align-items-center w-100">
+                <div class="dropdown-menu-item ps-3 pe-3">
+                  Skrýt zůstatek
+                  <div class="ms-auto">
+                    <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
+                    <span class="slider round"></span>
+                  </div>
+                </div>
+              </label>
+              <a class="no-highlight" href="{% url 'logout' %}">
+                <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
+<!-- Put all modals that can be opened header -->
+{% include "modal_create_transaction.html" %}
+{% include "modal_create_budget.html" %}

@@ -4,126 +4,27 @@
   Finance app
 {% endblock title %}
 {% block content %}
-  <div id="header">
+  {% include "header.html" %}
+  <div class="py-3 pb-md-5 mobile-padding">
     <div class="row">
-      <div class="col-md-3 mobile-centering ps-4">
-        <div id="balance-container"
-             class="no-select white"
-             data-balance="{{ user_profile.balance }}">
-          <!-- Controlled by JS script -->
-        </div>
-      </div>
-      <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
-        <div id="header-functions">
-          <button type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#category-modal">Vytvořit kategorii</button>
-          <a href="{% url 'main_page' %}"
-             class="btn btn-primary no-highlight"
-             id="link_button">Hlavní stránka</a>
-          <button type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#transaction-modal">Vytvořit transakci</button>
-          <a href="{% url 'budgets_details' %}"
-             class="btn btn-primary no-highlight"
-             id="link_button">Správa rozpočtů</a>
-          <a href="{% url 'categories' %}"
-             class="btn btn-primary no-highlight"
-             id="link_button">Kategorie</a>
-        </div>
-      </div>
-      <div class="col-md-3 text-end">
-        <div id="header-user" class="no-select">
-        <span class="white bold mobile-centering">{{ request.user.first_name }} {{ request.user.last_name }}<i class="spacer-left fas fa-chevron-down"></i>
-      </span>
-      <div class="dropdown-menu no-select">
-        <div class="dropdown-menu-item ps-3 pe-3 d-flex"
-             id="user-id"
-             data-user-id="{{ request.user.username }}">
-          Vaše unikátní ID: <b class="ms-auto">{{ request.user.username }}</b>
-        </div>
-        <label for="toggle-checkbox-dark-mode"
-               class="d-flex align-items-center w-100">
-          <div class="dropdown-menu-item ps-3 pe-3">
-            Tmavý režim
-            <div class="ms-auto">
-              <input type="checkbox" id="toggle-checkbox-dark-mode" class="d-none">
-              <span class="slider round"></span>
-            </div>
+      <!-- Show transactions if there are any, if not show tutorial page -->
+      {% if monthly_summaries %}
+        {% include "sidemenu.html" %}
+        <!-- This col-md-2 is workaround for sidemenu. Because sidemenu has fixed position, -->
+        <!-- it fails to reserve it's screen space, so this second empty col-md-2 fixes it. -->
+        <div class="col-md-2"></div>
+        <div class="col-md-10 pe-5">
+          <div class="row">
+            {% for summary in monthly_summaries %}
+              {% include "monthly_summary.html" %}
+            {% endfor %}
           </div>
-        </label>
-        <label for="toggle-checkbox-hide-balance"
-               class="d-flex align-items-center w-100">
-          <div class="dropdown-menu-item ps-3 pe-3">
-            Skrýt zůstatek
-            <div class="ms-auto">
-              <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
-              <span class="slider round"></span>
-            </div>
-          </div>
-        </label>
-        <a class="no-highlight" href="{% url 'logout' %}">
-          <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
-        </a>
-      </div>
+        </div>
+      {% else %}
+        {% include "tutorial_first_time.html" %}
+      {% endif %}
     </div>
   </div>
-</div>
-</div>
-<div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-{% include "modal_create_transaction.html" %}
-{% include "modal_create_budget.html" %}
-<div class="py-3 pb-md-5 mobile-padding">
-  <div class="row">
-    <div id="sidemenu" class="col-md-2">
-      <div class="py-md-0">
-        <ul class="list-group">
-          <li class="list-group-item border-0 color-bg-primary">
-            <button class="btn btn-primary w-100"
-                    onclick="window.location.href='{% url 'main_page' %}'">Kompletní rozpočet</button>
-          </li>
-          {% for budget in budgets %}
-            <li class="list-group-item border-0 color-bg-primary">
-              <button class="btn btn-primary w-100"
-                      onclick="window.location.href='{% url 'budget_view' budget_id=budget.id %}'">
-                {{ budget.name }}
-              </button>
-            </li>
-          {% endfor %}
-          <li class="list-group-item border-0 color-bg-primary">
-            <button type="button"
-                    class="btn w-100 border color-bg-secondary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#budget-modal">
-              <i class="fas fa-plus"></i>
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!-- This col-md-2 is workaround for sidemenu. Because sidemenu has fixed position, -->
-    <!-- it fails to reserve it's screen space, so this second empty col-md-2 fixes it. -->
-    <div class="col-md-2"></div>
-    <!-- This centers tutorial to screen if it's visible (md-2 md-8 md-2) -->
-    <!-- If it's not, it shows transactions with md-10 which is unaligned to screen -->
-    {% if monthly_summaries %}
-      <div class="col-md-10 pe-5">
-        <div class="row">
-          {% for summary in monthly_summaries %}
-            {% include "monthly_summary.html" %}
-          {% endfor %}
-        </div>
-      </div>
-    {% else %}
-      <div class="col-md-8">
-        <div class="row w-100 container px-5">{% include "tutorial.html" %}</div>
-      </div>
-      <div class="col-md-2"></div>
-    {% endif %}
-  </div>
-</div>
-{% load static %}
-<script src="{% static 'js/main_page.js' %}" defer></script>
+  {% load static %}
+  <script src="{% static 'js/main_page.js' %}" defer></script>
 {% endblock content %}
