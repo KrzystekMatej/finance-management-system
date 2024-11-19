@@ -110,6 +110,7 @@ def get_monthly_summaries(request, all_transactions):
 
     return monthly_summaries
 
+
 @login_required(login_url="login")
 def categories_view(request):
     user_profile = UserProfile.objects.get(user=request.user)
@@ -122,6 +123,7 @@ def categories_view(request):
             "categories": categories,
         },
     )
+
 
 @login_required(login_url="login")
 def budgets_details(request):
@@ -160,7 +162,9 @@ def main_page(request):
 def create_transaction(request):
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
         form = CreateTransactionForm(request.POST)
         if form.is_valid():
@@ -171,7 +175,9 @@ def create_transaction(request):
         else:
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
-    return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+    return JsonResponse(
+        {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+    )
 
 
 @login_required(login_url="login")
@@ -179,7 +185,9 @@ def transaction_detail(request, transaction_id):
     transaction = get_object_or_404(Transaction, id=transaction_id)
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
         form = CreateTransactionForm(request.POST, instance=transaction)
         if form.is_valid():
@@ -200,11 +208,14 @@ def transaction_detail(request, transaction_id):
         },
     )
 
+
 @login_required(login_url="login")
 def delete_transaction(request, transaction_id):
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
         transaction = get_object_or_404(Transaction, id=transaction_id)
         transaction.delete()
@@ -216,7 +227,9 @@ def delete_transaction(request, transaction_id):
 def create_category(request):
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
         form = CreateCategoryForm(request.POST, user=request.user)
         if form.is_valid():
@@ -228,17 +241,25 @@ def create_category(request):
         else:
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
-    return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+    return JsonResponse(
+        {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+    )
 
 
 @login_required(login_url="login")
 def edit_category(request, category_preference_id):
-    category_preference = get_object_or_404(CategoryPreference, id=category_preference_id)
+    category_preference = get_object_or_404(
+        CategoryPreference, id=category_preference_id
+    )
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
-        form = CreateCategoryForm(request.POST, user=request.user, existing_id=category_preference.id)
+        form = CreateCategoryForm(
+            request.POST, user=request.user, existing_id=category_preference.id
+        )
         if form.is_valid():
             form.save()
             return JsonResponse({"success": True})
@@ -247,13 +268,18 @@ def edit_category(request, category_preference_id):
 
     return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."})
 
+
 @login_required(login_url="login")
 def delete_category(request, category_preference_id):
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
-        category_preference = get_object_or_404(CategoryPreference, id=category_preference_id)
+        category_preference = get_object_or_404(
+            CategoryPreference, id=category_preference_id
+        )
         category = category_preference.category
         category_preference.delete()
 
@@ -268,7 +294,9 @@ def delete_category(request, category_preference_id):
 def create_budget(request):
     if request.method == "POST":
         if request.headers.get("x-requested-with") != "XMLHttpRequest":
-            return JsonResponse({"success": False, "errors": "Nesprávný typ požadavku."}, status=400)
+            return JsonResponse(
+                {"success": False, "errors": "Nesprávný typ požadavku."}, status=400
+            )
 
         form = CreateBudgetForm(request.POST, user=request.user)
         if form.is_valid():

@@ -121,7 +121,7 @@
              class="form-control"
              id="transaction-performed-at"
              value="{{ transaction.performed_at|date:'Y-m-d' }}"
-            name="performed_at">
+             name="performed_at">
     </div>
     <div class="mb-3">
       <label for="transaction-description" class="form-label">
@@ -131,8 +131,14 @@
     </div>
   </form>
   <div class="d-flex flex-row gap-3">
-    <button type="button" class="btn btn-primary" id="delete-transaction-btn" data-transaction-id="{{ transaction.id }}">Smazat</button>
-    <button type="button" class="btn btn-primary" id="edit-transaction-btn" data-transaction-id="{{ transaction.id }}">Uložit změny</button>
+    <button type="button"
+            class="btn btn-primary"
+            id="delete-transaction-btn"
+            data-transaction-id="{{ transaction.id }}">Smazat</button>
+    <button type="button"
+            class="btn btn-primary"
+            id="edit-transaction-btn"
+            data-transaction-id="{{ transaction.id }}">Uložit změny</button>
     <a href="{% url 'main_page' %}"
        class="btn btn-primary no-highlight"
        style="color: var(--color-always-white) !important">Zpět</a>

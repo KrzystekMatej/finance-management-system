@@ -83,47 +83,47 @@
     <tbody id="categories-table-body">
       {% for preference in categories %}
         <form class="edit-category-form" method="post" action="">
-            {% csrf_token %}
-            <!--ToDo - use divs instead of normal table-->
-            <tr data-category-preference-id="{{ preference.id }}">
-              <td>
-                {% if preference.category.is_default == False %}
-                  <input type="text"
-                         name="name"
-                         class="form-control category-name"
-                         value="{{ preference.category.name }}">
-                {% else %}
-                  <input type="text"
-                         class="form-control category-name"
-                         value="{{ preference.category.name }}"
-                         disabled>
-                {% endif %}
-              </td>
-              <td class="d-flex align-items-center">
-                <input type="color"
-                       name="color"
-                       class="form-control form-control-color category-color me-2"
-                       value="{{ preference.color }}">
-              </td>
-              <td class="text-center">
-                <!-- Ikona pro úpravu -->
+          {% csrf_token %}
+          <!--ToDo - use divs instead of normal table-->
+          <tr data-category-preference-id="{{ preference.id }}">
+            <td>
+              {% if preference.category.is_default == False %}
+                <input type="text"
+                       name="name"
+                       class="form-control category-name"
+                       value="{{ preference.category.name }}">
+              {% else %}
+                <input type="text"
+                       class="form-control category-name"
+                       value="{{ preference.category.name }}"
+                       disabled>
+              {% endif %}
+            </td>
+            <td class="d-flex align-items-center">
+              <input type="color"
+                     name="color"
+                     class="form-control form-control-color category-color me-2"
+                     value="{{ preference.color }}">
+            </td>
+            <td class="text-center">
+              <!-- Ikona pro úpravu -->
+              <button type="button"
+                      class="btn btn-link p-0 edit-category-btn"
+                      data-category-preference-id="{{ preference.id }}">
+                <i class="fas fa-save text-primary"></i>
+              </button>
+            </td>
+            <td class="text-center">
+              <!-- Ikona pro smazání -->
+              {% if preference.category.is_default == False %}
                 <button type="button"
-                        class="btn btn-link p-0 edit-category-btn"
+                        class="btn btn-link p-0 delete-category-btn"
                         data-category-preference-id="{{ preference.id }}">
-                  <i class="fas fa-save text-primary"></i>
+                  <i class="fas fa-trash-alt text-danger"></i>
                 </button>
-              </td>
-              <td class="text-center">
-                <!-- Ikona pro smazání -->
-                {% if preference.category.is_default == False %}
-                  <button type="button"
-                          class="btn btn-link p-0 delete-category-btn"
-                          data-category-preference-id="{{ preference.id }}">
-                    <i class="fas fa-trash-alt text-danger"></i>
-                  </button>
-                {% endif %}
-              </td>
-            </tr>
+              {% endif %}
+            </td>
+          </tr>
         </form>
       {% endfor %}
     </tbody>
