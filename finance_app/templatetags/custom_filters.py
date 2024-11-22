@@ -56,14 +56,22 @@ def dec_to_int(value):
 @register.filter
 def extract_number(value):
     if isinstance(value, str):
-        match = re.search(
-            r"\d+", value
-        )  # Searches for the first sequence of digits in the string
+        match = re.search(r"\d+", value)
         if match:
-            return int(match.group())  # Return the first matched number as an integer
-    return None  # Return None if no number is found
+            return int(match.group())
+    return None
 
 
 @register.filter
-def decrement(value):
-    return value - 1
+def sort_categories(categories):
+    sorted_categories = []
+    for category in categories:
+        sorted_categories.append(category.name)
+
+    sorted_categories.sort()
+    return sorted_categories
+
+
+@register.filter
+def zip_lists(list1, list2):
+    return zip(list1, list2)

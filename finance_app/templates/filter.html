@@ -40,22 +40,15 @@
               <label for="id_categories">Kategorie:</label>
               <div class="multi-choice">
                 <div class="form-group">
-                  <!-- This works in absolutely idiotic way, but it works -->
-                  {% for checkbox in form.categories %}
+                  {% for checkbox, category in form.categories|zip_lists:categories %}
                     <label class="form-check-label no-select w-100"
                            for="{{ checkbox.id_for_label }}">
-                      <div class="form-check">
-                        {{ checkbox.tag }}
-                        {% for category in categories %}
-                          {% if category.category.id|decrement == checkbox.id_for_label|extract_number %}{{ category.category.name }}{% endif %}
-                        {% endfor %}
-                      </div>
+                      <div class="form-check">{{ checkbox.tag }} {{ category.name }}</div>
                     </label>
                   {% endfor %}
                 </div>
               </div>
             </div>
-            {{ checkbox.id_for_label }}
           </div>
         </div>
       </div>

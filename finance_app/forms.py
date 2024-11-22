@@ -91,7 +91,9 @@ class FilterByDateForm(forms.Form):
         categories = CategoryPreference.objects.filter(user=user).values_list(
             "category", flat=True
         )
-        self.fields["categories"].queryset = Category.objects.filter(id__in=categories)
+        self.fields["categories"].queryset = Category.objects.filter(
+            id__in=categories
+        ).order_by("name")
 
 
 class CreateTransactionForm(forms.ModelForm):

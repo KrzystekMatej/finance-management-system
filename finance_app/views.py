@@ -10,7 +10,13 @@ from finance_app.forms import (
     CreateBudgetForm,
     FilterByDateForm,
 )
-from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
+from finance_app.models import (
+    Transaction,
+    UserProfile,
+    CategoryPreference,
+    Budget,
+    Category,
+)
 import logging
 from .serializers import CategoryPreferenceSerializer
 from verify_email.email_handler import ActivationMailManager
@@ -172,11 +178,13 @@ def filter(request):
         if selected_categories:
             transactions = transactions.filter(category__in=selected_categories)
 
+    categories = CategoryPreference.objects.filter(user=request.user).values_list(
+        "category", flat=True
+    )
+
     context = {
         "transactions": transactions,
-        "categories": CategoryPreference.objects.filter(user=request.user),
-        "user_profile": UserProfile.objects.get(user=request.user),
-        "budgets": Budget.objects.filter(owner=request.user),
+        "categories": Category.objects.filter(id__in=categories).order_by("name"),
         "form": form,
     }
 
