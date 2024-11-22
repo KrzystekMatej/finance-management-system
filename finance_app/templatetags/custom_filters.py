@@ -1,4 +1,5 @@
 from django import template
+import re
 
 register = template.Library()
 
@@ -50,3 +51,19 @@ def dec_to_int(value):
         return int(value)
     except (ValueError, TypeError):
         return value
+
+
+@register.filter
+def extract_number(value):
+    if isinstance(value, str):
+        match = re.search(
+            r"\d+", value
+        )  # Searches for the first sequence of digits in the string
+        if match:
+            return int(match.group())  # Return the first matched number as an integer
+    return None  # Return None if no number is found
+
+
+@register.filter
+def decrement(value):
+    return value - 1
