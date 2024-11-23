@@ -8,8 +8,15 @@ from finance_app.forms import (
     CreateTransactionForm,
     CreateCategoryForm,
     CreateBudgetForm,
+    FilterByDateForm,
 )
-from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
+from finance_app.models import (
+    Transaction,
+    UserProfile,
+    CategoryPreference,
+    Budget,
+    Category,
+)
 import logging
 from .serializers import CategoryPreferenceSerializer
 from verify_email.email_handler import ActivationMailManager
@@ -143,7 +150,45 @@ def budgets_details(request):
 
 @login_required(login_url="login")
 def filter(request):
-    return render(request, "filter.html")
+    form = FilterByDateForm(
+        request.user, request.GET or None
+    )  # Pass the user to the form
+    transactions = Transaction.objects.filter(user_id=request.user.id)
+
+    if form.is_valid():
+        start_date = form.cleaned_data.get("start_date")
+        end_date = form.cleaned_data.get("end_date")
+        min_amount = form.cleaned_data.get("min_amount")
+        max_amount = form.cleaned_data.get("max_amount")
+        selected_categories = form.cleaned_data.get("categories")
+
+        # date range filter
+        if start_date:
+            transactions = transactions.filter(performed_at__gte=start_date)
+        if end_date:
+            transactions = transactions.filter(performed_at__lte=end_date)
+
+        # amount range filter
+        if min_amount is not None:
+            transactions = transactions.filter(amount__gte=min_amount)
+        if max_amount is not None:
+            transactions = transactions.filter(amount__lte=max_amount)
+
+        # category filter
+        if selected_categories:
+            transactions = transactions.filter(category__in=selected_categories)
+
+    categories = CategoryPreference.objects.filter(user=request.user).values_list(
+        "category", flat=True
+    )
+
+    context = {
+        "transactions": transactions,
+        "categories": Category.objects.filter(id__in=categories).order_by("name"),
+        "form": form,
+    }
+
+    return render(request, "filter.html", context)
 
 
 @login_required(login_url="login")

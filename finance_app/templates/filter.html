@@ -1,9 +1,170 @@
 {% extends "base.html" %}
+{% load custom_filters %}
 {% block title %}
   Filtrování transakcí
 {% endblock title %}
 {% block content %}
   {% include "header.html" %}
-  WIP
+  <div class="summary-module m-5 mb-0 p-3 pb-3">
+    <form method="get" class="filter-form-by-date">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="padding-10 summary-module h-100">
+            <div class="col-md-12 h-50">
+              <label for="id_start_date">Datum od:</label>
+              {{ form.start_date }}
+            </div>
+            <div class="col-md-12 h-50">
+              <label for="id_end_date">Datum do:</label>
+              {{ form.end_date }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="padding-10 summary-module h-100">
+            <div class="col-md-12 h-50">
+              <label for="id_min_amount">Od částky:</label>
+              {{ form.min_amount }}
+            </div>
+            <div>
+              <div class="col-md-12 h-50">
+                <label for="id_max_amount">Do částky:</label>
+                {{ form.max_amount }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="padding-10 summary-module">
+            <div class="col-md-12">
+              <label for="id_categories">Kategorie:</label>
+              <div class="multi-choice">
+                <div class="form-group">
+                  {% for checkbox, category in form.categories|zip_lists:categories %}
+                    <label class="form-check-label no-select w-100"
+                           for="{{ checkbox.id_for_label }}">
+                      <div class="form-check">{{ checkbox.tag }} {{ category.name }}</div>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center spacer-top">
+        <div class="col-md-6 d-flex justify-content-center gap-2">
+          <button type="submit" class="btn btn-primary">Filtrovat dle zadaných parametrů</button>
+          <button type="button"
+                  class="btn btn-secondary"
+                  onclick="window.location.href='{% url 'filter' %}'">Resetovat filtry</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="summary-module m-5">
+    <div class="summary-header spacer-top">
+      <div class="row width-100" id="sort-control-0-0-filter">
+        <div class="col-md-3 vert-center">
+          <!-- Sorting logic is in 'sorting.js' file -->
+          <span class="month bold truncate-text spacer-right" title="Datum">Datum</span>
+          <i title="Řadit od nejstarší"
+             class="small-spacer-right fa-regular fa-calendar-plus  opacity-half"
+             data-sort="date-asc"
+             onclick="sortTransactions('date-asc', this, '0', '0', 'filter')"></i>
+          <i title="Řadit od nejmladší"
+             class="small-spacer-right fa-regular fa-calendar-minus opacity-half"
+             data-sort="date-desc"
+             onclick="sortTransactions('date-desc', this, '0', '0', 'filter')"></i>
+        </div>
+        <div class="col-md-3 vert-center">
+          <span class="income bold truncate-text spacer-right"
+                title="Název transakce">Název transakce</span>
+          <i title="Řadit sestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+             data-sort="name-asc"
+             onclick="sortTransactions('name-asc', this, '0', '0', 'filter')"></i>
+          <i title="Řadit vzestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+             data-sort="name-desc"
+             onclick="sortTransactions('name-desc', this, '0', '0', 'filter')"></i>
+        </div>
+        <div class="col-md-3 vert-center">
+          <span class="income bold truncate-text spacer-right" title="Kategorie">Kategorie</span>
+          <i title="Řadit sestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+             data-sort="category-asc"
+             onclick="sortTransactions('category-asc', this, '0', '0', 'filter')"></i>
+          <i title="Řadit vzestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+             data-sort="category-desc"
+             onclick="sortTransactions('category-desc', this, '0', '0', 'filter')"></i>
+        </div>
+        <div class="col-md-2 vert-center">
+          <span class="income bold truncate-text spacer-right" title="Částka">Částka</span>
+          <i title="Řadit od nejmenší"
+             class="small-spacer-right fas fa-arrow-down-1-9 opacity-half"
+             data-sort="amount-asc"
+             onclick="sortTransactions('amount-asc', this, '0', '0', 'filter')"></i>
+          <i title="Řadit od největší"
+             class="small-spacer-right fas fa-arrow-down-9-1 opacity-half"
+             data-sort="amount-desc"
+             onclick="sortTransactions('amount-desc', this, '0', '0', 'filter')"></i>
+        </div>
+        <div class="col-md-1 vert-center d-flex justify-content-center align-items-center"></div>
+      </div>
+    </div>
+    <div class="summary-body">
+      <hr class="thick-divider-line">
+      {% for transaction in transactions %}
+        <div class="transaction {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
+          <div class="row width-100">
+            <div class="col-md-3 vert-center">
+              <span class="transaction-date truncate-text"
+                    title="{{ transaction.performed_at }}">{{ transaction.performed_at }}</span>
+            </div>
+            <div class="col-md-3 vert-center">
+              <span class="transaction-name truncate-text" title="{{ transaction.name }}">{{ transaction.name }}</span>
+            </div>
+            <div class="col-md-3 vert-center display-flex">
+              <div class="color-box"
+                   style="background-color: {{ transaction.category_color }};
+                          width: 20px;
+                          height: 20px;
+                          margin-right: 10px;
+                          border-radius: 5px"></div>
+              <span class="transaction-category truncate-text"
+                    title="{{ transaction.category.name }}">{{ transaction.category.name }}</span>
+            </div>
+            <div class="col-md-2 vert-center">
+              {% if transaction.amount > 0 %}
+                <span class="transaction-amount truncate-text positive"
+                      title="+{{ transaction.amount|spaced_number }} Kč">
+                  +{{ transaction.amount|spaced_number }} Kč
+                </span>
+              {% else %}
+                <span class="transaction-amount truncate-text negative"
+                      title="{{ transaction.amount|spaced_number }} Kč">{{ transaction.amount|spaced_number }} Kč</span>
+              {% endif %}
+            </div>
+            <div class="col-md-1 vert-center">
+              <a href="{% url 'transaction_detail' transaction.id %}"
+                 class="btn btn-link"
+                 title="Detail transakce">
+                <i class="fas fa-ellipsis-h icon-tertiary"></i>
+              </a>
+              <button type="button"
+                      class="btn btn-link delete-transaction"
+                      data-transaction-id="{{ transaction.id }}"
+                      title="Smazat transakci">
+                <i class="fas fa-trash-alt icon-tertiary"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
   {% load static %}
+  <script src="{% static 'js/delete_transaction.js' %}" defer></script>
 {% endblock content %}

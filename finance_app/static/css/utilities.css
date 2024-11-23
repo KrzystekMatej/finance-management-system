@@ -96,3 +96,21 @@
 .opacity-full {
   opacity: 1.0;
 }
+
+.padding-10{
+  padding: 10px;
+}
+
+.multi-choice{
+  overflow-y:scroll;
+  max-height: 200px;
+  border-radius: 8px;
+}
+
+.multi-choice-option{
+  background-color: var(--color-bg-secondary);
+}
+
+.h-50{
+  height: 50%;
+}
