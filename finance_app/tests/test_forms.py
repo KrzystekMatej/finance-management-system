@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from finance_app.forms import (
     RegistrationForm,
     LoginForm,
-    CreateTransactionForm,
-    CreateCategoryForm,
+    TransactionForm,
+    CategoryForm,
 )
 from finance_app.models import Category
 from django.utils import timezone
@@ -111,7 +111,7 @@ class CreateTransactionFormTests(TestCase):
             "category": self.category.id,
             "description": "Weekly groceries",
         }
-        form = CreateTransactionForm(data=form_data)
+        form = TransactionForm(data=form_data)
         self.assertTrue(form.is_valid(), "Form should be valid with correct data")
 
     def test_create_transaction_missing_name(self):
@@ -121,7 +121,7 @@ class CreateTransactionFormTests(TestCase):
             "category": self.category.id,
             "description": "Weekly groceries",
         }
-        form = CreateTransactionForm(data=form_data)
+        form = TransactionForm(data=form_data)
         self.assertFalse(form.is_valid(), "Form should be invalid if 'name' is missing")
         self.assertIn("name", form.errors)
 
@@ -133,7 +133,7 @@ class CreateTransactionFormTests(TestCase):
             "category": self.category.id,
             "description": "Empty name test",
         }
-        form = CreateTransactionForm(data=form_data)
+        form = TransactionForm(data=form_data)
         self.assertFalse(
             form.is_valid(), "Form should be invalid if 'name' is an empty string"
         )
@@ -146,7 +146,7 @@ class CreateTransactionFormTests(TestCase):
             "performed_at": timezone.now().date(),
             "description": "Random expense",
         }
-        form = CreateTransactionForm(data=form_data)
+        form = TransactionForm(data=form_data)
         self.assertFalse(
             form.is_valid(), "Form should be invalid if 'category' is missing"
         )
@@ -161,7 +161,7 @@ class CreateTransactionFormTests(TestCase):
             "description": "Test nákupu",
         }
 
-        form = CreateTransactionForm(data=form_data)
+        form = TransactionForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn("category", form.errors)
 
@@ -174,7 +174,7 @@ class CreateTransactionFormTests(TestCase):
             "category": self.category.id,
             "description": "Future planned expense",
         }
-        form = CreateTransactionForm(data=form_data)
+        form = TransactionForm(data=form_data)
         self.assertFalse(
             form.is_valid(), "Form should be invalid if 'performed_at' is in the future"
         )
@@ -189,14 +189,14 @@ class CreateCategoryFormTests(TestCase):
 
     def test_valid_data(self):
         form_data = {"name": "Test Category", "color": "#ff5733"}
-        form = CreateCategoryForm(data=form_data)
+        form = CategoryForm(data=form_data)
         self.assertTrue(
             form.is_valid(), "Form should be valid with a proper name and color."
         )
 
     def test_missing_name(self):
         form_data = {"color": "#ff5733"}
-        form = CreateCategoryForm(data=form_data)
+        form = CategoryForm(data=form_data)
         self.assertFalse(
             form.is_valid(), "Form should be invalid if the name field is missing."
         )
@@ -206,7 +206,7 @@ class CreateCategoryFormTests(TestCase):
 
     def test_empty_name(self):
         form_data = {"name": "", "color": "#ff5733"}
-        form = CreateCategoryForm(data=form_data)
+        form = CategoryForm(data=form_data)
         self.assertFalse(
             form.is_valid(), "Form should be invalid if the name is an empty string."
         )
@@ -218,7 +218,7 @@ class CreateCategoryFormTests(TestCase):
 
     def test_missing_color(self):
         form_data = {"name": "Test Category"}
-        form = CreateCategoryForm(data=form_data)
+        form = CategoryForm(data=form_data)
         self.assertFalse(
             form.is_valid(), "Form should be invalid if the color field is missing."
         )
@@ -230,7 +230,7 @@ class CreateCategoryFormTests(TestCase):
 
     def test_invalid_color_format(self):
         form_data = {"name": "Test Category", "color": "invalid"}
-        form = CreateCategoryForm(data=form_data)
+        form = CategoryForm(data=form_data)
         self.assertFalse(
             form.is_valid(),
             "Form should be invalid if the color code is improperly formatted.",

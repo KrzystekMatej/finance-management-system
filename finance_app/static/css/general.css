@@ -66,3 +66,12 @@ a.no-highlight {
   border-collapse: separate;
   border-spacing: 15px 10px;
 }
+
+input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 1;
+    user-select: none;
+    pointer-events: none;
+    color: #495057;
+}

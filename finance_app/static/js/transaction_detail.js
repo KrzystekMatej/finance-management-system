@@ -34,8 +34,8 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
     const form = document.getElementById("edit-transaction-form");
     const formData = new FormData(form);
     let isValid = true;
-    // ToDo - messages
-    const amountField = document.getElementById("transaction-amount");
+    // ToDo - messages, validation should be on a hidden input (with výdaj/příjem button) - the current will not work in certain cases
+    const amountField =  form.elements['transaction-amount'];
     if (!amountField.value || isNaN(amountField.value)) {
         amountField.classList.add("is-invalid");
         isValid = false;
@@ -43,7 +43,10 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         amountField.classList.remove("is-invalid");
     }
 
-    const dateField = document.getElementById("transaction-performed-at");
+    const formattedAmount = amountField.value.replace(",", ".");
+    formData.set("transaction-amount", formattedAmount);
+
+    const dateField = form.elements["transaction-performed-at"];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const selectedDate = new Date(dateField.value);
@@ -63,7 +66,7 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         }
     }
 
-    const categoryField = document.getElementById("transaction-category-select");
+    const categoryField = form.elements["transaction-category-select"];
     if (!categoryField.value) {
         categoryField.classList.add("is-invalid");
         isValid = false;
@@ -71,7 +74,7 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         categoryField.classList.remove("is-invalid");
     }
 
-    const nameField = document.getElementById("transaction-name");
+    const nameField = form.elements["transaction-name"];
     if (!nameField.value.trim()) {
         nameField.classList.add("is-invalid");
         isValid = false;
@@ -79,7 +82,6 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         nameField.classList.remove("is-invalid");
     }
 
-    console.log(isValid)
     if(isValid) {
         const transactionId = this.dataset.transactionId
         fetch(`/transaction/${transactionId}/`, {
@@ -92,11 +94,7 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                alert("Změny úspěšně uloženy.");
-            } else {
-                alert("Došlo k chybě při ukládání transakce.");
-            }
+            alert(data.message);
         })
         .catch(error => console.error("Error:", error));
     }

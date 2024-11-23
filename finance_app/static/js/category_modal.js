@@ -1,3 +1,51 @@
+function updateCategoriesView(newCategoryPreference)
+{
+    const tableBody = document.getElementById("categories-table-body");
+
+    const newForm = document.createElement("form");
+    newForm.classList.add("edit-category-form", "d-flex", "align-items-center", "mb-2");
+    newForm.method = "post";
+    newForm.action = "";
+
+    const csrfInput = document.createElement("input");
+    csrfInput.type = "hidden";
+    csrfInput.name = "csrfmiddlewaretoken";
+    csrfInput.value = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    newForm.appendChild(csrfInput);
+
+    const newRow = document.createElement("div");
+    newRow.classList.add("category-row", "d-flex", "align-items-center", "w-100");
+    newRow.dataset.categoryPreferenceId = newCategoryPreference.id;
+
+    newRow.innerHTML = `
+        <div class="category-name flex-grow-1">
+            <input type="text" name="name" class="form-control category-name" value="${newCategoryPreference.category.name}">
+        </div>
+        <div class="category-color d-flex align-items-center flex-grow-1 px-2">
+            <input type="color" name="color" class="form-control form-control-color category-color me-2" value="${newCategoryPreference.color}">
+        </div>
+        <div class="edit-actions text-center px-2">
+            <button type="button" class="btn btn-link p-0 edit-category-btn" data-category-preference-id="${newCategoryPreference.id}">
+                <i class="fas fa-save text-primary"></i>
+            </button>
+        </div>
+        <div class="delete-actions text-center px-2">
+            <button type="button" class="btn btn-link p-0 delete-category-btn" data-category-preference-id="${newCategoryPreference.id}">
+                <i class="fas fa-trash-alt text-danger"></i>
+            </button>
+        </div>
+    `;
+
+    newForm.appendChild(newRow);
+    tableBody.appendChild(newForm);
+
+    const editButton = newRow.querySelector(".edit-category-btn");
+    const deleteButton = newRow.querySelector(".delete-category-btn");
+
+    editButton.addEventListener("click", editCategory);
+    deleteButton.addEventListener("click", deleteCategory);
+}
+
 
 document.getElementById("submit-category-btn").addEventListener("click", function (event) {
     event.preventDefault();
@@ -6,7 +54,7 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
     const formData = new FormData(form);
     let isValid = true;
 
-    const nameField = document.getElementById("category-name");
+    const nameField = form.elements['name'];
     if (!nameField.value.trim()) {
         nameField.classList.add("is-invalid");
         isValid = false;
@@ -26,7 +74,6 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("Kategorie byla vytvořena!");
                 const newCategoryPreference = data.category_preference;
 
                 if (window.transactionModalIsHiding) {
@@ -41,36 +88,12 @@ document.getElementById("submit-category-btn").addEventListener("click", functio
                 }
 
                 if (window.location.pathname === "/categories/") {
-                    const tableBody = document.getElementById("categories-table-body");
-                    const newRow = document.createElement("tr");
-                    newRow.dataset.categoryPreferenceId = newCategoryPreference.id;
-
-                    newRow.innerHTML = `
-                        <td>
-                            <input type="text" class="form-control category-name" value="${newCategoryPreference.category.name}">
-                        </td>
-                        <td class="d-flex align-items-center">
-                            <input type="color" class="form-control form-control-color category-color me-2" value="${newCategoryPreference.color}">
-                        </td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-link p-0 edit-category" data-category-preference-id="${newCategoryPreference.id}">
-                                <i class="fas fa-save text-primary"></i>
-                            </button>
-                        </td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-link p-0 delete-category" data-category-preference-id="${newCategoryPreference.id}">
-                                <i class="fas fa-trash-alt text-danger"></i>
-                            </button>
-                        </td>
-                    `;
-
-                    tableBody.appendChild(newRow);
+                    updateCategoriesView(newCategoryPreference)
                 }
 
                 document.getElementById("close-category-modal-top").click();
-            } else {
-                alert("Došlo k chybě při vytváření kategorie.");
             }
+            alert(data.message);
         })
         .catch(error => console.error("Error:", error));
     }
