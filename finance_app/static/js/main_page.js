@@ -24,9 +24,8 @@ document.querySelectorAll(".delete-transaction").forEach(button => {
                         if (transactionElement) {
                             transactionElement.remove();
                         }
-                    } else {
-                        alert("Nepodařilo se smazat transakci.");
                     }
+                    alert(data.message);
                 })
                 .catch(error => {
                     console.error("Error:", error);

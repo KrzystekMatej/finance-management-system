@@ -16,6 +16,7 @@ from finance_app.models import (
 
 def create_default_categories():
     categories_data = [
+        {"name": "Ostatní"},
         {"name": "Jídlo"},
         {"name": "Doprava"},
         {"name": "Zábava"},
@@ -78,7 +79,7 @@ def create_user_defined_categories():
         "Cestování",
         "Elektronika",
         "Knihy",
-        "Domácnost",
+        "Nábytek",
     ]
 
     user_categories = []
@@ -166,7 +167,7 @@ def create_transactions_and_budgets_for_test_user():
         (
             "Úklidové prostředky",
             Decimal("-120.00"),
-            "Domácnost",
+            "Ostatní",
             "Nákup čisticích prostředků",
             6,
         ),
@@ -180,7 +181,7 @@ def create_transactions_and_budgets_for_test_user():
         ("Kavárna", Decimal("-80.00"), "Jídlo", "Káva s přáteli", 14),
         ("Fitness", Decimal("-300.00"), "Zábava", "Permanentka do fitness centra", 5),
         ("Cestování", Decimal("-600.00"), "Doprava", "Vlaková jízdenka", 9),
-        ("Domácí spotřebiče", Decimal("-150.00"), "Domácnost", "Nákup spotřebičů", 10),
+        ("Domácí spotřebiče", Decimal("-150.00"), "Ostatní", "Nákup spotřebičů", 10),
         ("Školní potřeby", Decimal("-100.00"), "Nákupy", "Školní pomůcky pro děti", 12),
         ("Nákup hraček", Decimal("-250.00"), "Nákupy", "Hračky pro děti", 20),
         ("Dovolená", Decimal("-2000.00"), "Zábava", "Výlet do zahraničí", 21),

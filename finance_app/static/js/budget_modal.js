@@ -5,7 +5,7 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
     const formData = new FormData(form);
     let isValid = true;
 
-    const nameField = document.getElementById("budget-name");
+    const nameField = form.elements["budget-name"];
     if (!nameField.value.trim()) {
         nameField.classList.add("is-invalid");
         isValid = false;
@@ -13,7 +13,7 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
         nameField.classList.remove("is-invalid");
     }
 
-    const categoriesField = document.getElementById("budget-categories");
+    const categoriesField = form.elements["budget-categories"];
     if (!categoriesField.selectedOptions.length) {
         categoriesField.classList.add("is-invalid");
         isValid = false;
@@ -21,9 +21,9 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
         categoriesField.classList.remove("is-invalid");
     }
 
-    const limitField = document.getElementById("budget-limit");
-    const periodStartField = document.getElementById("budget-from");
-    const periodEndField = document.getElementById("budget-to");
+    const limitField = form.elements["budget-limit"];
+    const periodStartField = form.elements["budget-from"];
+    const periodEndField = form.elements["budget-to"];
 
     const limitProvided = limitField.value;
     const periodStartProvided = periodStartField.value;
@@ -53,12 +53,10 @@ document.getElementById("submit-budget-btn").addEventListener("click", function 
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("Rozpočet byl vytvořen!");
                 $('#budget-modal').modal('hide');
                 location.reload();
-            } else {
-                alert("Došlo k chybě při vytváření rozpočtu.");
             }
+            alert(data.message);
         })
         .catch(error => console.error("Error:", error));
     }

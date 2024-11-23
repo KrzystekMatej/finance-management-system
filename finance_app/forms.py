@@ -97,11 +97,11 @@ class CreateCategoryForm(forms.Form):
     name = forms.CharField(label="Název kategorie", max_length=100, required=True)
     color = forms.CharField(label="Barva", max_length=7, required=True)
 
-    def __init__(self, *args, user=None, existing_id=None, **kwargs):
+    def __init__(self, *args, user=None, existing_preference_instance=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
         self.category = None
-        self.existing_id = existing_id
+        self.existing_preference_instance = existing_preference_instance
 
     def clean_color(self):
         color = self.cleaned_data.get("color")
@@ -115,16 +115,16 @@ class CreateCategoryForm(forms.Form):
         cleaned_data = super().clean()
         category_name = cleaned_data.get("name")
 
-        if category_name:
+        if self.existing_preference_instance is not None:
+            self.category = self.existing_preference_instance.category
+
+            if self.category.name != category_name:
+                raise ValidationError("Názvy výchozích kategorií nelze změnit.")
+        else:
             # ToDo: Can be written with one database query - join
             self.category = Category.objects.filter(name=category_name).first()
 
-            if (
-                self.category
-                and CategoryPreference.objects.filter(
-                    user=self.user, category=self.category
-                ).exists()
-            ):
+            if self.existing_preference_instance is None and self.category and CategoryPreference.objects.filter(user=self.user, category=self.category).exists():
                 raise ValidationError("Tuto kategorii už máte vytvořenou.")
 
         return cleaned_data
@@ -137,8 +137,8 @@ class CreateCategoryForm(forms.Form):
             color=self.cleaned_data["color"], user=self.user, category=self.category
         )
 
-        if self.existing_id is not None:
-            preference.id = self.existing_id
+        if self.existing_preference_instance is not None:
+            preference.id = self.existing_preference_instance.id
 
         if commit:
             preference.save()
