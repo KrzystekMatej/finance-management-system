@@ -12,20 +12,20 @@ from finance_app.views.guide_views import tutorial
 from finance_app.views.transaction_views import (
     create_transaction,
     transaction_detail,
-    delete_transaction
+    delete_transaction,
 )
 from finance_app.views.category_views import (
     categories_page,
     create_category,
     edit_category,
-    delete_category
+    delete_category,
 )
 from finance_app.views.budget_views import (
     budgets_page,
     budget_view,
     create_budget,
     edit_budget,
-    delete_budget
+    delete_budget,
 )
 
 urlpatterns = [
