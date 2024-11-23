@@ -94,7 +94,7 @@ class FilterByDateForm(forms.Form):
         ).order_by("name")
 
 
-class CreateTransactionForm(forms.ModelForm):
+class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ["amount", "performed_at", "category", "name", "description"]
