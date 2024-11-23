@@ -1,15 +1,25 @@
 <div id="header">
   <div class="row">
-    <div class="col-md-3 mobile-centering ps-4">
-      {% if user_profile.balance %}
+    <div class="col-md-2 mobile-centering ps-4 d-flex justify-content-center align-items-center">
+      <div class="col-md-10 d-flex justify-content-center align-items-center">
+        {% if user_profile.balance %}
         <div id="balance-container"
              class="no-select white"
              data-balance="{{ user_profile.balance }}">
           <!-- Controlled by JS script -->
         </div>
-      {% endif %}
+        {% endif %}
+      </div>
+      <div class="col-md-2 d-flex justify-content-center align-items-center">
+        <div class="col-md-2 d-flex justify-content-center align-items-center">
+          <a href="{% url 'tutorial' %}"
+             title="Zobrazit návod na používání aplikace">
+            <i class="fas fa-question-circle"></i>
+          </a>
+        </div>
+      </div>      
     </div>
-    <div class="col-md-6 d-flex justify-content-center align-items-center no-select">
+    <div class="col-md-8 d-flex justify-content-center align-items-center no-select">
       <div id="header-functions">
         <button type="button"
                 class="btn btn-primary"
@@ -33,15 +43,9 @@
            id="link_button">Kategorie</a>
       </div>
     </div>
-    <div class="col-md-3 text-end">
+    <div class="col-md-2 text-end">
       <div class="row">
-        <div class="col-md-2 d-flex justify-content-center align-items-center">
-          <a href="{% url 'tutorial' %}"
-             title="Zobrazit návod na používání aplikace">
-            <i class="fas fa-question-circle"></i>
-          </a>
-        </div>
-        <div class="col-md-10">
+
           <div id="header-user" class="no-select">
             <span class="white bold mobile-centering truncate-text"
                   title="{{ request.user.first_name }} {{ request.user.last_name }}">{{ request.user.first_name }} {{ request.user.last_name }}
@@ -78,7 +82,6 @@
               </a>
             </div>
           </div>
-        </div>
       </div>
     </div>
   </div>

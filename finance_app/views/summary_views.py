@@ -148,6 +148,7 @@ def filter(request):
     context = {
         "transactions": transactions,
         "categories": Category.objects.filter(id__in=categories).order_by("name"),
+        "user_profile": UserProfile.objects.get(user=request.user),
         "form": form,
     }
 
