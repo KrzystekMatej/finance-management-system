@@ -7,14 +7,21 @@
   <div class="container mt-5 d-flex flex-column align-items-center">
     <div class="categories-container mb-3" id="table_view_2">
       <div class="categories-header d-flex">
-        <div class="category-name-header flex-grow-1"><strong>Název kategorie</strong></div>
-        <div class="category-color-header flex-grow-1"><strong>Barva</strong></div>
+        <div class="category-name-header flex-grow-1">
+          <strong>Název kategorie</strong>
+        </div>
+        <div class="category-color-header flex-grow-1">
+          <strong>Barva</strong>
+        </div>
       </div>
       <div class="categories-body" id="categories-table-body">
         {% for preference in categories %}
-          <form class="edit-category-form d-flex align-items-center mb-2" method="post" action="">
+          <form class="edit-category-form d-flex align-items-center mb-2"
+                method="post"
+                action="">
             {% csrf_token %}
-            <div class="category-row d-flex align-items-center w-100" data-category-preference-id="{{ preference.id }}">
+            <div class="category-row d-flex align-items-center w-100"
+                 data-category-preference-id="{{ preference.id }}">
               <div class="category-name flex-grow-1">
                 {% if preference.category.is_default == False %}
                   <input type="text"
@@ -43,15 +50,15 @@
                   <i class="fas fa-save text-primary"></i>
                 </button>
               </div>
-                {% if preference.category.is_default == False %}
-                  <div class="delete-actions text-center px-2">
-                      <button type="button"
-                              class="btn btn-link p-0 delete-category-btn"
-                              data-category-preference-id="{{ preference.id }}">
-                        <i class="fas fa-trash-alt text-danger"></i>
-                      </button>
-                  </div>
-                {% endif %}
+              {% if preference.category.is_default == False %}
+                <div class="delete-actions text-center px-2">
+                  <button type="button"
+                          class="btn btn-link p-0 delete-category-btn"
+                          data-category-preference-id="{{ preference.id }}">
+                    <i class="fas fa-trash-alt text-danger"></i>
+                  </button>
+                </div>
+              {% endif %}
             </div>
           </form>
         {% endfor %}
@@ -59,5 +66,5 @@
     </div>
   </div>
   {% load static %}
-    <script src="{% static 'js/categories.js' %}" defer></script>
+  <script src="{% static 'js/categories.js' %}" defer></script>
 {% endblock content %}

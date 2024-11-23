@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}
+  Správa rozpočtů
+{% endblock title %}
+{% block content %}
+  {% include "header.html" %}
+  <div class="container mt-5 d-flex flex-column align-items-center">
+    <div class="budgets-container mb-3" id="budgets-view">
+      <div class="budgets-body" id="budgets-table-body">
+        {% for budget in budgets %}
+          <form class="edit-budget-form d-flex flex-column mb-3"
+                method="post"
+                action="">
+            {% csrf_token %}
+            <div class="budget-row d-flex align-items-start w-100 mb-2"
+                 data-budget-id="{{ budget.id }}">
+              <div class="budget-categories flex-grow-1 px-2">
+                <b>Kategorie</b>
+                <div class="form-check">
+                  {% for category_preference in categories %}
+                    <label class="form-check-label">
+                      <input type="checkbox"
+                             class="form-check-input"
+                             name="categories"
+                             value="{{ category_preference.category.id }}"
+                             {% if category_preference.category in budget.categories.all %}checked{% endif %}>
+                      {{ category_preference.category.name }}
+                    </label>
+                    <br>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="budget-name flex-grow-1 px-2">
+                <b>Název</b>
+                <input type="text"
+                       name="name"
+                       class="form-control"
+                       value="{{ budget.name }}">
+              </div>
+              <div class="budget-limit flex-grow-1 px-2">
+                <b>Limit</b>
+                <input type="decimal"
+                       name="limit"
+                       class="form-control"
+                       value="{{ budget.limit }}">
+              </div>
+              <div class="budget-period flex-grow-1 px-2">
+                <b>Období od</b>
+                <input type="date"
+                       name="period_start"
+                       class="form-control"
+                       value="{{ budget.period_start|date:"Y-m-d" }}">
+                <b>Období do</b>
+                <input type="date"
+                       name="period_end"
+                       class="form-control"
+                       value="{{ budget.period_end|date:"Y-m-d" }}">
+              </div>
+              <div class="budget-actions text-end px-2">
+                <button type="button"
+                        class="btn btn-link p-0 edit-budget-btn"
+                        data-budget-id="{{ budget.id }}">
+                  <i class="fas fa-save text-primary"></i>
+                </button>
+                <button type="button"
+                        class="btn btn-link p-0 delete-budget-btn"
+                        data-budget-id="{{ budget.id }}">
+                  <i class="fas fa-trash-alt text-danger"></i>
+                </button>
+              </div>
+            </div>
+            <div class="budget-description w-100 px-2 mb-3">
+              <b>Popis</b>
+              <textarea name="description" class="form-control" rows="3">{{ budget.description }}</textarea>
+            </div>
+            <hr>
+          </form>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% load static %}
+  <script src="{% static 'js/budgets.js' %}" defer></script>
+{% endblock content %}

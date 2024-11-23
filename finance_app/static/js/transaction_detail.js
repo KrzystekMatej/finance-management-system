@@ -43,6 +43,9 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         amountField.classList.remove("is-invalid");
     }
 
+    const formattedAmount = amountField.value.replace(",", ".");
+    formData.set("transaction-amount", formattedAmount);
+
     const dateField = form.elements["transaction-performed-at"];
     const today = new Date();
     today.setHours(0, 0, 0, 0);

@@ -51,7 +51,6 @@ function editCategory()
     }
 
     const categoryPreferenceId = this.dataset.categoryPreferenceId;
-    console.log("ahoj")
     //ToDo the form should not be sent if it was not changed at all
     if(isValid) {
         fetch(`/edit-category/${categoryPreferenceId}/`, {

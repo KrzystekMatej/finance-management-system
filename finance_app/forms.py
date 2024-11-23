@@ -6,10 +6,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
-import logging
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
-
-logger = logging.getLogger(__name__)
+from finance_app.logging import logger
 
 
 class RegistrationForm(UserCreationForm):
@@ -55,7 +53,7 @@ class LoginForm(AuthenticationForm):
     }
 
 
-class CreateTransactionForm(forms.ModelForm):
+class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ["amount", "performed_at", "category", "name", "description"]
@@ -93,15 +91,15 @@ class CreateTransactionForm(forms.ModelForm):
         return amount
 
 
-class CreateCategoryForm(forms.Form):
+class CategoryForm(forms.Form):
     name = forms.CharField(label="Název kategorie", max_length=100, required=True)
     color = forms.CharField(label="Barva", max_length=7, required=True)
 
-    def __init__(self, *args, user=None, existing_preference_instance=None, **kwargs):
+    def __init__(self, *args, user=None, existing_instance=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
         self.category = None
-        self.existing_preference_instance = existing_preference_instance
+        self.existing_preference_instance = existing_instance
 
     def clean_color(self):
         color = self.cleaned_data.get("color")
@@ -115,7 +113,10 @@ class CreateCategoryForm(forms.Form):
         cleaned_data = super().clean()
         category_name = cleaned_data.get("name")
 
-        if self.existing_preference_instance is not None:
+        if (
+            self.existing_preference_instance is not None
+            and self.existing_preference_instance.category.is_default
+        ):
             self.category = self.existing_preference_instance.category
 
             if self.category.name != category_name:
@@ -124,7 +125,13 @@ class CreateCategoryForm(forms.Form):
             # ToDo: Can be written with one database query - join
             self.category = Category.objects.filter(name=category_name).first()
 
-            if self.existing_preference_instance is None and self.category and CategoryPreference.objects.filter(user=self.user, category=self.category).exists():
+            if (
+                self.existing_preference_instance is None
+                and self.category
+                and CategoryPreference.objects.filter(
+                    user=self.user, category=self.category
+                ).exists()
+            ):
                 raise ValidationError("Tuto kategorii už máte vytvořenou.")
 
         return cleaned_data
@@ -146,7 +153,7 @@ class CreateCategoryForm(forms.Form):
         return preference
 
 
-class CreateBudgetForm(forms.ModelForm):
+class BudgetForm(forms.ModelForm):
     class Meta:
         model = Budget
         fields = [
@@ -168,6 +175,12 @@ class CreateBudgetForm(forms.ModelForm):
         if period_end and period_start and period_end <= period_start:
             raise ValidationError("Konec období musí být po začátku období.")
         return period_end
+
+    def clean_categories(self):
+        categories = self.cleaned_data.get("categories")
+        if not categories:
+            raise ValidationError("Musíte vybrat alespoň jednu kategorii.")
+        return categories
 
     def save(self, commit=True):
         budget = super().save(commit=False)

@@ -1,6 +1,4 @@
 document.getElementById("submit-budget-btn").addEventListener("click", function (event) {
-    event.preventDefault();
-
     const form = document.getElementById("create-budget-form");
     const formData = new FormData(form);
     let isValid = true;
