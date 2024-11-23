@@ -1,11 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from finance_app.models import (
-    Transaction,
-    UserProfile,
-    CategoryPreference,
-    Budget
-)
+from finance_app.models import Transaction, UserProfile, CategoryPreference, Budget
 from finance_app.serializers import CategoryPreferenceSerializer
 
 

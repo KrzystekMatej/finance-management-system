@@ -117,7 +117,7 @@ def delete_category(request, category_preference_id):
             {
                 "success": True,
                 "message": (
-                    f'Kategorie byla úspěšně smazána, {updated_count} {transactions_inflection} '
+                    f"Kategorie byla úspěšně smazána, {updated_count} {transactions_inflection} "
                     'bylo přiřazeno k výchozí kategorii "Ostatní".'
                 ),
             }
