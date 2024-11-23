@@ -124,7 +124,13 @@ class CreateCategoryForm(forms.Form):
             # ToDo: Can be written with one database query - join
             self.category = Category.objects.filter(name=category_name).first()
 
-            if self.existing_preference_instance is None and self.category and CategoryPreference.objects.filter(user=self.user, category=self.category).exists():
+            if (
+                self.existing_preference_instance is None
+                and self.category
+                and CategoryPreference.objects.filter(
+                    user=self.user, category=self.category
+                ).exists()
+            ):
                 raise ValidationError("Tuto kategorii už máte vytvořenou.")
 
         return cleaned_data
