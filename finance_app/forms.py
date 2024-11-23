@@ -53,7 +53,48 @@ class LoginForm(AuthenticationForm):
     }
 
 
-class TransactionForm(forms.ModelForm):
+class FilterByDateForm(forms.Form):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+        required=False,
+        label="Start Date",
+    )
+    end_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+        required=False,
+        label="End Date",
+    )
+    min_amount = forms.DecimalField(
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+        required=False,
+        label="Minimum Amount",
+    )
+    max_amount = forms.DecimalField(
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+        required=False,
+        label="Maximum Amount",
+    )
+    categories = forms.ModelMultipleChoiceField(
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Categories",
+    )
+
+    # Override init to set categories queryset dynamically
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Use actual Category model instances for the queryset
+        categories = CategoryPreference.objects.filter(user=user).values_list(
+            "category", flat=True
+        )
+        self.fields["categories"].queryset = Category.objects.filter(
+            id__in=categories
+        ).order_by("name")
+
+
+class CreateTransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
         fields = ["amount", "performed_at", "category", "name", "description"]

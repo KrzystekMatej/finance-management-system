@@ -1,4 +1,5 @@
 from django import template
+import re
 
 register = template.Library()
 
@@ -50,3 +51,27 @@ def dec_to_int(value):
         return int(value)
     except (ValueError, TypeError):
         return value
+
+
+@register.filter
+def extract_number(value):
+    if isinstance(value, str):
+        match = re.search(r"\d+", value)
+        if match:
+            return int(match.group())
+    return None
+
+
+@register.filter
+def sort_categories(categories):
+    sorted_categories = []
+    for category in categories:
+        sorted_categories.append(category.name)
+
+    sorted_categories.sort()
+    return sorted_categories
+
+
+@register.filter
+def zip_lists(list1, list2):
+    return zip(list1, list2)
