@@ -1,6 +1,5 @@
 const transactionModal = new bootstrap.Modal(document.getElementById('transaction-modal'));
 const categoryModal = new bootstrap.Modal(document.getElementById('category-modal'));
-const recurrenceModal = new bootstrap.Modal(document.getElementById('recurrence-modal'));
 
 window.transactionModalIsHiding = false;
 
@@ -14,17 +13,12 @@ document.getElementById('open-transaction-category-modal').addEventListener('cli
     openModal(transactionModal, categoryModal);
 });
 
-document.getElementById('open-recurrence-modal').addEventListener('click', function() {
-    openModal(transactionModal, recurrenceModal);
-});
 
-['category-modal', 'recurrence-modal'].forEach(modalId => {
-    document.getElementById(modalId).addEventListener('hidden.bs.modal', function() {
-        if (transactionModalIsHiding) {
-            window.transactionModalIsHiding = false;
-            transactionModal.show();
-        }
-    });
+document.getElementById('category-modal').addEventListener('hidden.bs.modal', function() {
+    if (transactionModalIsHiding) {
+        window.transactionModalIsHiding = false;
+        transactionModal.show();
+    }
 });
 
 document.getElementById("submit-transaction-btn").addEventListener("click", function (event) {
@@ -97,6 +91,17 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
     }
 });
 
+document.getElementById("recurrent-transaction-checkbox").addEventListener("change", function (event) {
+    const selectContainer = document.getElementById('interval-select-container');
+    if (selectContainer.classList.contains("hidden"))
+    {
+        selectContainer.classList.remove("hidden")
+    }
+    else
+    {
+        selectContainer.classList.add("hidden")
+    }
+});
 
 // Update value in form depending whether it's incoming or outcoming transaction
 document.addEventListener("DOMContentLoaded", function() {
@@ -113,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let amount = amountInput.value;
         let char = amount.slice(-1);
 
-        if (isNaN(amount) && char != ".") {
+        if (isNaN(amount) && char !== ".") {
             amountInput.value = previousAmount;
             return;
         }

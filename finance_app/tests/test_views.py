@@ -232,7 +232,6 @@ class CreateCategoryViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
-        # self.assertIn("Tuto kategorii už máte vytvořenou.", response.json()["errors"])
 
     def test_create_category_failure_invalid_color_format(self):
         data = {
@@ -245,7 +244,6 @@ class CreateCategoryViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
-        # self.assertIn("Neplatný formát barvy.", response.json()["errors"])
 
     def test_create_category_failure_missing_color(self):
         data = {
@@ -257,7 +255,6 @@ class CreateCategoryViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
-        # self.assertIn("Tento údaj je povinný.", response.json()["errors"]["color"])
 
     def test_create_category_failure_missing_name(self):
         data = {
@@ -269,7 +266,6 @@ class CreateCategoryViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
-        # self.assertIn("Tento údaj je povinný.", response.json()["errors"]["name"])
 
     def test_create_category_failure_empty_name(self):
         data = {
@@ -281,4 +277,3 @@ class CreateCategoryViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
-        # self.assertIn("Tento údaj je povinný.", response.json()["errors"]["name"])

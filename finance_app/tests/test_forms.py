@@ -127,7 +127,7 @@ class CreateTransactionFormTests(TestCase):
 
     def test_create_transaction_empty_name(self):
         form_data = {
-            "name": "",  # Empty string
+            "name": "",
             "amount": Decimal("150.00"),
             "performed_at": timezone.now().date(),
             "category": self.category.id,

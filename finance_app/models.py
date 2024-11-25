@@ -1,6 +1,9 @@
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from django.conf import settings
 from enum import Enum
+from calendar import monthrange
 
 
 class NotificationMode(Enum):
@@ -77,6 +80,7 @@ class RecurringTransaction(Transaction):
         ],
         default=TimeInterval.MONTH.value,
     )
+    last_performed_at = models.DateTimeField()
 
     @property
     def interval(self):
@@ -85,6 +89,48 @@ class RecurringTransaction(Transaction):
     @interval.setter
     def interval(self, enum_value):
         self._interval = enum_value.value
+
+    @staticmethod
+    def get_next_date(base_date, interval):
+        match interval:
+            case TimeInterval.DAY:
+                return base_date + timedelta(days=1)
+            case TimeInterval.WEEK:
+                return base_date + timedelta(weeks=1)
+            case TimeInterval.MONTH:
+                next_month = (base_date.month % 12) + 1
+                year = base_date.year + (1 if next_month == 1 else 0)
+                last_day_of_next_month = monthrange(year, next_month)[1]
+
+                day = min(base_date.day, last_day_of_next_month)
+
+                return base_date.replace(year=year, month=next_month, day=day)
+            case TimeInterval.YEAR:
+                try:
+                    return base_date.replace(year=base_date.year + 1)
+                except ValueError:
+                    return base_date.replace(year=base_date.year + 1, day=28)
+
+    def process(self):
+        current_time = timezone.now()
+
+        next_generation_date = self.last_performed_at
+        while True:
+            next_generation_date = self.get_next_date(next_generation_date, self.interval)
+
+            if next_generation_date > current_time:
+                break
+
+            Transaction.objects.create(
+                name=self.name,
+                amount=self.amount,
+                performed_at=next_generation_date,
+                user=self.user,
+                category=self.category
+            )
+
+        self.last_generated_at = next_generation_date
+        self.save()
 
 
 class Budget(models.Model):

@@ -75,3 +75,7 @@ input[readonly] {
     pointer-events: none;
     color: #495057;
 }
+
+.hidden {
+    display: none;
+}

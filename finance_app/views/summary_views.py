@@ -5,7 +5,7 @@ from finance_app.models import (
     UserProfile,
     Category,
     CategoryPreference,
-    Budget,
+    Budget, RecurringTransaction,
 )
 from finance_app.serializers import CategoryPreferenceSerializer
 from finance_app.forms import FilterByDateForm
@@ -106,7 +106,7 @@ def get_monthly_summaries(request, all_transactions):
 
 
 @login_required(login_url="login")
-def filter(request):
+def filter_page(request):
     form = FilterByDateForm(
         request.user, request.GET or None
     )  # Pass the user to the form
@@ -154,6 +154,11 @@ def filter(request):
 
     return render(request, "filter.html", context)
 
+def process_recurring_transactions(user):
+    transactions = RecurringTransaction.objects.filter(user=user)
+
+    for transaction in transactions:
+        transaction.process()
 
 @login_required(login_url="login")
 def main_page(request):

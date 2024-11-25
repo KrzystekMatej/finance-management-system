@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from finance_app.models import Transaction, Category, CategoryPreference, Budget
+from finance_app.models import Transaction, Category, CategoryPreference, Budget, RecurringTransaction, TimeInterval
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
@@ -11,9 +11,9 @@ from finance_app.logging import logger
 
 
 class RegistrationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True, label="Jméno")
-    last_name = forms.CharField(max_length=30, required=True, label="Příjmení")
-    email = forms.EmailField(required=True, label="Email")
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(required=True)
 
     class Meta:
         model = get_user_model()
@@ -132,9 +132,33 @@ class TransactionForm(forms.ModelForm):
         return amount
 
 
+class RecurringTransactionForm(TransactionForm):
+    INTERVAL_CHOICES = [
+        (TimeInterval.DAY.value, gettext_lazy("Den")),  # Day
+        (TimeInterval.WEEK.value, gettext_lazy("Týden")),  # Week
+        (TimeInterval.MONTH.value, gettext_lazy("Měsíc")),  # Month
+        (TimeInterval.YEAR.value, gettext_lazy("Rok")),  # Year
+    ]
+
+    interval = forms.ChoiceField(
+        choices=INTERVAL_CHOICES,
+        required=True
+    )
+
+    class Meta(TransactionForm.Meta):
+        model = RecurringTransaction
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance._interval = self.cleaned_data['interval']
+        if commit:
+            instance.save()
+        return instance
+
+
 class CategoryForm(forms.Form):
-    name = forms.CharField(label="Název kategorie", max_length=100, required=True)
-    color = forms.CharField(label="Barva", max_length=7, required=True)
+    name = forms.CharField(max_length=100, required=True)
+    color = forms.CharField(max_length=7, required=True)
 
     def __init__(self, *args, user=None, existing_instance=None, **kwargs):
         super().__init__(*args, **kwargs)
