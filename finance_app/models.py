@@ -116,7 +116,9 @@ class RecurringTransaction(Transaction):
 
         next_generation_date = self.last_performed_at
         while True:
-            next_generation_date = self.get_next_date(next_generation_date, self.interval)
+            next_generation_date = self.get_next_date(
+                next_generation_date, self.interval
+            )
 
             if next_generation_date > current_time:
                 break
@@ -126,7 +128,7 @@ class RecurringTransaction(Transaction):
                 amount=self.amount,
                 performed_at=next_generation_date,
                 user=self.user,
-                category=self.category
+                category=self.category,
             )
 
         self.last_generated_at = next_generation_date

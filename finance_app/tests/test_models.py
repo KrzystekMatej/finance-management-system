@@ -9,7 +9,8 @@ from finance_app.models import (
     SharedBudget,
     BudgetRole,
     BudgetPermission,
-    TimeInterval, RecurringTransaction
+    TimeInterval,
+    RecurringTransaction,
 )
 from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta
@@ -106,42 +107,66 @@ class RecurringTransactionTests(TestCase):
     def test_daily_interval(self):
         base_date = datetime(2024, 5, 31)
         expected_date = datetime(2024, 6, 1)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.DAY), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.DAY),
+            expected_date,
+        )
 
     def test_weekly_interval(self):
         base_date = datetime(2024, 5, 26)
         expected_date = datetime(2024, 6, 2)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.WEEK), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.WEEK),
+            expected_date,
+        )
 
     def test_monthly_interval_same_day(self):
         base_date = datetime(2023, 4, 25)
         expected_date = datetime(2023, 5, 25)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH),
+            expected_date,
+        )
 
     def test_monthly_interval_february_leap_year(self):
         base_date = datetime(2024, 1, 31)
         expected_date = datetime(2024, 2, 29)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH),
+            expected_date,
+        )
 
     def test_monthly_interval_february_non_leap_year(self):
         base_date = datetime(2023, 1, 31)
         expected_date = datetime(2023, 2, 28)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH),
+            expected_date,
+        )
 
     def test_monthly_interval_march_april(self):
         base_date = datetime(2023, 3, 31)
         expected_date = datetime(2023, 4, 30)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.MONTH),
+            expected_date,
+        )
 
     def test_yearly_interval_leap(self):
         base_date = datetime(2024, 2, 29)
         expected_date = datetime(2025, 2, 28)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.YEAR), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.YEAR),
+            expected_date,
+        )
 
     def test_yearly_interval_same_day(self):
         base_date = datetime(2024, 6, 17)
         expected_date = datetime(2025, 6, 17)
-        self.assertEqual(RecurringTransaction.get_next_date(base_date, TimeInterval.YEAR), expected_date)
+        self.assertEqual(
+            RecurringTransaction.get_next_date(base_date, TimeInterval.YEAR),
+            expected_date,
+        )
 
 
 class BudgetTests(TestCase):

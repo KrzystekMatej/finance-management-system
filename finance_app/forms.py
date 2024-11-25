@@ -1,6 +1,13 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from finance_app.models import Transaction, Category, CategoryPreference, Budget, RecurringTransaction, TimeInterval
+from finance_app.models import (
+    Transaction,
+    Category,
+    CategoryPreference,
+    Budget,
+    RecurringTransaction,
+    TimeInterval,
+)
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
@@ -140,17 +147,14 @@ class RecurringTransactionForm(TransactionForm):
         (TimeInterval.YEAR.value, gettext_lazy("Rok")),  # Year
     ]
 
-    interval = forms.ChoiceField(
-        choices=INTERVAL_CHOICES,
-        required=True
-    )
+    interval = forms.ChoiceField(choices=INTERVAL_CHOICES, required=True)
 
     class Meta(TransactionForm.Meta):
         model = RecurringTransaction
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance._interval = self.cleaned_data['interval']
+        instance._interval = self.cleaned_data["interval"]
         if commit:
             instance.save()
         return instance
