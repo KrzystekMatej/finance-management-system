@@ -40,10 +40,10 @@
               <label for="id_categories">Kategorie:</label>
               <div class="multi-choice">
                 <div class="form-group">
-                  {% for checkbox, category in form.categories|zip_lists:categories %}
+                  {% for checkbox, category_preference in form.categories|zip_lists:categories %}
                     <label class="form-check-label no-select w-100"
                            for="{{ checkbox.id_for_label }}">
-                      <div class="form-check">{{ checkbox.tag }} {{ category.name }}</div>
+                      <div class="form-check">{{ checkbox.tag }} {{ category_preference.category.name }}</div>
                     </label>
                   {% endfor %}
                 </div>

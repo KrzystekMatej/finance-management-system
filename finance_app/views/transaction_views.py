@@ -12,8 +12,8 @@ def create_transaction(request):
         request.method == "POST"
         and request.headers.get("x-requested-with") == "XMLHttpRequest"
     ):
-
-        if request.POST.get("is_recurring") == "true":
+        logger.debug(request.POST)
+        if request.POST.get("is-recurring") == "on":
             form = RecurringTransactionForm(request.POST)
         else:
             form = TransactionForm(request.POST)

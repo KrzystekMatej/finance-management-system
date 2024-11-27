@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 from finance_app.models import (
     Transaction,
     UserProfile,
-    Category,
     CategoryPreference,
-    Budget, RecurringTransaction,
+    Budget,
+    RecurringTransaction,
 )
 from finance_app.serializers import CategoryPreferenceSerializer
 from finance_app.forms import FilterByDateForm
@@ -107,10 +107,12 @@ def get_monthly_summaries(request, all_transactions):
 
 @login_required(login_url="login")
 def filter_page(request):
+    process_recurring_transactions(request.user)
+
     form = FilterByDateForm(
         request.user, request.GET or None
     )  # Pass the user to the form
-    transactions = Transaction.objects.filter(user_id=request.user.id)
+    transactions = Transaction.get_non_recurring_transactions(user=request.user)
 
     if form.is_valid():
         start_date = form.cleaned_data.get("start_date")
@@ -141,18 +143,22 @@ def filter_page(request):
         category_id = transaction.category.id if transaction.category else None
         transaction.category_color = color_map.get(category_id, "#fff")
 
-    categories = CategoryPreference.objects.filter(user=request.user).values_list(
-        "category", flat=True
+    categories = (
+        CategoryPreference.objects.filter(user=request.user)
+        .select_related("category")
+        .order_by("category__name")
     )
 
     context = {
         "transactions": transactions,
-        "categories": Category.objects.filter(id__in=categories).order_by("name"),
+        "categories": categories,
+        "categories_json": CategoryPreferenceSerializer(categories, many=True).data,
         "user_profile": UserProfile.objects.get(user=request.user),
         "form": form,
     }
 
     return render(request, "filter.html", context)
+
 
 def process_recurring_transactions(user):
     transactions = RecurringTransaction.objects.filter(user=user)
@@ -160,13 +166,16 @@ def process_recurring_transactions(user):
     for transaction in transactions:
         transaction.process()
 
+
 @login_required(login_url="login")
 def main_page(request):
+    process_recurring_transactions(request.user)
+
     categories = CategoryPreference.objects.filter(user=request.user)
 
     context = {
         "monthly_summaries": get_monthly_summaries(
-            request, Transaction.objects.filter(user_id=request.user.id)
+            request, Transaction.get_non_recurring_transactions(user=request.user)
         ),
         "categories": categories,
         "categories_json": CategoryPreferenceSerializer(categories, many=True).data,

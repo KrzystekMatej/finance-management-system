@@ -108,23 +108,22 @@
             <div class="form-check me-3 flex-grow-1">
               <input type="checkbox"
                      class="form-check-input"
-                     id="recurrent-transaction-checkbox"
+                     id="recurring-transaction-checkbox"
                      name="is-recurring">
-              <label class="form-check-label no-select" for="recurrent-transaction-checkbox">Rekurentní transakce</label>
+              <label class="form-check-label no-select"
+                     for="recurring-transaction-checkbox">Rekurentní transakce</label>
             </div>
           </div>
-            <div class="mb-3 hidden" id="interval-select-container">
-              <label for="interval-select" class="form-label">Frekvence opakování</label>
-              <select class="form-select"
-                      id="interval-select"
-                      name="interval">
-                <option value="daily">Každý den</option>
-                <option value="weekly">Každý týden</option>
-                <option value="monthly">Každý měsíc</option>
-                <option value="yearly">Každý rok</option>
-              </select>
-            </div>
-            </div>
+          <div class="mb-3 hidden" id="interval-select-container">
+            <label for="interval-select" class="form-label">Frekvence opakování</label>
+            <select class="form-select" id="interval-select" name="interval">
+              <option value="DAY">Každý den</option>
+              <option value="WEEK">Každý týden</option>
+              <option value="MONTH">Každý měsíc</option>
+              <option value="YEAR">Každý rok</option>
+            </select>
+          </div>
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" id="submit-transaction-btn">Vytvořit transakci</button>
         </div>

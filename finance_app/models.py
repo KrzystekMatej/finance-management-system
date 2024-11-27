@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings
 from enum import Enum
 from calendar import monthrange
+from django.db.models import Q
 
 
 class NotificationMode(Enum):
@@ -71,6 +72,13 @@ class Transaction(models.Model):
     class Meta:
         ordering = ["-performed_at"]
 
+    @staticmethod
+    def get_non_recurring_transactions(user):
+        non_recurring_transactions = Transaction.objects.filter(
+            Q(user=user) & ~Q(recurringtransaction__isnull=False)
+        )
+        return non_recurring_transactions
+
 
 class RecurringTransaction(Transaction):
     _interval = models.CharField(
@@ -80,7 +88,7 @@ class RecurringTransaction(Transaction):
         ],
         default=TimeInterval.MONTH.value,
     )
-    last_performed_at = models.DateTimeField()
+    next_performed_at = models.DateTimeField()
 
     @property
     def interval(self):
@@ -114,22 +122,19 @@ class RecurringTransaction(Transaction):
     def process(self):
         current_time = timezone.now()
 
-        next_generation_date = self.last_performed_at
-        while True:
-            next_generation_date = self.get_next_date(next_generation_date, self.interval)
-
-            if next_generation_date > current_time:
-                break
-
+        while self.next_performed_at < current_time:
             Transaction.objects.create(
                 name=self.name,
                 amount=self.amount,
-                performed_at=next_generation_date,
+                performed_at=self.next_performed_at,
                 user=self.user,
-                category=self.category
+                category=self.category,
             )
 
-        self.last_generated_at = next_generation_date
+            self.next_performed_at = self.get_next_date(
+                self.next_performed_at, self.interval
+            )
+
         self.save()
 
 

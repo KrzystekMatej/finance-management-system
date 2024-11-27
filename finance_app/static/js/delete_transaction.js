@@ -4,9 +4,7 @@ document.querySelectorAll(".delete-transaction").forEach(button => {
         function () {
             const userConfirmed = confirm("Opravdu chcete smazat tuto transakci?");
 
-            if (!userConfirmed) {
-                return;
-            }
+            if (!userConfirmed) return;
 
             const transactionId = this.dataset.transactionId;
 

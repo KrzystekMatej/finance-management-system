@@ -1,13 +1,19 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from finance_app.models import Transaction, Category, CategoryPreference, Budget, RecurringTransaction, TimeInterval
+from finance_app.models import (
+    Transaction,
+    Category,
+    CategoryPreference,
+    Budget,
+    RecurringTransaction,
+    TimeInterval,
+)
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
-from finance_app.logging import logger
 
 
 class RegistrationForm(UserCreationForm):
@@ -107,7 +113,6 @@ class TransactionForm(forms.ModelForm):
 
     def clean_amount(self):
         amount = self.cleaned_data.get("amount")
-        logger.info(amount)
         if amount is None:
             raise ValidationError("Částka je povinná.")
 
@@ -141,8 +146,10 @@ class RecurringTransactionForm(TransactionForm):
     ]
 
     interval = forms.ChoiceField(
-        choices=INTERVAL_CHOICES,
-        required=True
+        choices=[
+            (interval.value, interval.name.capitalize()) for interval in TimeInterval
+        ],
+        required=True,
     )
 
     class Meta(TransactionForm.Meta):
@@ -150,7 +157,9 @@ class RecurringTransactionForm(TransactionForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance._interval = self.cleaned_data['interval']
+        instance._interval = self.cleaned_data["interval"]
+        if not instance.next_performed_at:
+            instance.next_performed_at = instance.performed_at
         if commit:
             instance.save()
         return instance

@@ -46,23 +46,23 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
     const formattedAmount = amountField.value.replace(",", ".");
     formData.set("transaction-amount", formattedAmount);
 
-    const dateField = form.elements["transaction-performed-at"];
+    const performedAtField = form.elements["transaction-performed-at"];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const selectedDate = new Date(dateField.value);
-    if (!dateField.value || selectedDate > today) {
-        dateField.classList.add("is-invalid");
+    const selectedDate = new Date(performedAtField.value);
+    if (!performedAtField.value || selectedDate > today) {
+        performedAtField.classList.add("is-invalid");
         isValid = false;
     } else {
-        const inputDate = new Date(dateField.value);
+        const inputDate = new Date(performedAtField.value);
         const currentDate = new Date();
 
         if (inputDate > currentDate) {
-            dateField.classList.add("is-invalid");
+            performedAtField.classList.add("is-invalid");
             isValid = false;
             // ToDo - message - "Datum a čas transakce nesmí být v budoucnosti."
         } else {
-            dateField.classList.remove("is-invalid");
+            performedAtField.classList.remove("is-invalid");
         }
     }
 
