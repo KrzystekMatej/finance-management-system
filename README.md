@@ -123,6 +123,7 @@ classDiagram
     
     class RecurringTransaction {
         +TimeInterval interval
+        +Date next_performed_at
     }
     
     class Budget {

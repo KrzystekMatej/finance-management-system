@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from finance_app.forms import TransactionForm
+from finance_app.forms import TransactionForm, RecurringTransactionForm
+from finance_app.logging import logger
 from finance_app.models import Transaction, UserProfile, CategoryPreference
 
 
@@ -11,7 +12,12 @@ def create_transaction(request):
         request.method == "POST"
         and request.headers.get("x-requested-with") == "XMLHttpRequest"
     ):
-        form = TransactionForm(request.POST)
+        logger.debug(request.POST)
+        if request.POST.get("is-recurring") == "on":
+            form = RecurringTransactionForm(request.POST)
+        else:
+            form = TransactionForm(request.POST)
+
         if form.is_valid():
             transaction = form.save(commit=False)
             transaction.user = request.user

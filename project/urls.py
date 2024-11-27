@@ -7,7 +7,7 @@ from finance_app.views.auth_views import (
     logout_page,
     register_success,
 )
-from finance_app.views.summary_views import filter, main_page
+from finance_app.views.summary_views import filter_page, main_page
 from finance_app.views.guide_views import tutorial
 from finance_app.views.transaction_views import (
     create_transaction,
@@ -63,7 +63,7 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     # summary views
-    path("filter/", filter, name="filter"),
+    path("filter/", filter_page, name="filter"),
     path("", main_page, name="main_page"),
     # guide views
     path("tutorial/", tutorial, name="tutorial"),

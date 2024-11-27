@@ -1,6 +1,5 @@
 const transactionModal = new bootstrap.Modal(document.getElementById('transaction-modal'));
 const categoryModal = new bootstrap.Modal(document.getElementById('category-modal'));
-const recurrenceModal = new bootstrap.Modal(document.getElementById('recurrence-modal'));
 
 window.transactionModalIsHiding = false;
 
@@ -14,18 +13,73 @@ document.getElementById('open-transaction-category-modal').addEventListener('cli
     openModal(transactionModal, categoryModal);
 });
 
-document.getElementById('open-recurrence-modal').addEventListener('click', function() {
-    openModal(transactionModal, recurrenceModal);
+
+document.getElementById('category-modal').addEventListener('hidden.bs.modal', function() {
+    if (transactionModalIsHiding) {
+        window.transactionModalIsHiding = false;
+        transactionModal.show();
+    }
 });
 
-['category-modal', 'recurrence-modal'].forEach(modalId => {
-    document.getElementById(modalId).addEventListener('hidden.bs.modal', function() {
-        if (transactionModalIsHiding) {
-            window.transactionModalIsHiding = false;
-            transactionModal.show();
+const TimeInterval = {
+    DAY: 'DAY',
+    WEEK: 'WEEK',
+    MONTH: 'MONTH',
+    YEAR: 'YEAR',
+};
+
+function getNextDate(baseDate, interval) {
+    const base = new Date(baseDate);
+    switch (interval) {
+        case TimeInterval.DAY:
+            return new Date(base.setDate(base.getDate() + 1));
+
+        case TimeInterval.WEEK:
+            return new Date(base.setDate(base.getDate() + 7));
+
+        case TimeInterval.MONTH: {
+            const nextMonth = (base.getMonth() + 1) % 12;
+            const year = base.getFullYear() + (nextMonth === 0 ? 1 : 0);
+            const lastDayOfNextMonth = new Date(year, nextMonth + 1, 0).getDate();
+
+            const day = Math.min(base.getDate(), lastDayOfNextMonth);
+            base.setFullYear(year);
+            base.setMonth(nextMonth);
+            base.setDate(day);
+            return base;
         }
-    });
-});
+
+        case TimeInterval.YEAR:
+            try {
+                base.setFullYear(base.getFullYear() + 1);
+                return base;
+            } catch (error) {
+                base.setFullYear(base.getFullYear() + 1);
+                base.setDate(28); // Handle leap year edge cases
+                return base;
+            }
+
+        default:
+            throw new Error('Invalid TimeInterval');
+    }
+}
+
+function computeGeneratedTransactionCount(lastPerformedAt, interval) {
+    const currentTime = new Date();
+    let nextGenerationDate = new Date(lastPerformedAt);
+    let transactionCount = 1;
+    while (true) {
+        nextGenerationDate = getNextDate(nextGenerationDate, interval);
+
+        if (nextGenerationDate > currentTime) {
+            break;
+        }
+
+        transactionCount++;
+    }
+
+    return transactionCount;
+}
 
 document.getElementById("submit-transaction-btn").addEventListener("click", function (event) {
     const form = document.getElementById("create-transaction-form");
@@ -40,23 +94,23 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
         amountField.classList.remove("is-invalid");
     }
 
-    const dateField = form.elements["transaction-performed-at"];
+    const performedAtField = form.elements["transaction-performed-at"];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const selectedDate = new Date(dateField.value);
-    if (!dateField.value || selectedDate > today) {
-        dateField.classList.add("is-invalid");
+    const selectedDate = new Date(performedAtField.value);
+    if (!performedAtField.value || selectedDate > today) {
+        performedAtField.classList.add("is-invalid");
         isValid = false;
     } else {
-        const inputDate = new Date(dateField.value);
+        const inputDate = new Date(performedAtField.value);
         const currentDate = new Date();
 
         if (inputDate > currentDate) {
-            dateField.classList.add("is-invalid");
+            performedAtField.classList.add("is-invalid");
             isValid = false;
             // ToDo - message - "Datum a čas transakce nesmí být v budoucnosti."
         } else {
-            dateField.classList.remove("is-invalid");
+            performedAtField.classList.remove("is-invalid");
         }
     }
 
@@ -76,7 +130,20 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
         nameField.classList.remove("is-invalid");
     }
 
-    if(isValid){
+    if(isValid) {
+        const isRecurring = document.getElementById('recurring-transaction-checkbox').checked;
+
+        if (isRecurring)
+        {
+            const transactionCount = computeGeneratedTransactionCount(performedAtField.value, form.elements["interval"].value)
+            const userConfirmed = confirm(
+                "Po vytvoření této rekurentní transakce dojde " +
+                `k vygenerování ${transactionCount} transakcí. Určitě chcete pokračovat?`
+            )
+
+            if (!userConfirmed) return;
+        }
+
         fetch("/create-transaction/", {
             method: "POST",
             headers: {
@@ -97,6 +164,17 @@ document.getElementById("submit-transaction-btn").addEventListener("click", func
     }
 });
 
+document.getElementById("recurring-transaction-checkbox").addEventListener("change", function (event) {
+    const selectContainer = document.getElementById('interval-select-container');
+    if (selectContainer.classList.contains("hidden"))
+    {
+        selectContainer.classList.remove("hidden")
+    }
+    else
+    {
+        selectContainer.classList.add("hidden")
+    }
+});
 
 // Update value in form depending whether it's incoming or outcoming transaction
 document.addEventListener("DOMContentLoaded", function() {
@@ -113,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let amount = amountInput.value;
         let char = amount.slice(-1);
 
-        if (isNaN(amount) && char != ".") {
+        if (isNaN(amount) && char !== ".") {
             amountInput.value = previousAmount;
             return;
         }
