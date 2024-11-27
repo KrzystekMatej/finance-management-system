@@ -158,8 +158,10 @@ class RecurringTransactionForm(TransactionForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance._interval = self.cleaned_data["interval"]
+
         if not instance.next_performed_at:
             instance.next_performed_at = instance.performed_at
+
         if commit:
             instance.save()
         return instance
