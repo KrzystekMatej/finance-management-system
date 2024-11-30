@@ -430,12 +430,8 @@ def add_budgets_for_user(user, categories):
 
 
 def add_users():
-    default_categories = category_table.filter(
-        lambda category: category["is_default"]
-    )
-    user_categories = category_table.filter(
-        lambda category: not category["is_default"]
-    )
+    default_categories = category_table.filter(lambda category: category["is_default"])
+    user_categories = category_table.filter(lambda category: not category["is_default"])
 
     for first_name, last_name in zip(first_names, last_names):
         user = {
@@ -469,6 +465,7 @@ def add_users():
         user_profile_table.add_record(user_profile)
 
         add_budgets_for_user(user, categories)
+
 
 def add_categories():
     for category_name in default_category_names:
