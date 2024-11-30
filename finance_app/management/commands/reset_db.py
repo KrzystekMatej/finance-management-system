@@ -29,7 +29,7 @@ class Command(BaseCommand):
                         if os.path.isfile(os.path.join(migrations_path, f))
                     ]
                     for file in migrations:
-                        if file != "__init__.py":  # Keep __init__.py
+                        if file != "__init__.py":
                             os.remove(os.path.join(migrations_path, file))
 
         self.stdout.write("Creating migrations...")

@@ -5,18 +5,14 @@
 python -m venv env
 .\env\Scripts\activate
 pip install -r requirements.txt
-python manage.py migrate
-python manage.py populate_db
+python manage.py reset_db
 python manage.py runserver
 ```
 
 ## If project is already setup
 ```bash
 .\env\Scripts\activate
-del db.sqlite3
-python manage.py clear_db
-python manage.py migrate
-python manage.py populate_db
+python manage.py reset_db
 python manage.py runserver
 ```
 
