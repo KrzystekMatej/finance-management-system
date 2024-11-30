@@ -125,13 +125,15 @@ class RecurringTransaction(Transaction):
         generated_transactions = []
 
         while self.next_performed_at < current_time:
-            generated_transactions.append(Transaction(
-                name=self.name,
-                amount=self.amount,
-                performed_at=self.next_performed_at,
-                user=self.user,
-                category=self.category
-            ))
+            generated_transactions.append(
+                Transaction(
+                    name=self.name,
+                    amount=self.amount,
+                    performed_at=self.next_performed_at,
+                    user=self.user,
+                    category=self.category,
+                )
+            )
 
             self.next_performed_at = self.get_next_date(
                 self.next_performed_at, self.interval
