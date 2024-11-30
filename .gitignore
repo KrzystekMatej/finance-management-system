@@ -48,3 +48,5 @@ ENV/
 *.swo
 *.swn
 .coverage
+
+populate_script.sql
