@@ -470,7 +470,6 @@ def add_users():
 
         add_budgets_for_user(user, categories)
 
-
 def add_categories():
     for category_name in default_category_names:
         category = {"name": category_name, "is_default": True}
