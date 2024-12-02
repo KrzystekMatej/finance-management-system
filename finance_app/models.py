@@ -79,6 +79,13 @@ class Transaction(models.Model):
         )
         return non_recurring_transactions
 
+    @staticmethod
+    def get_recurring_transactions(user):
+        recurring_transactions = Transaction.objects.filter(
+            Q(user=user) & ~Q(recurringtransaction__isnull=True)
+        )
+        return recurring_transactions
+
 
 class RecurringTransaction(Transaction):
     _interval = models.CharField(

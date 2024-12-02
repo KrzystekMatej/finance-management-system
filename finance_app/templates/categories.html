@@ -14,7 +14,7 @@
           <strong>Barva</strong>
         </div>
       </div>
-      <div class="categories-body" id="categories-table-body">
+      <div class="categories-body spacer-top" id="categories-table-body">
         {% for preference in categories %}
           <form class="edit-category-form d-flex align-items-center mb-2"
                 method="post"
@@ -50,15 +50,15 @@
                   <i class="fas fa-save text-primary"></i>
                 </button>
               </div>
-              {% if preference.category.is_default == False %}
-                <div class="delete-actions text-center px-2">
+              <div class="icon-placeholder">
+                {% if preference.category.is_default == False %}
                   <button type="button"
                           class="btn btn-link p-0 delete-category-btn"
                           data-category-preference-id="{{ preference.id }}">
                     <i class="fas fa-trash-alt text-danger"></i>
                   </button>
-                </div>
-              {% endif %}
+                {% endif %}
+              </div>
             </div>
           </form>
         {% endfor %}

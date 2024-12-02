@@ -120,6 +120,12 @@
         <div class="transaction {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
           <div class="row width-100">
             <div class="col-md-3 vert-center">
+              <span class="icon-placeholder">
+                {% if transaction.id in recurring_ids %}
+                  <i class="fa fa-refresh spacer-right"
+                     title="Jedná se o opakovanou transakci"></i>
+                {% endif %}
+              </span>
               <span class="transaction-date truncate-text"
                     title="{{ transaction.performed_at }}">{{ transaction.performed_at }}</span>
             </div>

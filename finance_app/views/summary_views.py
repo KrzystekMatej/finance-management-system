@@ -172,11 +172,13 @@ def main_page(request):
     process_recurring_transactions(request.user)
 
     categories = CategoryPreference.objects.filter(user=request.user)
-    Transaction.get_non_recurring_transactions(user=request.user)
 
     context = {
         "monthly_summaries": get_monthly_summaries(
             request, Transaction.get_non_recurring_transactions(user=request.user)
+        ),
+        "recurring_summaries": get_monthly_summaries(
+            request, Transaction.get_recurring_transactions(user=request.user)
         ),
         "categories": categories,
         "categories_json": CategoryPreferenceSerializer(categories, many=True).data,

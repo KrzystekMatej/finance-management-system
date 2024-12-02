@@ -22,29 +22,29 @@
     <div class="col-md-8 d-flex justify-content-center align-items-center no-select">
       <div id="header-functions">
         <button type="button"
-                class="btn btn-primary"
+                class="btn btn-primary fixed-button-width"
                 data-bs-toggle="modal"
                 data-bs-target="#category-modal">Vytvořit kategorii</button>
         <button type="button"
-                class="btn btn-primary"
+                class="btn btn-primary fixed-button-width"
                 data-bs-toggle="modal"
                 data-bs-target="#transaction-modal">Vytvořit transakci</button>
         <a href="{% url 'filter' %}"
-           class="btn btn-primary no-highlight"
+           class="btn btn-primary no-highlight fixed-button-width"
            id="link_button">Filtrovat transakce</a>
         <a href="{% url 'main_page' %}"
-           class="btn btn-primary no-highlight"
+           class="btn btn-primary no-highlight fixed-button-width"
            id="link_button">Hlavní stránka</a>
         <a href="{% url 'budgets' %}"
-           class="btn btn-primary no-highlight"
+           class="btn btn-primary no-highlight fixed-button-width"
            id="link_button">Správa rozpočtů</a>
         <a href="{% url 'categories' %}"
-           class="btn btn-primary no-highlight"
+           class="btn btn-primary no-highlight fixed-button-width"
            id="link_button">Kategorie</a>
       </div>
     </div>
     <div class="col-md-2 text-end">
-      <div class="row">
+      <div class="row spacer-right">
         <div id="header-user" class="no-select">
           <span class="white bold mobile-centering truncate-text"
                 title="{{ request.user.first_name }} {{ request.user.last_name }}">{{ request.user.first_name }} {{ request.user.last_name }}

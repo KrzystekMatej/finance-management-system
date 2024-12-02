@@ -114,3 +114,13 @@
 .h-50{
   height: 50%;
 }
+
+.fixed-button-width{
+  width: 160px;
+}
+
+.icon-placeholder {
+  display: inline-block;
+  width: 24px;
+  margin-left: 8px;
+}
