@@ -63,6 +63,14 @@ def get_monthly_summaries(request, all_transactions):
         outcoming_totals = {}
 
         for transaction in month_transactions:
+            if (
+                hasattr(transaction, "recurringtransaction")
+                and transaction.recurringtransaction
+            ):
+                transaction.is_recurring = True
+            else:
+                transaction.is_recurring = False
+
             amount = float(transaction.amount)
             category_name = transaction.category.name
             category_id = transaction.category.id if transaction.category else None
@@ -175,15 +183,17 @@ def main_page(request):
 
     context = {
         "monthly_summaries": get_monthly_summaries(
-            request, Transaction.get_non_recurring_transactions(user=request.user)
-        ),
-        "recurring_summaries": get_monthly_summaries(
-            request, Transaction.get_recurring_transactions(user=request.user)
+            request, Transaction.objects.filter(user=request.user)
         ),
         "categories": categories,
         "categories_json": CategoryPreferenceSerializer(categories, many=True).data,
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": Budget.objects.filter(owner=request.user),
     }
+
+    # for month in context['monthly_summaries']:
+    #    for transaction in month['transactions']:
+    #      if transaction.is_recurring is True:
+    #        print("Is recurring")
 
     return render(request, "main_page.html", context)

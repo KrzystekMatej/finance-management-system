@@ -16,7 +16,7 @@
         <div class="col-md-2"></div>
         <div class="col-md-10 pe-5">
           <div class="row">
-            {% for summary, recurring in monthly_summaries|zip_lists:recurring_summaries %}
+            {% for summary in monthly_summaries %}
               {% include "monthly_summary.html" %}
             {% endfor %}
           </div>
