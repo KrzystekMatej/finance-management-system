@@ -191,5 +191,4 @@ def main_page(request):
         "budgets": Budget.objects.filter(owner=request.user),
     }
 
-
     return render(request, "main_page.html", context)
