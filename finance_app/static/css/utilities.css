@@ -115,7 +115,11 @@
   height: 50%;
 }
 
-.fixed-button-width{
+.fixed-button-small{
+  width: 100px;
+}
+
+.fixed-button-big{
   width: 160px;
 }
 

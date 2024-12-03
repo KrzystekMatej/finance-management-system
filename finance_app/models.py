@@ -130,7 +130,6 @@ class RecurringTransaction(Transaction):
         current_time = timezone.now()
 
         generated_transactions = []
-        # generated_recurrent_transactions = []
 
         while self.next_performed_at < current_time:
             generated_transactions.append(
@@ -140,16 +139,8 @@ class RecurringTransaction(Transaction):
                     performed_at=self.next_performed_at,
                     user=self.user,
                     category=self.category,
-                    # recurringtransaction=self
                 )
             )
-
-            # generated_recurrent_transactions.append(
-            #    RecurringTransaction(
-            #        _interval=self._interval,
-            #        performed_at=self.next_performed_at,
-            #    )
-            # )
 
             self.next_performed_at = self.get_next_date(
                 self.next_performed_at, self.interval
@@ -157,7 +148,6 @@ class RecurringTransaction(Transaction):
 
         if generated_transactions:
             Transaction.objects.bulk_create(generated_transactions)
-        # RecurringTransaction.objects.bulk_create(generated_recurrent_transactions)
 
         self.save()
 

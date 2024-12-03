@@ -84,10 +84,6 @@
       <div class="transaction {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
         <div class="row width-100">
           <div class="col-md-3 vert-center">
-            ID={{ transaction.id }}
-            <div class="icon-placeholder">
-              {% if transaction.is_recurring %}<i class="fa fa-refresh" title="Transakce je rekurentní"></i>{% endif %}
-            </div>
             <span class="transaction-date truncate-text"
                   title="{{ transaction.performed_at }}">{{ transaction.performed_at }}</span>
           </div>

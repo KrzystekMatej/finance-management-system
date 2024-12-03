@@ -183,7 +183,7 @@ def main_page(request):
 
     context = {
         "monthly_summaries": get_monthly_summaries(
-            request, Transaction.objects.filter(user=request.user)
+            request, Transaction.get_non_recurring_transactions(user=request.user)
         ),
         "categories": categories,
         "categories_json": CategoryPreferenceSerializer(categories, many=True).data,
@@ -191,9 +191,5 @@ def main_page(request):
         "budgets": Budget.objects.filter(owner=request.user),
     }
 
-    # for month in context['monthly_summaries']:
-    #    for transaction in month['transactions']:
-    #      if transaction.is_recurring is True:
-    #        print("Is recurring")
 
     return render(request, "main_page.html", context)
