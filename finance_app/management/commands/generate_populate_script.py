@@ -403,8 +403,10 @@ def add_budgets_for_user(user, categories):
         limit = random.randint(5000, 50000)
         chosen_categories = random.sample(categories, random.randint(1, 3))
 
+        categories_tmp = ", ".join([category["name"] for category in chosen_categories])
+
         budget = {
-            "name": f'Rozpočet pro {', '.join([category["name"] for category in chosen_categories])}',
+            "name": f"Rozpočet pro {categories_tmp}",
             "owner_id": user["id"],
             "created_at": start_date,
             "exceeded_at": None,

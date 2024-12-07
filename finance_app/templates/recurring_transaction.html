@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}
+  Správa rekurentních transakcí
+{% endblock title %}
+{% block content %}
+  {% include "header.html" %}
+  <div class="container mt-5 d-flex flex-column align-items-center">
+    {% for recurring_transaction in recurring_transactions %}
+      <form class="summary-module d-flex flex-column mb-3 w-100">
+        {% csrf_token %}
+        <div class="row w-100">
+          <!-- Název -->
+          <div class="col-md-3 mb-3">
+            <label for="name">
+              <b>Název</b>
+            </label>
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   value="{{ recurring_transaction.name }}">
+          </div>
+          <!-- Částka -->
+          <div class="col-md-3 mb-3">
+            <label for="amount">
+              <b>Částka</b>
+            </label>
+            <input type="decimal"
+                   name="amount"
+                   class="form-control"
+                   value="{{ recurring_transaction.amount }}">
+          </div>
+          <!-- Interval -->
+          <div class="col-md-3 mb-3">
+            <label for="interval">
+              <b>Interval</b>
+            </label>
+            <select name="interval" class="form-select">
+              <option value="DAY"
+                      {% if recurring_transaction.interval.value == "DAY" %}selected{% endif %}>Denně</option>
+              <option value="WEEK"
+                      {% if recurring_transaction.interval.value == "WEEK" %}selected{% endif %}>Týdně</option>
+              <option value="MONTH"
+                      {% if recurring_transaction.interval.value == "MONTH" %}selected{% endif %}>Měsíčně</option>
+              <option value="YEAR"
+                      {% if recurring_transaction.interval.value == "YEAR" %}selected{% endif %}>Ročně</option>
+            </select>
+          </div>
+          <!-- Kategorie -->
+          <div class="col-md-3 mb-3">
+            <label for="category">
+              <b>Kategorie</b>
+            </label>
+            <select name="category" class="form-select">
+              {% for category_preference in categories %}
+                <option value="{{ category_preference.category.id }}"
+                        {% if recurring_transaction.category.id == category_preference.category_id %}selected{% endif %}>
+                  {{ category_preference.category.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="row w-100 mb-3">
+          <!-- Období -->
+          <div class="col-md-4">
+            <div class="d-flex flex-column">
+              <label for="period_start">
+                <b>Datum</b>
+              </label>
+              <input type="datetime-local"
+                     name="period_start"
+                     class="form-control"
+                     value="{{ recurring_transaction.performed_at|date:'Y-m-d H:i' }}">
+            </div>
+          </div>
+          <!-- Poznámka -->
+          <div class="col-md-8">
+            <label for="description">
+              <b>Poznámka</b>
+            </label>
+            <textarea name="description" class="form-control">{{ recurring_transaction.description }}</textarea>
+          </div>
+        </div>
+        <div class="d-flex flex-row gap-3 ms-auto me-3">
+          <button type="submit" class="btn btn-link p-0 edit-category-btn">
+            <i class="fas fa-save text-primary fa-lg"></i>
+          </button>
+          <button type="button" class="btn btn-link p-0 delete-category-btn">
+            <i class="fas fa-trash-alt text-danger fa-lg"></i>
+          </button>
+        </div>
+      </form>
+    {% endfor %}
+  </div>
+{% endblock content %}

@@ -27,6 +27,9 @@ from finance_app.views.budget_views import (
     edit_budget,
     delete_budget,
 )
+from finance_app.views.recurring_transaction_views import (
+    recurring_transactions_page,
+)
 
 urlpatterns = [
     # auth views
@@ -98,4 +101,10 @@ urlpatterns = [
     path("create-budget/", create_budget, name="create-budget"),
     path("edit-budget/<int:budget_id>/", edit_budget, name="edit-budget"),
     path("delete-budget/<int:budget_id>/", delete_budget, name="delete-budget"),
+    # recurring transaction
+    path(
+        "recurring-transactions/",
+        recurring_transactions_page,
+        name="recurring_transactions",
+    ),
 ]
