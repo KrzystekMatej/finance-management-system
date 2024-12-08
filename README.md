@@ -74,6 +74,8 @@ python manage.py test
 
 [UI mockup](https://www.figma.com/design/eYu9ELOc3WdKGwBth3F1sO/Untitled?node-id=0-1&node-type=canvas)
 
+[Processes of project](https://docs.google.com/document/d/1XIyD3P5bkV1UHQEpMx7P9PDq5NtpDqV9/edit?usp=sharing&ouid=102689092095969383323&rtpof=true&sd=true)
+
 ## UML diagram
 
 ```mermaid
