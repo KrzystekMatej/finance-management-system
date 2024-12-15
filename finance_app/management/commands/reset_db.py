@@ -47,7 +47,9 @@ class Command(BaseCommand):
             call_command("execute_sql", sql_script)
 
             self.stdout.write(
-                self.style.SUCCESS("Database reset and populated successfully!")
+                self.style.SUCCESS(
+                    "Database reset and population process was successful!"
+                )
             )
         except CommandError as e:
             self.stderr.write(self.style.ERROR(f"Error: {e}"))
