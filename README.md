@@ -173,7 +173,7 @@ classDiagram
     
     class SharedBudget {
         +Budget budget
-        +User shared_with
+        +User user
         +BudgetPermission permission
         +BudgetRole role
         +BudgetNotificationSettings notification_settings
