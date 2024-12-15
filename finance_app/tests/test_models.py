@@ -199,7 +199,7 @@ class SharedBudgetTests(TestCase):
 
         shared_budget1 = SharedBudget.objects.create(
             budget=budget,
-            shared_with=user1,
+            user=user1,
             _permission=BudgetPermission.EDIT.value,
             _role=BudgetRole.PARTICIPANT.value,
             on_exceeded=True,
@@ -210,7 +210,7 @@ class SharedBudgetTests(TestCase):
 
         shared_budget2 = SharedBudget.objects.create(
             budget=budget,
-            shared_with=user2,
+            user=user2,
             _permission=BudgetPermission.VIEW.value,
             _role=BudgetRole.OBSERVER.value,
             on_exceeded=False,
@@ -223,7 +223,7 @@ class SharedBudgetTests(TestCase):
         shared_budget2_db = SharedBudget.objects.get(id=shared_budget2.id)
 
         self.assertEqual(shared_budget1_db.budget, budget)
-        self.assertEqual(shared_budget1_db.shared_with, user1)
+        self.assertEqual(shared_budget1_db.user, user1)
         self.assertEqual(shared_budget1_db.permission, BudgetPermission.EDIT)
         self.assertEqual(shared_budget1_db.role, BudgetRole.PARTICIPANT)
         self.assertEqual(
@@ -234,7 +234,7 @@ class SharedBudgetTests(TestCase):
         self.assertTrue(shared_budget1_db.on_transaction)
 
         self.assertEqual(shared_budget2_db.budget, budget)
-        self.assertEqual(shared_budget2_db.shared_with, user2)
+        self.assertEqual(shared_budget2_db.user, user2)
         self.assertEqual(shared_budget2_db.permission, BudgetPermission.VIEW)
         self.assertEqual(shared_budget2_db.role, BudgetRole.OBSERVER)
         self.assertEqual(shared_budget2_db.notification_mode, NotificationMode.NONE)

@@ -166,7 +166,7 @@ class Budget(models.Model):
 
 class SharedBudget(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
-    shared_with = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     _permission = models.CharField(
         max_length=10,
         choices=[
@@ -184,7 +184,7 @@ class SharedBudget(models.Model):
 
     on_exceeded = models.BooleanField(default=True)
     on_limit_change = models.BooleanField(default=True)
-    on_transaction = models.BooleanField(default=True)
+    on_transaction = models.BooleanField(default=False)
     _notification_mode = models.CharField(
         max_length=10,
         choices=[(mode.value, mode.name.capitalize()) for mode in NotificationMode],

@@ -201,17 +201,16 @@ class Table:
             return ""
 
         columns = [
-            f"'{column}'"
+            column
             for column in self.get_record(1).keys()
-            if column != "id" or not self.is_child
+            if not ((column == "id" and self.is_child) or "temp" in column)
         ]
 
         rows = []
         for record in self.records.values():
             values = []
-            for key, value in record.items():
-                if key == "id" and self.is_child:
-                    continue
+            for column in columns:
+                value = record[column]
 
                 if isinstance(value, str):
                     values.append(f"'{value}'")
@@ -226,7 +225,7 @@ class Table:
 
             rows.append(f"({', '.join(values)})")
 
-        columns_str = ", ".join(columns)
+        columns_str = ", ".join([f"'{column}'" for column in columns])
         rows_str = ",\n".join(rows)
         sql_command = f"INSERT INTO {self.name} ({columns_str}) VALUES\n{rows_str};\n"
 
@@ -426,6 +425,20 @@ def add_budgets_for_user(user, categories):
 
             budget_categories_table.add_record(budget_category)
 
+        shared_budget = {
+            "budget_id": budget["id"],
+            "user_id": user["id"],
+            "_permission": BudgetPermission.EDIT,
+            "_role": random.choice([role.value for role in BudgetRole]),
+            "on_exceeded": random.choice([True, False]),
+            "on_limit_change": random.choice([True, False]),
+            "on_transaction": random.choice([True, False]),
+            "_notification_mode": random.choice(
+                [mode.value for mode in NotificationMode]
+            ),
+        }
+        shared_budget_table.add_record(shared_budget)
+
         budgets.append(budget)
 
     return budgets
@@ -466,7 +479,7 @@ def add_users():
         }
         user_profile_table.add_record(user_profile)
 
-        add_budgets_for_user(user, categories)
+        user["temp_budgets"] = add_budgets_for_user(user, categories)
 
 
 def add_categories():
@@ -477,6 +490,36 @@ def add_categories():
     for category_name in user_category_names:
         category = {"name": category_name, "is_default": False}
         category_table.add_record(category)
+
+
+def connect_users_randomly(p):
+    for i in range(len(user_table.records)):
+        for j in range(len(user_table.records)):
+            if i == j:
+                continue
+            if random.random() < p:
+                owner = user_table.get_record(i + 1)
+                contributor = user_table.get_record(j + 1)
+                budgets = random.sample(
+                    owner["temp_budgets"], random.randint(1, len(owner["temp_budgets"]))
+                )
+
+                for budget in budgets:
+                    shared_budget = {
+                        "budget_id": budget["id"],
+                        "user_id": contributor["id"],
+                        "_permission": random.choice(
+                            [permission.value for permission in BudgetPermission]
+                        ),
+                        "_role": random.choice([role.value for role in BudgetRole]),
+                        "on_exceeded": random.choice([True, False]),
+                        "on_limit_change": random.choice([True, False]),
+                        "on_transaction": random.choice([True, False]),
+                        "_notification_mode": random.choice(
+                            [mode.value for mode in NotificationMode]
+                        ),
+                    }
+                    shared_budget_table.add_record(shared_budget)
 
 
 class Command(BaseCommand):
@@ -492,6 +535,7 @@ class Command(BaseCommand):
         locale.setlocale(locale.LC_TIME, "cs_CZ.UTF-8")
         add_categories()
         add_users()
+        connect_users_randomly(0.08)
 
         with open(script_path, "w", encoding="utf-8") as file:
             for table in tables:

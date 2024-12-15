@@ -1,5 +1,5 @@
 import os
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
 
 
@@ -33,4 +33,4 @@ class Command(BaseCommand):
                     f"Successfully executed the SQL script: {script_path}"
                 )
         except Exception as e:
-            self.stderr.write(f"Error executing the SQL script: {e}")
+            raise CommandError(f"Error executing the SQL script: {e}")
