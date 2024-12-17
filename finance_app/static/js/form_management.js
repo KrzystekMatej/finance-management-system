@@ -1,4 +1,0 @@
-class FormManager {
-    constructor(formPath, ) {
-    }
-}
