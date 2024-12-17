@@ -37,6 +37,20 @@ a.no-highlight {
   }
 }
 
+.sidemenu-background{
+  background-color: rgb(60, 60, 80);
+  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.7);
+}
+
+.list-group {
+  background-color: inherit !important;
+}
+
+.list-group-item {
+  background-color: inherit !important;
+  border-color: inherit;
+}
+
 #table_view {
   border-collapse: separate;
   border-spacing: 10px 20px;
