@@ -32,6 +32,13 @@ def get_random_datetime(start, end):
     return start + timedelta(seconds=random_seconds)
 
 
+def get_random_color():
+    r = random.randint(0, 255)
+    g = random.randint(0, 255)
+    b = random.randint(0, 255)
+    return f"#{r:02X}{g:02X}{b:02X}"
+
+
 email_domains = ["seznam.cz", "gmail.com", "outlook.com", "centrum.cz", "yahoo.com"]
 
 first_names = [
@@ -239,7 +246,11 @@ category_preference_table = Table(CategoryPreference._meta.db_table)
 transaction_table = Table(Transaction._meta.db_table)
 recurring_transaction_table = Table(RecurringTransaction._meta.db_table, True)
 budget_table = Table(Budget._meta.db_table)
-budget_categories_table = Table("budget_categories")
+budget_categories_table = Table(
+    Budget._meta.get_field(
+        Budget.categories.field.name
+    ).remote_field.through._meta.db_table
+)
 shared_budget_table = Table(SharedBudget._meta.db_table)
 notification_table = Table(Notification._meta.db_table)
 
@@ -251,6 +262,7 @@ tables = [
     transaction_table,
     recurring_transaction_table,
     budget_table,
+    budget_categories_table,
     shared_budget_table,
     notification_table,
 ]
@@ -425,6 +437,8 @@ def add_budgets_for_user(user, categories):
 
             budget_categories_table.add_record(budget_category)
 
+        budget["temp_categories"] = chosen_categories
+
         shared_budget = {
             "budget_id": budget["id"],
             "user_id": user["id"],
@@ -464,8 +478,12 @@ def add_users():
         }
         user_table.add_record(user)
 
-        categories = add_preferences_for_user(user, default_categories, user_categories)
-        categories = list(filter(lambda c: c["name"] != "Výplata", categories))
+        user["temp_categories"] = add_preferences_for_user(
+            user, default_categories, user_categories
+        )
+        categories = list(
+            filter(lambda c: c["name"] != "Výplata", user["temp_categories"])
+        )
 
         transactions = add_transactions_for_user(
             user, categories, (100, 2000)
@@ -492,7 +510,21 @@ def add_categories():
         category_table.add_record(category)
 
 
-def connect_users_randomly(p):
+def propagate_categories_to_contributor(contributor, budgets):
+    for budget in budgets:
+        for category in budget["temp_categories"]:
+            if category not in contributor["temp_categories"]:
+                contributor["temp_categories"].append(category)
+
+                preference = {
+                    "user_id": contributor["id"],
+                    "category_id": category["id"],
+                    "color": get_random_color(),
+                }
+                category_preference_table.add_record(preference)
+
+
+def connect_users(p):
     for i in range(len(user_table.records)):
         for j in range(len(user_table.records)):
             if i == j:
@@ -521,6 +553,8 @@ def connect_users_randomly(p):
                     }
                     shared_budget_table.add_record(shared_budget)
 
+                propagate_categories_to_contributor(contributor, budgets)
+
 
 class Command(BaseCommand):
     help = "Generate sql script to populate database with test values"
@@ -535,7 +569,7 @@ class Command(BaseCommand):
         locale.setlocale(locale.LC_TIME, "cs_CZ.UTF-8")
         add_categories()
         add_users()
-        connect_users_randomly(0.08)
+        connect_users(0.08)
 
         with open(script_path, "w", encoding="utf-8") as file:
             for table in tables:
