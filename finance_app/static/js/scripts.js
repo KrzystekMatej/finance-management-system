@@ -98,3 +98,56 @@ function showNotification(message) {
       notification.classList.remove('show');
   }, 2000);
 }
+
+// Brech limit notifications
+// If there are no notifications to show, then modal is not inserted into HTMLdoc
+// If cookie to not show notifications is set, then it will also not show the modal
+
+const toggleNotificationsButton = document.getElementById('toggle-checkbox-show-notifications');
+
+toggleNotificationsButton.addEventListener('change', () => {
+  if (toggleNotificationsButton.checked) {
+      document.cookie = "ignore_notifications=true; path=/; max-age=31536000";
+  } else {
+      document.cookie = "ignore_notifications=false; path=/; max-age=31536000";
+  }
+});
+
+// Function to get a cookie by its name in a simpler way
+function getCookie(name) {
+  const cookies = document.cookie.split('; ');
+  for (let cookie of cookies) {
+    const [key, value] = cookie.split('=');
+    if (key === name) {
+      return value;
+    }
+  }
+  return null; // Return null if the cookie is not found
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  var modalElement = document.getElementById('notifications-modal');
+  
+  // If true, then user wants to hide the notifications
+  var ignore = getCookie('ignore_notifications');
+  console.log("Value of cookie:", ignore)
+
+  if (ignore === 'true') {
+    toggleNotificationsButton.checked = true;
+  } else {
+    toggleNotificationsButton.checked = false;
+  }
+  
+  if (modalElement) {
+    if (ignore !== 'true'){
+      var myModal = new bootstrap.Modal(modalElement);
+      myModal.show();
+    }
+  }
+});
+
+// Modal button
+document.getElementById('acknowledge-notifications-button').addEventListener('click', function() {
+  document.cookie = "ignore_notifications=true; path=/; max-age=31536000";
+  toggleNotificationsButton.checked = true;
+});
