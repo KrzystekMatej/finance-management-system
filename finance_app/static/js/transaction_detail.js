@@ -1,34 +1,8 @@
+import { FormManager, FieldValidator, Validator } from './form_management.js';
+
+const editFormManager = new FormManager()
 
 
-document.getElementById("delete-transaction-btn").addEventListener("click", function (event) {
-    const userConfirmed = confirm("Opravdu chcete smazat tuto transakci?");
-
-    if (!userConfirmed) {
-        return;
-    }
-
-    const transactionId = this.dataset.transactionId;
-
-    fetch(`/delete-transaction/${transactionId}/`, {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
-            "X-Requested-With": "XMLHttpRequest",
-        },
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = "/";
-            } else {
-                alert("Nepodařilo se smazat transakci.");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Došlo k chybě při mazání transakce.");
-        });
-});
 
 document.getElementById("edit-transaction-btn").addEventListener("click", function (event) {
     const form = document.getElementById("edit-transaction-form");
@@ -98,4 +72,34 @@ document.getElementById("edit-transaction-btn").addEventListener("click", functi
         })
         .catch(error => console.error("Error:", error));
     }
+});
+
+document.getElementById("delete-transaction-btn").addEventListener("click", function (event) {
+    const userConfirmed = confirm("Opravdu chcete smazat tuto transakci?");
+
+    if (!userConfirmed) {
+        return;
+    }
+
+    const transactionId = this.dataset.transactionId;
+
+    fetch(`/delete-transaction/${transactionId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/";
+            } else {
+                alert("Nepodařilo se smazat transakci.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Došlo k chybě při mazání transakce.");
+        });
 });
