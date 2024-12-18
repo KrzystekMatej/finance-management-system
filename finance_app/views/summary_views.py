@@ -9,7 +9,6 @@ from finance_app.models import (
 )
 from finance_app.serializers import CategoryPreferenceSerializer
 from finance_app.forms import FilterByDateForm
-from django.db.models import Q
 
 
 def split_transactions_by_month(transactions):
@@ -183,32 +182,32 @@ def main_page(request):
     categories = CategoryPreference.objects.filter(user=request.user)
     budgets = Budget.objects.filter(owner=request.user)
     monthly_summaries = get_monthly_summaries(
-            request, Transaction.get_non_recurring_transactions(user=request.user)
-        )
+        request, Transaction.get_non_recurring_transactions(user=request.user)
+    )
 
     notifications = []
 
     for budget in budgets:
-        
+
         # TODO: Somehow gather all transactions related to this user and specific budget
         for summary in monthly_summaries:
 
-            transactions_sum = float(123456) # TODO: Fetch actual sum
+            transactions_sum = float(123456)  # TODO: Fetch actual sum
 
             limit = float(budget.limit)
 
             # Breached the limit, create a notification entry
             if limit < transactions_sum:
                 notification = {
-                  "year": summary['year'],
-                  "month": summary['month'],
-                  "budget": budget.name,
-                  "limit": limit,
-                  "total": transactions_sum,
-                  "exceed": transactions_sum - limit,
+                    "year": summary["year"],
+                    "month": summary["month"],
+                    "budget": budget.name,
+                    "limit": limit,
+                    "total": transactions_sum,
+                    "exceed": transactions_sum - limit,
                 }
                 notifications.append(notification)
-        
+
     context = {
         "monthly_summaries": monthly_summaries,
         "categories": categories,

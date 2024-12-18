@@ -8,33 +8,37 @@
   <div class="modal-dialog modal-xxl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="notifications-modal-label">Upozornění na překročení limitu u jednoho nebo více rozpočtu</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="notifications-modal-label">
+          Upozornění na překročení limitu u jednoho nebo více rozpočtu
+        </h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
       </div>
       <div class="modal-body">
         {% for notification in notifications %}
-
-        <div class="summary-module spacer-bottom">
-
-          V rozpočtu <b>{{ notification.budget }}</b> jste v měsíci <b>{{ notification.month }}</b> roku 
-        <b>{{ notification.year }}</b> překročili Váš nastavený limit (<b>{{ notification.limit }}</b> Kč) o <b>{{ notification.exceed }}</b> Kč
-
-        </div>
+          <div class="summary-module spacer-bottom">
+            V rozpočtu <b>{{ notification.budget }}</b> jste v měsíci <b>{{ notification.month }}</b> roku
+            <b>{{ notification.year }}</b> překročili Váš nastavený limit (<b>{{ notification.limit }}</b> Kč) o <b>{{ notification.exceed }}</b> Kč
+          </div>
         {% endfor %}
       </div>
       <div class="modal-footer">
-          <div class="row w-100">
-            <div class="col-md-6">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                Zavřít
-              </button>
-            </div>
-            <div class="col-md-6">
-              <button type="button" class="btn btn-primary" id="acknowledge-notifications-button" title="Notifikace si lze znovu zapnout při najetí kurzoru na Vaše uživatelské jméno" data-bs-dismiss="modal">
-                Jsem si vědom těchto překročení, a nepřeji si dále zobrazovat žádné notifikace
-              </button>
-            </div>
+        <div class="row w-100">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
           </div>
+          <div class="col-md-6">
+            <button type="button"
+                    class="btn btn-primary"
+                    id="acknowledge-notifications-button"
+                    title="Notifikace si lze znovu zapnout při najetí kurzoru na Vaše uživatelské jméno"
+                    data-bs-dismiss="modal">
+              Jsem si vědom těchto překročení, a nepřeji si dále zobrazovat žádné notifikace
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

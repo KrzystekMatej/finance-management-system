@@ -69,20 +69,18 @@
                 </div>
               </div>
             </label>
-            
-
             <label for="toggle-checkbox-show-notifications"
                    class="d-flex align-items-center w-100">
               <div class="dropdown-menu-item ps-3 pe-3">
                 Ignorovat notifikace
                 <div class="ms-auto">
-                  <input type="checkbox" id="toggle-checkbox-show-notifications" class="d-none">
+                  <input type="checkbox"
+                         id="toggle-checkbox-show-notifications"
+                         class="d-none">
                   <span class="slider round"></span>
                 </div>
               </div>
             </label>
-
-
             <label for="toggle-checkbox-hide-balance"
                    class="d-flex align-items-center w-100">
               <div class="dropdown-menu-item ps-3 pe-3">
@@ -107,5 +105,5 @@
 {% include "modal_create_transaction.html" %}
 {% include "modal_create_budget.html" %}
 {% if notifications %}
-{% include "modal_notifications.html" %}
+  {% include "modal_notifications.html" %}
 {% endif %}
