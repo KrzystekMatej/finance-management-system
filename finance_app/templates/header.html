@@ -69,6 +69,18 @@
                 </div>
               </div>
             </label>
+            <label for="toggle-checkbox-show-notifications"
+                   class="d-flex align-items-center w-100">
+              <div class="dropdown-menu-item ps-3 pe-3">
+                Ignorovat notifikace
+                <div class="ms-auto">
+                  <input type="checkbox"
+                         id="toggle-checkbox-show-notifications"
+                         class="d-none">
+                  <span class="slider round"></span>
+                </div>
+              </div>
+            </label>
             <label for="toggle-checkbox-hide-balance"
                    class="d-flex align-items-center w-100">
               <div class="dropdown-menu-item ps-3 pe-3">
@@ -89,6 +101,9 @@
   </div>
 </div>
 <div id="notification-copied-id" class="notification">ID copied to clipboard!</div>
-<!-- Put all modals that can be opened header -->
+<!-- Put all modals that can be opened here -->
 {% include "modal_create_transaction.html" %}
 {% include "modal_create_budget.html" %}
+{% if notifications %}
+  {% include "modal_notifications.html" %}
+{% endif %}
