@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from finance_app.models import (
     Transaction,
@@ -6,9 +6,11 @@ from finance_app.models import (
     CategoryPreference,
     Budget,
     RecurringTransaction,
+    Notification,
 )
 from finance_app.serializers import CategoryPreferenceSerializer
 from finance_app.forms import FilterByDateForm
+from django.http import JsonResponse
 
 
 def split_transactions_by_month(transactions):
@@ -186,27 +188,56 @@ def main_page(request):
     )
 
     notifications = []
+    show_notifications_modal = False
 
     for budget in budgets:
 
-        # TODO: Somehow gather all transactions related to this user and specific budget
-        for summary in monthly_summaries:
+        monthly_summaries = get_monthly_summaries(
+            request,
+            Transaction.objects.filter(
+                user=request.user, category__in=budget.categories.all()
+            ),
+        )
 
-            transactions_sum = float(123456)  # TODO: Fetch actual sum
+        for summary in monthly_summaries:
+            monthly_expenses = abs(float(summary["expanses"]))
 
             limit = float(budget.limit)
 
             # Breached the limit, create a notification entry
-            if limit < transactions_sum:
-                notification = {
-                    "year": summary["year"],
-                    "month": summary["month"],
-                    "budget": budget.name,
-                    "limit": limit,
-                    "total": transactions_sum,
-                    "exceed": transactions_sum - limit,
-                }
-                notifications.append(notification)
+            if limit < monthly_expenses:
+                subject = f"{summary["year"]}-{summary["month"]}-{budget.name}"
+                message = f"V rozpočtu {budget.name} jste v měsíci {summary['month']} roku \
+                  {summary['year']} překročili Váš nastavený limit ({limit} Kč) o {monthly_expenses - limit} Kč"
+
+                notifications = Notification.objects.filter(receiver_id=request.user.id)
+
+                is_duplicate = False
+                for notification in notifications:
+                    print(subject, notification.subject)
+                    if notification.subject == subject:
+                        is_duplicate = True
+                        # notification.is_read = True
+                        # notification.save()
+
+                if not is_duplicate:
+                    Notification.objects.create(
+                        receiver_id=request.user.id,
+                        subject=subject,
+                        message=message,
+                        is_read=False,
+                    )
+                    # There could be function to send an email notification
+
+                # Not very effective, but it just works
+                notifications = Notification.objects.filter(receiver_id=request.user.id)
+
+                # If all notifications are read, don't show modal
+                for notification in notifications:
+                    if notification.is_read is False:
+                        show_notifications_modal = True
+                        break
+                print(show_notifications_modal)
 
     context = {
         "monthly_summaries": monthly_summaries,
@@ -215,6 +246,32 @@ def main_page(request):
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": budgets,
         "notifications": notifications,
+        "show_notifications_modal": show_notifications_modal,
     }
 
     return render(request, "main_page.html", context)
+
+
+def update_notification(request, pk):
+    if request.method == "POST":
+        notification = get_object_or_404(Notification, pk=pk)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse(
+            {"status": "success", "message": "Notification updated successfully."}
+        )
+    return JsonResponse({"status": "error", "message": "Invalid request method."})
+
+
+def mark_all_notifications_as_unread(request):
+    if request.method == "POST" and request.user.is_authenticated:
+        notifications = Notification.objects.filter(receiver=request.user)
+        notifications.update(is_read=False)
+
+        return JsonResponse(
+            {"status": "success", "message": "All notifications set to unread."}
+        )
+
+    return JsonResponse(
+        {"status": "error", "message": "Invalid request or user not authenticated."}
+    )

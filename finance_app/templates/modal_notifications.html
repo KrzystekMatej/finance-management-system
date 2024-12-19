@@ -18,28 +18,46 @@
       </div>
       <div class="modal-body">
         {% for notification in notifications %}
-          <div class="summary-module spacer-bottom">
-            V rozpočtu <b>{{ notification.budget }}</b> jste v měsíci <b>{{ notification.month }}</b> roku
-            <b>{{ notification.year }}</b> překročili Váš nastavený limit (<b>{{ notification.limit }}</b> Kč) o <b>{{ notification.exceed }}</b> Kč
-          </div>
+          {% if not notification.is_read %}
+            <div class="summary-module spacer-bottom">
+              <div class="row">
+                <div class="col-md-8 d-flex align-items-center">{{ notification.message }}</div>
+                <div class="col-md-4 text-end">
+                  <button type="button"
+                          class="btn btn-primary"
+                          onclick="updateNotification({{ notification.id }}, this)">Nezobrazovat notifikaci</button>
+                </div>
+              </div>
+            </div>
+          {% endif %}
         {% endfor %}
       </div>
       <div class="modal-footer">
-        <div class="row w-100">
-          <div class="col-md-6">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
-          </div>
-          <div class="col-md-6">
-            <button type="button"
-                    class="btn btn-primary"
-                    id="acknowledge-notifications-button"
-                    title="Notifikace si lze znovu zapnout při najetí kurzoru na Vaše uživatelské jméno"
-                    data-bs-dismiss="modal">
-              Jsem si vědom těchto překročení, a nepřeji si dále zobrazovat žádné notifikace
-            </button>
-          </div>
-        </div>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
       </div>
     </div>
   </div>
 </div>
+<script>
+    function updateNotification(notificationId, btn) {
+        fetch(`/update-notification/${notificationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    btn.textContent = "Notifikace se příště již nebude zobrazovat";
+                    btn.disabled = true;
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-secondary');
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
