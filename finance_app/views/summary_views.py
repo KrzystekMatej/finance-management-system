@@ -191,7 +191,6 @@ def main_page(request):
     show_notifications_modal = False
 
     for budget in budgets:
-
         transactions = Transaction.objects.filter(
             user=request.user,
             category__in=budget.categories.all(),
