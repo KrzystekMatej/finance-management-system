@@ -1,32 +1,33 @@
 export class FormManager {
     form;
     viewUrl;
-    fieldValidators;
+    fieldFormatters;
+    isRequestPending;
+    confirmation;
+    postSuccess;
+    postFailure;
 
     constructor() {
-        this.fieldValidators = [];
+        this.fieldFormatters = [];
+        this.isRequestPending = false;
+
+        window.addEventListener("beforeunload", (event) => {
+            if (this.isRequestPending) {
+                event.preventDefault();
+            }
+        });
     }
 
     loadFormData() {
         this.formData = new FormData(this.form);
-    }
-
-    getFormErrors() {
-        const formErrors = new Map();
-
-        for (const validator in this.fieldValidators)
-        {
-            const message = validator.validate(this.formData)
-            if (message !== null)
-            {
-                formErrors[validator.fieldName] = message;
-            }
+        for (const formatter of this.fieldFormatters) {
+            const formattedValue = formatter.format(this.formData.get(formatter.fieldName));
+            this.formData.set(formatter.fieldName, formattedValue);
         }
-
-        return formErrors;
     }
 
     sendRequest() {
+        this.isRequestPending = true;
         return fetch(this.viewUrl, {
             method: "POST",
             headers: {
@@ -34,29 +35,40 @@ export class FormManager {
                 "X-CSRFToken": this.formData.get("csrfmiddlewaretoken"),
             },
             body: this.formData,
+        }).finally(() => {
+            this.isRequestPending = false;
         });
     }
 
-    writeErrors(formErrors) {
+    updateFormErrors(formErrors) {
         for (const element of this.form.elements) {
             const fieldName = element.name;
             const feedbackId = `${fieldName}-feedback`;
             let feedbackElement = document.getElementById(feedbackId);
 
-            if (formErrors[fieldName]) {
+            const errorMessage = formErrors.get(fieldName);
+
+            if (errorMessage !== undefined) {
                 element.classList.add("is-invalid");
 
-                if (feedbackElement) {
-                    feedbackElement.textContent = formErrors[fieldName];
-                } else {
-                    feedbackElement = document.createElement("div");
-                    feedbackElement.id = feedbackId;
-                    feedbackElement.className = "invalid-feedback";
-                    feedbackElement.textContent = formErrors[fieldName];
-
-                    element.insertAdjacentElement("afterend", feedbackElement);
+                if (errorMessage === "" && feedbackElement) {
+                    feedbackElement.remove();
+                    continue;
                 }
-            } else {
+
+                if (feedbackElement) {
+                    feedbackElement.textContent = errorMessage;
+                    continue;
+                }
+
+                feedbackElement = document.createElement("div");
+                feedbackElement.id = feedbackId;
+                feedbackElement.className = "invalid-feedback";
+                feedbackElement.textContent = errorMessage;
+
+                element.insertAdjacentElement("afterend", feedbackElement);
+            }
+            else {
                 element.classList.remove("is-invalid");
 
                 if (feedbackElement) {
@@ -66,59 +78,53 @@ export class FormManager {
         }
     }
 
-    validate()
-    {
-        const formErrors = this.getFormErrors();
-        this.writeErrors(formErrors);
-        return formErrors.size > 0;
-    }
-
     processResponse(response)
     {
-        response.then(response => response.json())
+         response.then(response => response.json())
         .then(data => {
-            this.writeErrors(data.errors);
+            if (data.success) {
+                this.updateFormErrors(new Map())
+                if (data.message) {
+                    alert(data.message);
+                }
+
+                if (this.postSuccess) this.postSuccess(data);
+            }
+            else {
+                this.updateFormErrors(new Map(Object.entries(data.errors)));
+
+                if (data.errors["__all__"] && data.errors["__all__"].length > 0) {
+                    alert(data.errors["__all__"].join(", "));
+                }
+
+                if (this.postFailure) this.postFailure(data);
+            }
+
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+            }
         })
         .catch(error => console.error("Error:", error));
     }
 
-    process() {
+    processForm() {
         this.loadFormData();
-        if (this.validate())
-        {
-            const response = this.sendRequest();
-            this.processResponse(response)
-        }
+        if (this.confirmation && !this.confirmation(this.formData)) return;
+        const response = this.sendRequest();
+        this.processResponse(response)
     }
 }
 
-export class FieldValidator {
-    constructor(fieldName, validators) {
+export class FieldFormatter {
+    fieldName;
+    formatFunction;
+
+    constructor(fieldName, formatFunction) {
         this.fieldName = fieldName;
-        this.validators = validators;
+        this.formatFunction = formatFunction;
     }
 
-    validate(formData) {
-        const fieldValue = formData.get(this.fieldName);
-        for (const validator of this.validators)
-        {
-            if (!validator.isValid(fieldValue))
-            {
-                return validator.errorMessage;
-            }
-        }
-        return null;
-    }
-}
-
-
-export class Validator {
-    constructor(validationFunction, errorMessage) {
-        this.validationFunction = validationFunction;
-        this.errorMessage = errorMessage;
-    }
-
-    isValid(value) {
-        return this.validationFunction(value);
+    format(value) {
+        return this.formatFunction(value);
     }
 }

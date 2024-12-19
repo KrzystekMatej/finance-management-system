@@ -35,6 +35,7 @@ def create_category(request):
         and request.headers.get("x-requested-with") == "XMLHttpRequest"
     ):
         form = CategoryForm(request.POST, user=request.user)
+
         if form.is_valid():
             preference = form.save()
             preference_data = CategoryPreferenceSerializer(preference).data
@@ -47,9 +48,7 @@ def create_category(request):
             )
         else:
             # ToDo all form errors
-            return JsonResponse(
-                {"success": False, "message": form.non_field_errors()}, status=400
-            )
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     return JsonResponse(
         {"success": False, "message": "Nesprávný typ požadavku."}, status=400
@@ -75,10 +74,7 @@ def edit_category(request, category_preference_id):
                 {"success": True, "message": "Vaše změny byly uloženy."}
             )
         else:
-            # ToDo all form errors
-            return JsonResponse(
-                {"success": False, "message": form.non_field_errors()}, status=400
-            )
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     return JsonResponse(
         {"success": False, "message": "Nesprávný typ požadavku."}, status=400

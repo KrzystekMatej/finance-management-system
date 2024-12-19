@@ -1,3 +1,5 @@
+import {FieldFormatter, FormManager} from './form_management.js';
+
 function deleteBudget()
 {
     const message = "Opravdu chcete smazat tento rozpočet?";
@@ -32,73 +34,11 @@ function deleteBudget()
     });
 }
 
-function editBudget() {
-    const form = this.closest(".edit-budget-form");
-    const formData = new FormData(form);
-    let isValid = true;
+const editBudgetFormManager = new FormManager();
 
-    const nameField = form.elements["name"];
-    if (!nameField.value.trim()) {
-        nameField.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        nameField.classList.remove("is-invalid");
-    }
-
-    const categoriesField = form.querySelectorAll("input[name='categories']:checked");
-    if (!categoriesField.length) {
-        const categoriesContainer = form.querySelector(".budget-categories");
-        categoriesContainer.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        const categoriesContainer = form.querySelector(".budget-categories");
-        categoriesContainer.classList.remove("is-invalid");
-    }
-
-    const limitField = form.elements["limit"];
-    const periodStartField = form.elements["period_start"];
-    const periodEndField = form.elements["period_end"];
-
-    const limitProvided = limitField.value;
-    const periodStartProvided = periodStartField.value;
-    const periodEndProvided = periodEndField.value;
-
-    if ((limitProvided || periodStartProvided || periodEndProvided) &&
-        (!limitProvided || !periodStartProvided || !periodEndProvided)) {
-        limitField.classList.add("is-invalid");
-        periodStartField.classList.add("is-invalid");
-        periodEndField.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        limitField.classList.remove("is-invalid");
-        periodStartField.classList.remove("is-invalid");
-        periodEndField.classList.remove("is-invalid");
-    }
-
-    const formattedLimit = limitField.value.replace(",", ".");
-    formData.set("limit", formattedLimit);
-
-    const budgetId = this.dataset.budgetId;
-    for (let pair of formData.entries()) {
-        console.log(pair[0] + ": " + pair[1]);
-    }
-    // ToDo: Prevent sending the form if it has not been changed
-    if (isValid) {
-        fetch(`/edit-budget/${budgetId}/`, {
-            method: "POST",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
-            },
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => console.error("Error:", error));
-    }
-}
+editBudgetFormManager.fieldFormatters = [
+    new FieldFormatter("limit", value => value.replace(",", "."))
+];
 
 
 document.querySelectorAll(".delete-budget-btn").forEach(button => {
@@ -106,6 +46,10 @@ document.querySelectorAll(".delete-budget-btn").forEach(button => {
 });
 
 document.querySelectorAll(".edit-budget-btn").forEach(button => {
-    button.addEventListener("click", editBudget);
+    button.addEventListener("click", function (event) {
+        editBudgetFormManager.form = button.closest('.edit-budget-form');
+        editBudgetFormManager.viewUrl = `/edit-budget/${button.dataset.budgetId}/`;
+        editBudgetFormManager.processForm();
+    });
 });
 

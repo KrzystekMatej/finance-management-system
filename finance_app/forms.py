@@ -13,7 +13,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 
 class RegistrationForm(UserCreationForm):
@@ -31,12 +30,6 @@ class RegistrationForm(UserCreationForm):
             "password1",
             "password2",
         ]
-        error_messages = {
-            "username": {
-                "unique": gettext_lazy("Toto uživatelské jméno je již používáno."),
-            },
-            "password_mismatch": gettext_lazy("Hesla se neshodují!"),
-        }
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
@@ -107,34 +100,15 @@ class TransactionForm(forms.ModelForm):
 
     def clean_performed_at(self):
         performed_at = self.cleaned_data.get("performed_at")
-        if performed_at and performed_at > timezone.now():
-            raise ValidationError("Datum provedení transakce nemůže být v budoucnosti.")
+        if performed_at:
+            performed_at = (
+                timezone.make_aware(performed_at)
+                if timezone.is_naive(performed_at)
+                else performed_at
+            )
+            if performed_at > timezone.now():
+                raise ValidationError("Datum nemůže být v budoucnosti.")
         return performed_at
-
-    def clean_amount(self):
-        amount = self.cleaned_data.get("amount")
-        if amount is None:
-            raise ValidationError("Částka je povinná.")
-
-        try:
-            amount = Decimal(amount)
-        except (InvalidOperation, TypeError, ValueError):
-            raise ValidationError("Částka musí být platné desetinné číslo.")
-
-        field = Transaction._meta.get_field("amount")
-        max_digits = field.max_digits
-        decimal_places = field.decimal_places
-
-        max_value = Decimal(
-            f"9{'9' * (max_digits - decimal_places - 1)}.{decimal_places * '9'}"
-        )
-        if abs(amount) > max_value:
-            raise ValidationError(f"Částka nesmí přesáhnout {max_value}.")
-
-        rounding_factor = Decimal(f"1.{'0' * decimal_places}")
-        amount = amount.quantize(rounding_factor, rounding=ROUND_HALF_UP)
-
-        return amount
 
 
 class RecurringTransactionForm(TransactionForm):
@@ -221,6 +195,10 @@ class CategoryForm(forms.Form):
         )
 
         if self.existing_preference_instance is not None:
+            transactions = Transaction.objects.filter(
+                user=self.user, category=self.existing_preference_instance.category
+            )
+            transactions.update(category=self.category)
             preference.id = self.existing_preference_instance.id
 
         if commit:
@@ -244,6 +222,12 @@ class BudgetForm(forms.ModelForm):
     def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = user
+
+    def clean_limit(self):
+        limit = self.cleaned_data.get("limit")
+        if limit < 0:
+            raise ValidationError("Limit nemůže být záporný.")
+        return limit
 
     def clean_period_end(self):
         period_start = self.cleaned_data.get("period_start")

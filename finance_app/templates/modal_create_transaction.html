@@ -45,7 +45,6 @@
                    class="form-control"
                    id="transaction-amount"
                    placeholder="Zadejte částku">
-            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
           </div>
           <!-- Hidden Signed Amount to Send with Form -->
           <input type="hidden" id="signed-amount" name="amount">
@@ -56,7 +55,6 @@
                    class="form-control"
                    id="transaction-performed-at"
                    name="performed_at">
-            <div class="invalid-feedback">Je třeba zadat datum, nelze vybrat datum v budoucnosti.</div>
           </div>
           <!-- Transaction category -->
           <div class="mb-3">
@@ -80,7 +78,6 @@
               <button type="button"
                       class="btn btn-primary width-100"
                       id="open-transaction-category-modal">Vytvořit kategorii</button>
-              <div class="invalid-feedback">Je třeba vybrat jednu kategorii.</div>
             </div>
           </div>
           <!-- Transaction name -->
@@ -91,7 +88,6 @@
                    id="transaction-name"
                    name="name"
                    placeholder="Zadejte název transakce">
-            <div class="invalid-feedback">Toto pole je třeba vyplnit.</div>
           </div>
           <!-- Transaction description -->
           <div class="mb-3">
@@ -109,7 +105,7 @@
               <input type="checkbox"
                      class="form-check-input"
                      id="recurring-transaction-checkbox"
-                     name="is-recurring">
+                     name="is_recurring">
               <label class="form-check-label no-select"
                      for="recurring-transaction-checkbox">Rekurentní transakce</label>
             </div>
@@ -134,5 +130,5 @@
 <!-- CREATE NEW CATEGORY MODAL -->
 {% include "modal_create_category.html" %}
 {% load static %}
-<script src="{% static 'js/transaction_modal.js' %}" defer></script>
-<script src="{% static 'js/category_modal.js' %}" defer></script>
+<script type="module" src="{% static 'js/transaction_modal.js' %}" defer></script>
+<script type="module" src="{% static 'js/category_modal.js' %}" defer></script>

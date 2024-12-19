@@ -5,7 +5,7 @@
 {% block content %}
   {% include "header.html" %}
   <div class="container mt-5 d-flex flex-column">
-    <form id="edit-transaction-form">
+    <form id="edit-transaction-form" data-transaction-id="{{ transaction.id }}">
       {% csrf_token %}
       <div class="mb-3">
         <label for="transaction-name" class="form-label">
@@ -21,8 +21,8 @@
         <label for="transaction-amount" class="form-label">
           <strong>Částka:</strong>
         </label>
-        <input type="decimal"
-               class="form-control"
+        <input type="text"
+               class="form-control czech-number"
                id="transaction-amount"
                value="{{ transaction.amount }}"
                name="amount">
@@ -69,15 +69,12 @@
               class="btn btn-primary"
               id="delete-transaction-btn"
               data-transaction-id="{{ transaction.id }}">Smazat</button>
-      <button type="button"
-              class="btn btn-primary"
-              id="edit-transaction-btn"
-              data-transaction-id="{{ transaction.id }}">Uložit změny</button>
+      <button type="button" class="btn btn-primary" id="edit-transaction-btn">Uložit změny</button>
       <a href="{% url 'main_page' %}"
          class="btn btn-primary no-highlight"
          id="link_button">Zpět</a>
     </div>
   </div>
   {% load static %}
-  <script src="{% static 'js/transaction_detail.js' %}" defer></script>
+  <script type="module" src="{% static 'js/transaction_detail.js' %}" defer></script>
 {% endblock content %}
