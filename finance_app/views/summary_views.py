@@ -193,18 +193,18 @@ def main_page(request):
     for budget in budgets:
 
         transactions = Transaction.objects.filter(
-                user=request.user,
-                category__in=budget.categories.all(),
-                performed_at__range=(budget.period_start, budget.period_end)
-            )
+            user=request.user,
+            category__in=budget.categories.all(),
+            performed_at__range=(budget.period_start, budget.period_end),
+        )
 
-        # Expenses is absolute number, eq. sum outcoming 
+        # Expenses is absolute number, eq. sum outcoming
         # transactions of -500 and -200 ends up as +700
         expenses = 0
         for transaction in transactions:
-          # Transaction is outcoming
-          if transaction.amount < 0:
-            expenses += abs(float(transaction.amount))
+            # Transaction is outcoming
+            if transaction.amount < 0:
+                expenses += abs(float(transaction.amount))
 
         limit = float(budget.limit)
         # Breached the limit, create a notification entry
