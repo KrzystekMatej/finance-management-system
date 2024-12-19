@@ -214,7 +214,6 @@ def main_page(request):
 
                 is_duplicate = False
                 for notification in notifications:
-                    print(subject, notification.subject)
                     if notification.subject == subject:
                         is_duplicate = True
                         # notification.is_read = True
@@ -237,7 +236,6 @@ def main_page(request):
                     if notification.is_read is False:
                         show_notifications_modal = True
                         break
-                print(show_notifications_modal)
 
     context = {
         "monthly_summaries": monthly_summaries,
