@@ -38,26 +38,3 @@
     </div>
   </div>
 </div>
-<script>
-    function updateNotification(notificationId, btn) {
-        fetch(`/update-notification/${notificationId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    btn.textContent = "Notifikace se příště již nebude zobrazovat";
-                    btn.disabled = true;
-                    btn.classList.remove('btn-primary');
-                    btn.classList.add('btn-secondary');
-                } else {
-                    console.error(data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
-</script>

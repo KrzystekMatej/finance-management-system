@@ -9,21 +9,30 @@ from finance_app.models import (
     UserProfile,
     CategoryPreference,
     Category,
+    Budget,
 )
 from finance_app.serializers import CategoryPreferenceSerializer
 from django.db.models import Q
+from .summary_views import parse_notifications
 
 
 @login_required(login_url="login")
 def categories_page(request):
     user_profile = UserProfile.objects.get(user=request.user)
     categories = CategoryPreference.objects.filter(user=request.user)
+
+    notifications, show_notifications_modal = parse_notifications(
+      request, Budget.objects.filter(owner=request.user)
+      )
+
     return render(
         request,
         "categories.html",
         {
             "user_profile": user_profile,
             "categories": categories,
+            "notifications": notifications,
+            "show_notifications_modal": show_notifications_modal,
         },
     )
 

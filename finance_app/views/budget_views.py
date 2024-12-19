@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from finance_app.forms import (
     BudgetForm,
 )
-from .summary_views import get_monthly_summaries
+from .summary_views import get_monthly_summaries, parse_notifications
 from finance_app.models import (
     Transaction,
     UserProfile,
@@ -12,7 +12,6 @@ from finance_app.models import (
     Budget,
     SharedBudget,
 )
-
 
 @login_required(login_url="login")
 def budgets_page(request):
@@ -31,6 +30,8 @@ def budgets_page(request):
         "user"
     )
 
+    notifications, show_notifications_modal = parse_notifications(request, budgets)
+
     return render(
         request,
         "budgets.html",
@@ -39,6 +40,8 @@ def budgets_page(request):
             "budgets": budgets,
             "categories": categories,
             "shared_budgets": shared_budgets,
+            "notifications": notifications,
+            "show_notifications_modal": show_notifications_modal,
         },
     )
 
@@ -51,11 +54,17 @@ def budget_view(request, budget_id):
         user=request.user, category__in=budget.categories.all()
     )
 
+    notifications, show_notifications_modal = parse_notifications(
+      request, Budget.objects.filter(owner=request.user)
+      )
+
     context = {
         "monthly_summaries": get_monthly_summaries(request, transactions_for_budget),
         "categories": CategoryPreference.objects.filter(user=request.user),
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": Budget.objects.filter(owner=request.user),
+        "notifications": notifications,
+        "show_notifications_modal": show_notifications_modal,
     }
 
     return render(request, "main_page.html", context)
