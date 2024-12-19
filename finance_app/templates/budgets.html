@@ -50,7 +50,7 @@
             </div>
           </div>
           <div class="col-md-4 budget-period">
-            <!-- Obdobi -->
+            <!-- Období -->
             <div class="spacer-bottom h-50">
               <b>Období od</b>
               <input type="date"
@@ -67,20 +67,94 @@
             </div>
           </div>
         </div>
-        <!-- Popis -->
         <div class="row px-3 spacer-top">
-          <b>Popis</b>
-          <textarea name="description" class="form-control" rows="3">{{ budget.description }}</textarea>
+          <!-- Popis -->
+          <div class="col-md-4">
+            <b>Popis</b>
+            <textarea name="description" class="form-control" rows="5">{{ budget.description }}</textarea>
+          </div>
+          <!-- Sdílené uživatele -->
+          <div class="col-md-8">
+            <b>Sdílení</b>
+            <div class="shared-users-container form-control overflow-auto">
+              {% for shared_user in shared_budgets %}
+                {% if shared_user.budget.id == budget.id %}
+                  <div class="d-flex align-items-center">
+                    <div class="col-md-3">
+                      <span class="me-2">{{ shared_user.user.first_name }}</span>
+                      <span>{{ shared_user.user.last_name }}</span>
+                    </div>
+                    <div class="d-flex col-md-6 justify-content-center align-items-center">
+                      <div class="form-check mx-2">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               name="notifications_none"
+                               {% if shared_user.notification_mode.value == 'NONE' %}checked{% endif %}>
+                        <label class="form-check-label">NONE</label>
+                      </div>
+                      <div class="form-check mx-2">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               name="notifications_app"
+                               {% if shared_user.notification_mode.value == 'APP' or shared_user.notification_mode.value == "APP_EMAIL" %}checked{% endif %}>
+                        <label class="form-check-label">APP</label>
+                      </div>
+                      <div class="form-check mx-2">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               name="notifications_email"
+                               {% if shared_user.notification_mode.value == 'EMAIL' or shared_user.notification_mode.value == "APP_EMAIL" %}checked{% endif %}>
+                        <label class="form-check-label">EMAIL</label>
+                      </div>
+                    </div>
+                    <div class="d-flex col-md-3">
+                      <select name="permissions" class="form-select mx-2">
+                        <option value="VIEW"
+                                {% if shared_user.permission.value == 'VIEW' %}selected{% endif %}>VIEW</option>
+                        <option value="EDIT"
+                                {% if shared_user.permission.value == 'EDIT' %}selected{% endif %}>EDIT</option>
+                      </select>
+                      {% for s in shared_budgets %}
+                        {% if s.budget.id == budget.id %}
+                          {% if s.user_id == request.user.id and s.permission.value == "EDIT" %}
+                            <button type="button"
+                                    class="btn btn-link p-0 delete-user_from_shared_budget-btn">
+                              <i class="fas fa-trash-alt text-danger fa-lg"></i>
+                            </button>
+                          {% endif %}
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+              {% for s in shared_budgets %}
+                {% if s.budget.id == budget.id %}
+                  {% if s.user_id == request.user.id and s.permission.value == "EDIT" %}
+                    <button type="button"
+                            class="btn btn-primary btn-sm add-shared-user mt-2"
+                            data-budget-id="{{ budget.id }}">Přidat uživatele</button>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
         </div>
-        <!-- Ovladaci tlacitka -->
-        <div class="row justify-content-center spacer-top">
-          <button type="button"
-                  class="btn btn-primary fixed-button-big edit-budget-btn spacer-right"
-                  data-budget-id="{{ budget.id }}">Uložit změny</button>
-          <button type="button"
-                  class="btn btn-secondary fixed-button-big delete-budget-btn spacer-left"
-                  data-budget-id="{{ budget.id }}">Smazat rozpočet</button>
-        </div>
+        <!-- Ovladaci tlacitka (pouze pro EDIT) -->
+        {% for shared_user in shared_budgets %}
+          {% if shared_user.budget.id == budget.id %}
+            {% if shared_user.user_id == request.user.id and shared_user.permission.value == "EDIT" %}
+              <div class="row justify-content-center spacer-top">
+                <button type="button"
+                        class="btn btn-primary fixed-button-big edit-budget-btn spacer-right"
+                        data-budget-id="{{ budget.id }}">Uložit změny</button>
+                <button type="button"
+                        class="btn btn-secondary fixed-button-big delete-budget-btn spacer-left"
+                        data-budget-id="{{ budget.id }}">Smazat rozpočet</button>
+              </div>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
       </form>
     {% endfor %}
   </div>

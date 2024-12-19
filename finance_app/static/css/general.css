@@ -73,3 +73,7 @@ input[readonly] {
 .hidden {
     display: none;
 }
+
+.shared-users-container {
+    max-height: 134px
+}
