@@ -7,7 +7,7 @@ from finance_app.views.auth_views import (
     logout_page,
     register_success,
 )
-from finance_app.views.summary_views import filter_page, main_page
+from finance_app.views.summary_views import filter_page, main_page, update_notification, mark_all_notifications_as_unread
 from finance_app.views.guide_views import tutorial
 from finance_app.views.transaction_views import (
     create_transaction,
@@ -107,4 +107,6 @@ urlpatterns = [
         recurring_transactions_page,
         name="recurring_transactions",
     ),
+    path('update-notification/<int:pk>/', update_notification, name='update_notification'),
+    path('mark-all-unread/', mark_all_notifications_as_unread, name='mark_all_unread'),
 ]
