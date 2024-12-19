@@ -1,3 +1,6 @@
+<script>
+    const csrfToken = "{{ csrf_token }}";
+</script>
 <div id="header">
   <div class="row">
     <div class="col-md-2 mobile-centering ps-4 d-flex justify-content-center align-items-center">
@@ -69,18 +72,6 @@
                 </div>
               </div>
             </label>
-            <label for="toggle-checkbox-show-notifications"
-                   class="d-flex align-items-center w-100">
-              <div class="dropdown-menu-item ps-3 pe-3">
-                Ignorovat notifikace
-                <div class="ms-auto">
-                  <input type="checkbox"
-                         id="toggle-checkbox-show-notifications"
-                         class="d-none">
-                  <span class="slider round"></span>
-                </div>
-              </div>
-            </label>
             <label for="toggle-checkbox-hide-balance"
                    class="d-flex align-items-center w-100">
               <div class="dropdown-menu-item ps-3 pe-3">
@@ -91,6 +82,12 @@
                 </div>
               </div>
             </label>
+            <div class="dropdown-menu-item ps-3 pe-3" onclick="markAllUnread()">
+              Obnovit viditelnost notifikací
+              <div class="ms-auto">
+                <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
+              </div>
+            </div>
             <a class="no-highlight" href="{% url 'logout' %}">
               <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
             </a>
@@ -104,6 +101,6 @@
 <!-- Put all modals that can be opened here -->
 {% include "modal_create_transaction.html" %}
 {% include "modal_create_budget.html" %}
-{% if notifications %}
+{% if show_notifications_modal %}
   {% include "modal_notifications.html" %}
 {% endif %}

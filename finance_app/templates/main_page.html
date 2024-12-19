@@ -8,22 +8,22 @@
   {% include "header.html" %}
   <div class="py-0 mobile-padding">
     <div class="row">
-      <!-- Show transactions if there are any, if not show tutorial page -->
-      {% if monthly_summaries %}
-        {% include "sidemenu.html" %}
-        <!-- This col-md-2 is workaround for sidemenu. Because sidemenu has fixed position, -->
-        <!-- it fails to reserve it's screen space, so this second empty col-md-2 fixes it. -->
-        <div class="col-md-2 sidemenu-background"></div>
-        <div class="col-md-10 px-4 pt-3">
-          <div class="row">
+      {% include "sidemenu.html" %}
+      <!-- This col-md-2 is workaround for sidemenu. Because sidemenu has fixed position, -->
+      <!-- it fails to reserve it's screen space, so this second empty col-md-2 fixes it. -->
+      <div class="col-md-2 sidemenu-background"></div>
+      <div class="col-md-10 px-4 pt-3">
+        <div class="row">
+          <!-- Show transactions if there are any, if not show tutorial page -->
+          {% if monthly_summaries %}
             {% for summary in monthly_summaries %}
               {% include "monthly_summary.html" %}
             {% endfor %}
-          </div>
+          {% else %}
+            {% include "tutorial_first_time.html" %}
+          {% endif %}
         </div>
-      {% else %}
-        {% include "tutorial_first_time.html" %}
-      {% endif %}
+      </div>
     </div>
   </div>
   {% load static %}
