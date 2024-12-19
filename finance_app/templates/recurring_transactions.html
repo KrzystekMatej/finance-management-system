@@ -24,9 +24,9 @@
             <label for="amount">
               <b>Částka</b>
             </label>
-            <input type="decimal"
+            <input type="text"
                    name="amount"
-                   class="form-control"
+                   class="form-control czech-number"
                    value="{{ recurring_transaction.amount }}">
           </div>
           <!-- Interval -->
@@ -36,13 +36,13 @@
             </label>
             <select name="interval" class="form-select">
               <option value="DAY"
-                      {% if recurring_transaction.interval.value == "DAY" %}selected{% endif %}>Denně</option>
+                      {% if recurring_transaction.interval.value == "DAY" %}selected{% endif %}>Každý den</option>
               <option value="WEEK"
-                      {% if recurring_transaction.interval.value == "WEEK" %}selected{% endif %}>Týdně</option>
+                      {% if recurring_transaction.interval.value == "WEEK" %}selected{% endif %}>Každý týden</option>
               <option value="MONTH"
-                      {% if recurring_transaction.interval.value == "MONTH" %}selected{% endif %}>Měsíčně</option>
+                      {% if recurring_transaction.interval.value == "MONTH" %}selected{% endif %}>Každý měsíc</option>
               <option value="YEAR"
-                      {% if recurring_transaction.interval.value == "YEAR" %}selected{% endif %}>Ročně</option>
+                      {% if recurring_transaction.interval.value == "YEAR" %}selected{% endif %}>Každý rok</option>
             </select>
           </div>
           <!-- Kategorie -->
@@ -82,10 +82,10 @@
           </div>
         </div>
         <div class="d-flex flex-row gap-3 ms-auto me-3">
-          <button type="submit" class="btn btn-link p-0 edit-category-btn">
+          <button type="submit" class="btn btn-link p-0 edit-recurring-transaction-btn">
             <i class="fas fa-save text-primary fa-lg"></i>
           </button>
-          <button type="button" class="btn btn-link p-0 delete-category-btn">
+          <button type="button" class="btn btn-link p-0 delete-recurring-transaction-btn">
             <i class="fas fa-trash-alt text-danger fa-lg"></i>
           </button>
         </div>
