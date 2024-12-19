@@ -1,6 +1,7 @@
 // ---------------------
 // 1. Dark Mode Toggle
 // ---------------------
+import { CzechNumberInput } from './czech_number_field.js';
 
 const toggleThemeButton = document.getElementById('toggle-checkbox-dark-mode');
 const body = document.body;
@@ -107,6 +108,14 @@ document.addEventListener("DOMContentLoaded", function() {
       var myModal = new bootstrap.Modal(modalElement);
       myModal.show();
   }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const czechNumberInputs = document.querySelectorAll(".czech-number");
+
+    czechNumberInputs.forEach((inputElement) => {
+        new CzechNumberInput(inputElement);
+    });
 });
 
 function markAllUnread() {

@@ -14,6 +14,7 @@ from finance_app.models import (
 )
 from django.contrib.auth import get_user_model
 from datetime import datetime
+from django.utils.timezone import make_aware
 
 
 class UserProfileTests(TestCase):
@@ -191,8 +192,8 @@ class SharedBudgetTests(TestCase):
             name="Monthly Budget",
             owner=user1,
             limit=500.00,
-            period_start="2024-10-01",
-            period_end="2024-10-31",
+            period_start=make_aware(datetime(2024, 10, 1)),
+            period_end=make_aware(datetime(2024, 10, 31)),
             description="October expenses",
         )
         budget.categories.add(category1, category2)

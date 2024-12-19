@@ -75,8 +75,7 @@ def create_budget(request):
                 {"success": True, "message": "Rozpočet byl úspěšně vytvořen."}
             )
         else:
-            # ToDo all form errors
-            return JsonResponse({"success": False, "message": form.non_field_errors()})
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     return JsonResponse(
         {"success": False, "message": "Nesprávný typ požadavku."}, status=400
@@ -98,9 +97,7 @@ def edit_budget(request, budget_id):
             )
         else:
             # ToDo all form errors
-            return JsonResponse(
-                {"success": False, "errors": form.non_field_errors()}, status=400
-            )
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     return JsonResponse(
         {"success": False, "message": "Nesprávný typ požadavku."}, status=400

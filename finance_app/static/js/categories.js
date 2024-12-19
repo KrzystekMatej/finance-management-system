@@ -1,3 +1,5 @@
+import { FormManager } from './form_management.js';
+
 function deleteCategory()
 {
     const message = "Opravdu chcete smazat tuto kategorii? " +
@@ -74,10 +76,14 @@ document.querySelectorAll(".delete-category-btn").forEach(button => {
 });
 
 
-
+const editCategoryFormManager = new FormManager();
 
 
 document.querySelectorAll(".edit-category-btn").forEach(button => {
-    button.addEventListener("click", editCategory);
+    button.addEventListener("click", function (event) {
+        editCategoryFormManager.form = button.closest('.edit-category-form');
+        editCategoryFormManager.viewUrl = `/edit-category/${button.dataset.categoryPreferenceId}/`;
+        editCategoryFormManager.processForm();
+    });
 });
 

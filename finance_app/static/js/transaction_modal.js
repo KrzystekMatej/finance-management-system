@@ -1,3 +1,5 @@
+import { FormManager, FieldFormatter } from './form_management.js';
+
 const transactionModal = new bootstrap.Modal(document.getElementById('transaction-modal'));
 const categoryModal = new bootstrap.Modal(document.getElementById('category-modal'));
 
@@ -81,87 +83,41 @@ function computeGeneratedTransactionCount(lastPerformedAt, interval) {
     return transactionCount;
 }
 
-document.getElementById("submit-transaction-btn").addEventListener("click", function (event) {
-    const form = document.getElementById("create-transaction-form");
-    const formData = new FormData(form);
-    let isValid = true;
-    // ToDo - messages
-    const amountField = form.elements["transaction-amount"];
-    if (!amountField.value || isNaN(amountField.value)) {
-        amountField.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        amountField.classList.remove("is-invalid");
-    }
+const createTransactionFormManager = new FormManager();
 
-    const performedAtField = form.elements["transaction-performed-at"];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const selectedDate = new Date(performedAtField.value);
-    if (!performedAtField.value || selectedDate > today) {
-        performedAtField.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        const inputDate = new Date(performedAtField.value);
-        const currentDate = new Date();
+createTransactionFormManager.form = document.getElementById("create-transaction-form");
+createTransactionFormManager.viewUrl = "/create-transaction/";
+createTransactionFormManager.confirmation = formData => {
+    const isRecurring = formData.get("is_recurring");
 
-        if (inputDate > currentDate) {
-            performedAtField.classList.add("is-invalid");
-            isValid = false;
-            // ToDo - message - "Datum a čas transakce nesmí být v budoucnosti."
-        } else {
-            performedAtField.classList.remove("is-invalid");
-        }
-    }
-
-    const categoryField = form.elements["transaction-category-select"];
-    if (!categoryField.value) {
-        categoryField.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        categoryField.classList.remove("is-invalid");
-    }
-
-    const nameField = form.elements["transaction-name"];
-    if (!nameField.value.trim()) {
-        nameField.classList.add("is-invalid");
-        isValid = false;
-    } else {
-        nameField.classList.remove("is-invalid");
-    }
-
-    if(isValid) {
-        const isRecurring = document.getElementById('recurring-transaction-checkbox').checked;
-
-        if (isRecurring)
+    if (isRecurring  === "on")
+    {
+        const performedAt = formData.get("performed_at");
+        if (performedAt)
         {
-            const transactionCount = computeGeneratedTransactionCount(performedAtField.value, form.elements["interval"].value)
-            const userConfirmed = confirm(
+            const transactionCount = computeGeneratedTransactionCount(formData.get("performed_at"), formData.get("interval"));
+            return confirm(
                 "Po vytvoření této rekurentní transakce dojde " +
                 `k vygenerování ${transactionCount} transakcí. Určitě chcete pokračovat?`
-            )
-
-            if (!userConfirmed) return;
+            );
         }
-
-        fetch("/create-transaction/", {
-            method: "POST",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
-            },
-            body: formData,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                transactionModal.hide()
-                location.reload();//ToDo - live reload
-            }
-            alert(data.message);
-        })
-        .catch(error => console.error("Error:", error));
+        return true;
     }
+    return true;
+};
+
+createTransactionFormManager.postSuccess = () => {
+    transactionModal.hide();
+    location.reload();
+};
+
+
+createTransactionFormManager.fieldFormatters = [
+    new FieldFormatter("amount", value => value.replace(",", "."))
+];
+
+document.getElementById("submit-transaction-btn").addEventListener("click", function (event) {
+    createTransactionFormManager.processForm();
 });
 
 document.getElementById("recurring-transaction-checkbox").addEventListener("change", function (event) {

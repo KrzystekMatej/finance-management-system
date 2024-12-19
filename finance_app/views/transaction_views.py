@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from finance_app.forms import TransactionForm, RecurringTransactionForm
+from finance_app.logging import logger
 from finance_app.models import Transaction, UserProfile, CategoryPreference
 
 
@@ -11,7 +12,7 @@ def create_transaction(request):
         request.method == "POST"
         and request.headers.get("x-requested-with") == "XMLHttpRequest"
     ):
-        if request.POST.get("is-recurring") == "on":
+        if request.POST.get("is_recurring") == "on":
             form = RecurringTransactionForm(request.POST)
         else:
             form = TransactionForm(request.POST)
@@ -24,10 +25,7 @@ def create_transaction(request):
                 {"success": True, "message": "Transakce byla úspěšně vytvořena."}
             )
         else:
-            # ToDo all form errors
-            return JsonResponse(
-                {"success": False, "message": form.non_field_errors()}, status=400
-            )
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     return JsonResponse(
         {"success": False, "message": "Nesprávný typ požadavku."}, status=400
@@ -44,16 +42,14 @@ def transaction_detail(request, transaction_id):
             )
 
         form = TransactionForm(request.POST, instance=transaction)
+        logger.info(request.POST)
         if form.is_valid():
             form.save()
             return JsonResponse(
                 {"success": True, "message": "Vaše změny byly uloženy."}
             )
         else:
-            # ToDo all form errors
-            return JsonResponse(
-                {"success": False, "message": form.non_field_errors()}, status=400
-            )
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     user_profile = UserProfile.objects.get(user=request.user)
     categories = CategoryPreference.objects.filter(user=request.user)

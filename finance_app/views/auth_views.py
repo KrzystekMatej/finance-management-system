@@ -6,6 +6,9 @@ from finance_app.forms import (
     LoginForm,
 )
 from verify_email.email_handler import ActivationMailManager
+from django.http import JsonResponse
+
+from finance_app.logging import logger
 
 
 def register_success(request):
@@ -14,7 +17,13 @@ def register_success(request):
 
 def register_page(request):
     if request.method == "POST":
+        if request.headers.get("x-requested-with") != "XMLHttpRequest":
+            return JsonResponse(
+                {"success": False, "message": "Nesprávný typ požadavku."}, status=400
+            )
+
         form = RegistrationForm(request.POST)
+
         if form.is_valid():
             inactive_user = form.save(commit=False)
             inactive_user.is_active = False
@@ -24,11 +33,14 @@ def register_page(request):
             ActivationMailManager.send_verification_link(
                 inactive_user=inactive_user, form=form, request=request
             )
-            return redirect("register-success")
-    else:
-        form = RegistrationForm()
+            return JsonResponse(
+                {"success": True, "redirect_url": "/register-success/"}, status=200
+            )
+        else:
+            logger.info(form.errors)
+            return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
-    return render(request, "register.html", {"form": form})
+    return render(request, "register.html")
 
 
 def login_page(request):

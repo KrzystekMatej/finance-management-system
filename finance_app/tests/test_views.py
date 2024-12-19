@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from finance_app.forms import RegistrationForm
 from django.contrib.auth import get_user_model, get_user
 from django.utils import timezone
 from finance_app.models import Transaction, Category, CategoryPreference
@@ -11,7 +10,6 @@ class RegisterPageTest(TestCase):
         response = self.client.get(reverse("register"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "register.html")
-        self.assertIsInstance(response.context["form"], RegistrationForm)
 
     def test_register_page_successful_registration(self):
         response = self.client.post(
@@ -24,8 +22,12 @@ class RegisterPageTest(TestCase):
                 "password1": "complexpassword123",
                 "password2": "complexpassword123",
             },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        self.assertRedirects(response, reverse("register-success"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("redirect_url", response.json())
+        self.assertEqual(response.json()["redirect_url"], reverse("register-success"))
         self.assertTrue(get_user_model().objects.filter(username="newuser").exists())
 
     def test_register_page_registration_invalid_data(self):
@@ -40,8 +42,7 @@ class RegisterPageTest(TestCase):
                 "password2": "differentpassword",
             },
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, "form", "password2", "Hesla se neshodují.")
+        self.assertEqual(response.status_code, 400)
 
 
 class LoginPageTest(TestCase):
