@@ -22,8 +22,8 @@ def categories_page(request):
     categories = CategoryPreference.objects.filter(user=request.user)
 
     notifications, show_notifications_modal = parse_notifications(
-      request, Budget.objects.filter(owner=request.user)
-      )
+        request, Budget.objects.filter(owner=request.user)
+    )
 
     return render(
         request,

@@ -17,68 +17,69 @@ def parse_notifications(request, budgets):
 
     notifications = []
     show_notifications_modal = False
-    
+
     for budget in budgets:
-      transactions = Transaction.objects.filter(
-          user=request.user,
-          category__in=budget.categories.all(),
-          performed_at__range=(budget.period_start, budget.period_end),
-      )
-      
-      # Expenses is absolute number, eq. sum outcoming
-      # transactions of -500 and -200 ends up as +700
-      expenses = 0
-      
-      for transaction in transactions:
-        
-          # Transaction is outcoming
-          if transaction.amount < 0:
-              expenses += abs(float(transaction.amount))
-      
-      limit = float(budget.limit)
-      
-      # Breached the limit, create a notification entry
-      if limit < expenses:
-      
-          # Unique string as identification
-          subject = f"{budget.name}-{budget.created_at}"
-      
-          message = f'V rozpočtu "{budget.name}" jste překročili Váš nastavený limit ({limit} Kč v období \
+        transactions = Transaction.objects.filter(
+            user=request.user,
+            category__in=budget.categories.all(),
+            performed_at__range=(budget.period_start, budget.period_end),
+        )
+
+        # Expenses is absolute number, eq. sum outcoming
+        # transactions of -500 and -200 ends up as +700
+        expenses = 0
+
+        for transaction in transactions:
+
+            # Transaction is outcoming
+            if transaction.amount < 0:
+                expenses += abs(float(transaction.amount))
+
+        limit = float(budget.limit)
+
+        # Breached the limit, create a notification entry
+        if limit < expenses:
+
+            # Unique string as identification
+            subject = f"{budget.name}-{budget.created_at}"
+
+            message = f'V rozpočtu "{budget.name}" jste překročili Váš nastavený limit ({limit} Kč v období \
             {budget.period_start.date()} až {budget.period_end.date()}) o {expenses - limit} Kč'
-      
-          notifications = Notification.objects.filter(receiver_id=request.user.id)
-      
-          is_duplicate = False
-          for notification in notifications:
-              if notification.subject == subject:
-                  is_duplicate = True
-      
-          if not is_duplicate:
-              Notification.objects.create(
-                  receiver_id=request.user.id,
-                  subject=subject,
-                  message=message,
-                  is_read=False,
-              )
-      
-              # Send email - disabled so we don't spam possible test email addresses
-              # Tested and it works
-              # from django.core.mail import send_mail
-              # subject = "Finance app - překročení limitu"
-              # from_email = "systemfinance5@gmail.com"
-              # recipient_list = [request.user.email]
-              # send_mail(subject, message, from_email, recipient_list)
-   
-          # Not very effective, but it just works
-          notifications = Notification.objects.filter(receiver_id=request.user.id)
-   
-          # If at least one notification is unread, show modal
-          for notification in notifications:
-              if notification.is_read is False:
-                  show_notifications_modal = True
-                  break
+
+            notifications = Notification.objects.filter(receiver_id=request.user.id)
+
+            is_duplicate = False
+            for notification in notifications:
+                if notification.subject == subject:
+                    is_duplicate = True
+
+            if not is_duplicate:
+                Notification.objects.create(
+                    receiver_id=request.user.id,
+                    subject=subject,
+                    message=message,
+                    is_read=False,
+                )
+
+                # Send email - disabled so we don't spam possible test email addresses
+                # Tested and it works
+                # from django.core.mail import send_mail
+                # subject = "Finance app - překročení limitu"
+                # from_email = "systemfinance5@gmail.com"
+                # recipient_list = [request.user.email]
+                # send_mail(subject, message, from_email, recipient_list)
+
+            # Not very effective, but it just works
+            notifications = Notification.objects.filter(receiver_id=request.user.id)
+
+            # If at least one notification is unread, show modal
+            for notification in notifications:
+                if notification.is_read is False:
+                    show_notifications_modal = True
+                    break
 
     return notifications, show_notifications_modal
+
 
 def split_transactions_by_month(transactions):
     monthly_summaries = []
@@ -227,8 +228,8 @@ def filter_page(request):
     )
 
     notifications, show_notifications_modal = parse_notifications(
-      request, Budget.objects.filter(owner=request.user)
-      )
+        request, Budget.objects.filter(owner=request.user)
+    )
 
     context = {
         "transactions": transactions,

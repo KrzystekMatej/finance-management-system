@@ -13,6 +13,7 @@ from finance_app.models import (
     SharedBudget,
 )
 
+
 @login_required(login_url="login")
 def budgets_page(request):
     user_profile = UserProfile.objects.get(user=request.user)
@@ -55,8 +56,8 @@ def budget_view(request, budget_id):
     )
 
     notifications, show_notifications_modal = parse_notifications(
-      request, Budget.objects.filter(owner=request.user)
-      )
+        request, Budget.objects.filter(owner=request.user)
+    )
 
     context = {
         "monthly_summaries": get_monthly_summaries(request, transactions_for_budget),

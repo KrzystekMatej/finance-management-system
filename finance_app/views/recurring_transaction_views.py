@@ -1,15 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from finance_app.models import (
-  RecurringTransaction,
-  UserProfile,
-  CategoryPreference,
-  Budget,
-  )
+    RecurringTransaction,
+    UserProfile,
+    CategoryPreference,
+    Budget,
+)
 from .summary_views import parse_notifications
 from django.http import JsonResponse
 from finance_app.forms import RecurringTransactionForm
-
 
 
 @login_required(login_url="login")
@@ -20,8 +19,8 @@ def recurring_transactions_page(request):
     recurring_transactions = RecurringTransaction.objects.filter(user=request.user)
 
     notifications, show_notifications_modal = parse_notifications(
-      request, Budget.objects.filter(owner=request.user)
-      )
+        request, Budget.objects.filter(owner=request.user)
+    )
     return render(
         request,
         "recurring_transactions.html",
