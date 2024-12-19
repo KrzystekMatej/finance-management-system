@@ -216,8 +216,6 @@ def main_page(request):
                 for notification in notifications:
                     if notification.subject == subject:
                         is_duplicate = True
-                        # notification.is_read = True
-                        # notification.save()
 
                 if not is_duplicate:
                     Notification.objects.create(
@@ -226,7 +224,14 @@ def main_page(request):
                         message=message,
                         is_read=False,
                     )
-                    # There could be function to send an email notification
+
+                    # Send email - disabled so we don't spam possible test email addresses
+                    # Tested and it works
+                    # from django.core.mail import send_mail
+                    # subject = "Finance app - překročení limitu"
+                    # from_email = "systemfinance5@gmail.com"
+                    # recipient_list = [request.user.email]
+                    # send_mail(subject, message, from_email, recipient_list)
 
                 # Not very effective, but it just works
                 notifications = Notification.objects.filter(receiver_id=request.user.id)

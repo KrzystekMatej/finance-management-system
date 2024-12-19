@@ -17,7 +17,14 @@ from finance_app.models import (
 @login_required(login_url="login")
 def budgets_page(request):
     user_profile = UserProfile.objects.get(user=request.user)
+
     budgets = Budget.objects.filter(sharedbudget__user=request.user)
+
+    # Fallback if shared budget fails. Idk what shared budget is even
+    # meant to do here, but it sure isn't working correctly
+    if not budgets.exists():
+        budgets = Budget.objects.filter(owner=request.user)
+
     categories = CategoryPreference.objects.filter(user=request.user)
 
     shared_budgets = SharedBudget.objects.filter(budget__in=budgets).select_related(
