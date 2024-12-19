@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from finance_app.models import (
     Transaction,
@@ -207,7 +207,8 @@ def main_page(request):
             # Breached the limit, create a notification entry
             if limit < monthly_expenses:
                 subject = f"{summary["year"]}-{summary["month"]}-{budget.name}"
-                message = f"V rozpočtu {budget.name} jste v měsíci {summary['month']} roku {summary['year']} překročili Váš nastavený limit ({limit} Kč) o {monthly_expenses - limit} Kč"
+                message = f"V rozpočtu {budget.name} jste v měsíci {summary['month']} roku \
+                  {summary['year']} překročili Váš nastavený limit ({limit} Kč) o {monthly_expenses - limit} Kč"
 
                 notifications = Notification.objects.filter(receiver_id=request.user.id)
 
@@ -220,7 +221,7 @@ def main_page(request):
                         # notification.save()
 
                 if not is_duplicate:
-                    new_notification = Notification.objects.create(
+                    Notification.objects.create(
                         receiver_id=request.user.id,
                         subject=subject,
                         message=message,
@@ -233,7 +234,7 @@ def main_page(request):
 
                 # If all notifications are read, don't show modal
                 for notification in notifications:
-                    if notification.is_read == False:
+                    if notification.is_read is False:
                         show_notifications_modal = True
                         break
                 print(show_notifications_modal)
