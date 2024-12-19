@@ -193,16 +193,17 @@ def main_page(request):
     for budget in budgets:
 
         monthly_summaries = get_monthly_summaries(
-            request, Transaction.objects.filter(
-            user=request.user, category__in=budget.categories.all()
-            )
+            request,
+            Transaction.objects.filter(
+                user=request.user, category__in=budget.categories.all()
+            ),
         )
 
         for summary in monthly_summaries:
-            monthly_expenses = abs(float(summary['expanses']))
+            monthly_expenses = abs(float(summary["expanses"]))
 
             limit = float(budget.limit)
- 
+
             # Breached the limit, create a notification entry
             if limit < monthly_expenses:
                 subject = f"{summary["year"]}-{summary["month"]}-{budget.name}"
@@ -215,15 +216,15 @@ def main_page(request):
                     print(subject, notification.subject)
                     if notification.subject == subject:
                         is_duplicate = True
-                        #notification.is_read = True
-                        #notification.save()
+                        # notification.is_read = True
+                        # notification.save()
 
                 if not is_duplicate:
                     new_notification = Notification.objects.create(
                         receiver_id=request.user.id,
                         subject=subject,
                         message=message,
-                        is_read=False
+                        is_read=False,
                     )
                     # There could be function to send an email notification
 
@@ -232,11 +233,11 @@ def main_page(request):
 
                 # If all notifications are read, don't show modal
                 for notification in notifications:
-                  if notification.is_read == False:
-                    show_notifications_modal = True
-                    break
+                    if notification.is_read == False:
+                        show_notifications_modal = True
+                        break
                 print(show_notifications_modal)
-                  
+
     context = {
         "monthly_summaries": monthly_summaries,
         "categories": categories,
@@ -244,24 +245,32 @@ def main_page(request):
         "user_profile": UserProfile.objects.get(user=request.user),
         "budgets": budgets,
         "notifications": notifications,
-        "show_notifications_modal": show_notifications_modal
+        "show_notifications_modal": show_notifications_modal,
     }
 
     return render(request, "main_page.html", context)
+
 
 def update_notification(request, pk):
     if request.method == "POST":
         notification = get_object_or_404(Notification, pk=pk)
         notification.is_read = True
         notification.save()
-        return JsonResponse({'status': 'success', 'message': 'Notification updated successfully.'})
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+        return JsonResponse(
+            {"status": "success", "message": "Notification updated successfully."}
+        )
+    return JsonResponse({"status": "error", "message": "Invalid request method."})
+
 
 def mark_all_notifications_as_unread(request):
     if request.method == "POST" and request.user.is_authenticated:
         notifications = Notification.objects.filter(receiver=request.user)
         notifications.update(is_read=False)
 
-        return JsonResponse({'status': 'success', 'message': 'All notifications set to unread.'})
-    
-    return JsonResponse({'status': 'error', 'message': 'Invalid request or user not authenticated.'})
+        return JsonResponse(
+            {"status": "success", "message": "All notifications set to unread."}
+        )
+
+    return JsonResponse(
+        {"status": "error", "message": "Invalid request or user not authenticated."}
+    )

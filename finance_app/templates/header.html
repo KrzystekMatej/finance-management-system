@@ -1,5 +1,5 @@
 <script>
-  const csrfToken = "{{ csrf_token }}";
+    const csrfToken = "{{ csrf_token }}";
 </script>
 <div id="header">
   <div class="row">
@@ -82,14 +82,12 @@
                 </div>
               </div>
             </label>
-
             <div class="dropdown-menu-item ps-3 pe-3" onclick="markAllUnread()">
               Obnovit viditelnost notifikací
               <div class="ms-auto">
                 <input type="checkbox" id="toggle-checkbox-hide-balance" class="d-none">
               </div>
             </div>
-
             <a class="no-highlight" href="{% url 'logout' %}">
               <div class="dropdown-menu-item ps-3 pe-3">Odhlásit se</div>
             </a>
