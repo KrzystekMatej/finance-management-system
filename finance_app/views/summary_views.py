@@ -192,14 +192,14 @@ def main_page(request):
 
     for budget in budgets:
 
-        monthly_summaries = get_monthly_summaries(
+        budget_monthly_summaries = get_monthly_summaries(
             request,
             Transaction.objects.filter(
                 user=request.user, category__in=budget.categories.all()
             ),
         )
 
-        for summary in monthly_summaries:
+        for summary in budget_monthly_summaries:
             monthly_expenses = abs(float(summary["expanses"]))
 
             limit = float(budget.limit)
