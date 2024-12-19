@@ -105,7 +105,6 @@ def edit_budget(request, budget_id):
                 {"success": True, "message": "Vaše změny byly uloženy."}
             )
         else:
-            # ToDo all form errors
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
     return JsonResponse(

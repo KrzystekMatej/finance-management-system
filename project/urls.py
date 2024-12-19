@@ -34,6 +34,8 @@ from finance_app.views.budget_views import (
 )
 from finance_app.views.recurring_transaction_views import (
     recurring_transactions_page,
+    edit_recurring_transaction,
+    delete_recurring_transaction,
 )
 
 urlpatterns = [
@@ -87,6 +89,22 @@ urlpatterns = [
         delete_transaction,
         name="delete-transaction",
     ),
+    # recurring transaction views
+    path(
+        "recurring-transactions/",
+        recurring_transactions_page,
+        name="recurring_transactions",
+    ),
+    path(
+        "edit-recurring-transaction/<int:transaction_id>/",
+        edit_recurring_transaction,
+        name="edit_recurring_transaction",
+    ),
+    path(
+        "delete-recurring-transaction/<int:transaction_id>/",
+        delete_recurring_transaction,
+        name="delete_recurring_transaction",
+    ),
     # category views
     path("categories/", categories_page, name="categories"),
     path("create-category/", create_category, name="create-category"),
@@ -106,12 +124,6 @@ urlpatterns = [
     path("create-budget/", create_budget, name="create-budget"),
     path("edit-budget/<int:budget_id>/", edit_budget, name="edit-budget"),
     path("delete-budget/<int:budget_id>/", delete_budget, name="delete-budget"),
-    # recurring transaction
-    path(
-        "recurring-transactions/",
-        recurring_transactions_page,
-        name="recurring_transactions",
-    ),
     path(
         "update-notification/<int:pk>/", update_notification, name="update_notification"
     ),
