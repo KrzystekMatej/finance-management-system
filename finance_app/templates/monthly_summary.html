@@ -41,29 +41,59 @@
            data-sort="date-desc"
            onclick="sortTransactions('date-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
       </div>
-      <div class="col-md-3 vert-center">
-        <span class="income bold truncate-text spacer-right"
-              title="Název transakce">Název transakce</span>
-        <i title="Řadit sestupně dle abecedy"
-           class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
-           data-sort="name-asc"
-           onclick="sortTransactions('name-asc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
-        <i title="Řadit vzestupně dle abecedy"
-           class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
-           data-sort="name-desc"
-           onclick="sortTransactions('name-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
-      </div>
-      <div class="col-md-3 vert-center">
-        <span class="income bold truncate-text spacer-right" title="Kategorie">Kategorie</span>
-        <i title="Řadit sestupně dle abecedy"
-           class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
-           data-sort="category-asc"
-           onclick="sortTransactions('category-asc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
-        <i title="Řadit vzestupně dle abecedy"
-           class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
-           data-sort="category-desc"
-           onclick="sortTransactions('category-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
-      </div>
+      {% if '/budget/' in request.path %}
+        <div class="col-md-2 vert-center">
+          <span class="author bold truncate-text spacer-right"
+                title="Autor transakce">Autor transakce</span>
+        </div>
+        <div class="col-md-2 vert-center">
+          <span class="income bold truncate-text spacer-right"
+                title="Název transakce">Název transakce</span>
+          <i title="Řadit sestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+             data-sort="name-asc"
+             onclick="sortTransactions('name-asc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+          <i title="Řadit vzestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+             data-sort="name-desc"
+             onclick="sortTransactions('name-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+        </div>
+        <div class="col-md-2 vert-center">
+          <span class="income bold truncate-text spacer-right" title="Kategorie">Kategorie</span>
+          <i title="Řadit sestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+             data-sort="category-asc"
+             onclick="sortTransactions('category-asc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+          <i title="Řadit vzestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+             data-sort="category-desc"
+             onclick="sortTransactions('category-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+        </div>
+      {% else %}
+        <div class="col-md-3 vert-center">
+          <span class="income bold truncate-text spacer-right"
+                title="Název transakce">Název transakce</span>
+          <i title="Řadit sestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+             data-sort="name-asc"
+             onclick="sortTransactions('name-asc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+          <i title="Řadit vzestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+             data-sort="name-desc"
+             onclick="sortTransactions('name-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+        </div>
+        <div class="col-md-3 vert-center">
+          <span class="income bold truncate-text spacer-right" title="Kategorie">Kategorie</span>
+          <i title="Řadit sestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-a-z opacity-half"
+             data-sort="category-asc"
+             onclick="sortTransactions('category-asc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+          <i title="Řadit vzestupně dle abecedy"
+             class="small-spacer-right fas fa-arrow-down-z-a opacity-half"
+             data-sort="category-desc"
+             onclick="sortTransactions('category-desc', this, '{{ summary.month }}', '{{ summary.year }}', 'main')"></i>
+        </div>
+      {% endif %}
       <div class="col-md-2 vert-center">
         <span class="income bold truncate-text spacer-right" title="Částka">Částka</span>
         <i title="Řadit od nejmenší"
@@ -82,24 +112,46 @@
     <hr class="thick-divider-line">
     {% for transaction in summary.transactions %}
       <div class="transaction {% if transaction.amount > 0 %}outcoming-transaction{% else %}incoming-transaction{% endif %}">
-        <div class="row width-100">
+        <div class="row width-100" style="height: 38px;">
           <div class="col-md-3 vert-center">
             <span class="transaction-date truncate-text"
                   title="{{ transaction.performed_at }}">{{ transaction.performed_at }}</span>
           </div>
-          <div class="col-md-3 vert-center">
-            <span class="transaction-name truncate-text" title="{{ transaction.name }}">{{ transaction.name }}</span>
-          </div>
-          <div class="col-md-3 vert-center display-flex">
-            <div class="color-box"
-                 style="background-color: {{ transaction.category_color }};
-                        width: 20px;
-                        height: 20px;
-                        margin-right: 10px;
-                        border-radius: 5px"></div>
-            <span class="transaction-category truncate-text"
-                  title="{{ transaction.category.name }}">{{ transaction.category.name }}</span>
-          </div>
+          {% if '/budget/' in request.path %}
+            <div class="col-md-2 vert-center">
+              <span class="transaction-author truncate-text"
+                    title="{{ transaction.user.first_name }} {{ transaction.user.last_name }}">
+                {{ transaction.user.first_name }} {{ transaction.user.last_name }}
+              </span>
+            </div>
+            <div class="col-md-2 vert-center">
+              <span class="transaction-name truncate-text" title="{{ transaction.name }}">{{ transaction.name }}</span>
+            </div>
+            <div class="col-md-2 vert-center display-flex">
+              <div class="color-box"
+                   style="background-color: {{ transaction.category_color }};
+                          width: 20px;
+                          height: 20px;
+                          margin-right: 10px;
+                          border-radius: 5px"></div>
+              <span class="transaction-category truncate-text"
+                    title="{{ transaction.category.name }}">{{ transaction.category.name }}</span>
+            </div>
+          {% else %}
+            <div class="col-md-3 vert-center">
+              <span class="transaction-name truncate-text" title="{{ transaction.name }}">{{ transaction.name }}</span>
+            </div>
+            <div class="col-md-3 vert-center display-flex">
+              <div class="color-box"
+                   style="background-color: {{ transaction.category_color }};
+                          width: 20px;
+                          height: 20px;
+                          margin-right: 10px;
+                          border-radius: 5px"></div>
+              <span class="transaction-category truncate-text"
+                    title="{{ transaction.category.name }}">{{ transaction.category.name }}</span>
+            </div>
+          {% endif %}
           <div class="col-md-2 vert-center">
             {% if transaction.amount > 0 %}
               <span class="transaction-amount truncate-text positive"
@@ -111,19 +163,21 @@
                     title="{{ transaction.amount|spaced_number }} Kč">{{ transaction.amount|spaced_number }} Kč</span>
             {% endif %}
           </div>
-          <div class="col-md-1 vert-center">
-            <a href="{% url 'transaction_detail' transaction.id %}"
-               class="btn btn-link"
-               title="Detail transakce">
-              <i class="fas fa-ellipsis-h icon-tertiary"></i>
-            </a>
-            <button type="button"
-                    class="btn btn-link delete-transaction"
-                    data-transaction-id="{{ transaction.id }}"
-                    title="Smazat transakci">
-              <i class="fas fa-trash-alt icon-tertiary"></i>
-            </button>
-          </div>
+          {% if transaction.user == request.user %}
+            <div class="col-md-1 vert-center">
+              <a href="{% url 'transaction_detail' transaction.id %}"
+                 class="btn btn-link"
+                 title="Detail transakce">
+                <i class="fas fa-ellipsis-h icon-tertiary"></i>
+              </a>
+              <button type="button"
+                      class="btn btn-link delete-transaction"
+                      data-transaction-id="{{ transaction.id }}"
+                      title="Smazat transakci">
+                <i class="fas fa-trash-alt icon-tertiary"></i>
+              </button>
+            </div>
+          {% endif %}
         </div>
       </div>
     {% endfor %}

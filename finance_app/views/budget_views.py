@@ -49,11 +49,15 @@ def budgets_page(request):
 
 @login_required(login_url="login")
 def budget_view(request, budget_id):
-    budget = get_object_or_404(Budget, id=budget_id, owner=request.user)
+    budget = get_object_or_404(Budget, id=budget_id, sharedbudget__user=request.user)
+
+    associated_users = [budget.owner] + list(
+        SharedBudget.objects.filter(budget=budget).values_list("user", flat=True)
+    )
 
     transactions_for_budget = Transaction.objects.filter(
-        user=request.user, category__in=budget.categories.all()
-    )
+        user__in=associated_users, category__in=budget.categories.all()
+    ).select_related("user")
 
     notifications, show_notifications_modal = parse_notifications(
         request, Budget.objects.filter(owner=request.user)
@@ -69,6 +73,30 @@ def budget_view(request, budget_id):
     }
 
     return render(request, "main_page.html", context)
+
+
+# @login_required(login_url="login")
+# def budget_view(request, budget_id):
+#     budget = get_object_or_404(Budget, id=budget_id, owner=request.user)
+
+#     transactions_for_budget = Transaction.objects.filter(
+#         user=request.user, category__in=budget.categories.all()
+#     )
+
+#     notifications, show_notifications_modal = parse_notifications(
+#         request, Budget.objects.filter(owner=request.user)
+#     )
+
+#     context = {
+#         "monthly_summaries": get_monthly_summaries(request, transactions_for_budget),
+#         "categories": CategoryPreference.objects.filter(user=request.user),
+#         "user_profile": UserProfile.objects.get(user=request.user),
+#         "budgets": Budget.objects.filter(owner=request.user),
+#         "notifications": notifications,
+#         "show_notifications_modal": show_notifications_modal,
+#     }
+
+#     return render(request, "main_page.html", context)
 
 
 @login_required(login_url="login")
