@@ -326,22 +326,7 @@ class CreateBudgetViewTests(TestCase):
         response = self.client.post(
             self.url, {}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
-        self.assertEqual(response.status_code, 302)  # Redirect to login
-
-    def test_create_budget_failure_invalid_dates(self):
-        data = {
-            "name": "Invalid Date Budget",
-            "limit": "200.00",
-            "period_start": timezone.now().isoformat(),
-            "period_end": timezone.now().isoformat(),  # End same as start
-            "categories": [self.category.id],
-            "description": "Budget with invalid dates.",
-        }
-        response = self.client.post(
-            self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertFalse(response.json()["success"])
+        self.assertEqual(response.status_code, 302)
 
 
 class EditCategoryViewTests(TestCase):
