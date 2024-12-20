@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<div class="modal fade"
+     id="add-user-modal"
+     tabindex="-1"
+     aria-labelledby="add-user-modal-label"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add-user-modal-label">Přidat uživatele do rozpočtu</h5>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-user-form" method="post" action="">
+          {% csrf_token %}
+          <input type="hidden" name="budget_id" id="budget-id">
+          <!-- Výběr uživatele -->
+          <div class="mb-3">
+            <label for="user-id" class="form-label">ID uživatele</label>
+            <input type="text"
+                   class="form-control"
+                   name="added_user_id"
+                   id="added_user_id">
+          </div>
+          <!-- Notification Mode -->
+          <div class="mb-3">
+            <label class="form-label">Notifikační režim</label>
+            <div class="d-flex gap-4 justify-content-center">
+              <div class="form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       name="notifications_none"
+                       id="notifications_none">
+                <label class="form-check-label" for="notifications_none">NONE</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       name="notifications_app"
+                       id="notifications_app">
+                <label class="form-check-label" for="notifications_app">APP</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox"
+                       class="form-check-input"
+                       name="notifications_email"
+                       id="notifications_email">
+                <label class="form-check-label" for="notifications_email">EMAIL</label>
+              </div>
+            </div>
+          </div>
+          <!-- Permission -->
+          <div class="mb-3">
+            <label for="permissions" class="form-label">Permission</label>
+            <select name="permissions" id="permissions" class="form-select">
+              <option value="EDIT">EDIT</option>
+              <option value="VIEW">VIEW</option>
+            </select>
+          </div>
+          <!-- Role -->
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select name="role" id="role" class="form-select">
+              <option value="PARTICIPANT">PARTICIPANT</option>
+              <option value="OBSERVER">OBSERVER</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Přidat uživatele</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    //Pro posílání budget.id jako skrytého inputu ve formuláři
+    document.addEventListener('DOMContentLoaded', function() {
+        const addUserButtons = document.querySelectorAll('.add-shared-user');
+
+        addUserButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const budgetId = button.getAttribute('data-budget-id');
+
+                document.getElementById('budget-id').value = budgetId;
+            });
+        });
+    });
+</script>

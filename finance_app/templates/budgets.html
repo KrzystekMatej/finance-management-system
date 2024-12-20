@@ -133,6 +133,8 @@
                   {% if s.user_id == request.user.id and s.permission.value == "EDIT" %}
                     <button type="button"
                             class="btn btn-primary btn-sm add-shared-user mt-2"
+                            data-bs-toggle="modal"
+                            data-bs-target="#add-user-modal"
                             data-budget-id="{{ budget.id }}">Přidat uživatele</button>
                   {% endif %}
                 {% endif %}
@@ -160,4 +162,5 @@
   </div>
   {% load static %}
   <script type="module" src="{% static 'js/budgets.js' %}" defer></script>
+  {% include "modal_add_user.html" %}
 {% endblock content %}
