@@ -38,8 +38,13 @@ def parse_notifications(request):
 
         limit = float(budget.limit)
 
+        user_profile = UserProfile.objects.filter(user=request.user).first()
+        notification_mode = str(user_profile.global_notification_mode.value)
+
         # Breached the limit, create a notification entry
-        if limit < expenses:
+        if limit < expenses and notification_mode != "NONE":
+
+            user_profile = UserProfile.objects.filter(user=request.user).first()
 
             # Unique string as identification
             subject = f"{budget.name}-{budget.created_at}"
@@ -55,22 +60,24 @@ def parse_notifications(request):
                     is_duplicate = True
 
             if not is_duplicate:
-                Notification.objects.create(
-                    receiver_id=request.user.id,
-                    subject=subject,
-                    message=message,
-                    is_read=False,
-                )
+                if notification_mode == "APP" or notification_mode == "APP_EMAIL":
+                    Notification.objects.create(
+                        receiver_id=request.user.id,
+                        subject=subject,
+                        message=message,
+                        is_read=False,
+                    )
 
-                # Send email - disabled so we don't spam possible test email addresses
-                # Tested and it works
-                # from django.core.mail import send_mail
-                # subject = "Finance app - překročení limitu"
-                # from_email = "systemfinance5@gmail.com"
-                # recipient_list = [request.user.email]
-                # send_mail(subject, message, from_email, recipient_list)
+                # Send email - disabled so we don't spam possibly existing test email addresses
+                # Tested it on my personal email and it just works
+                if notification_mode == "EMAIL" or notification_mode == "APP_EMAIL":
+                    pass
+                    # from django.core.mail import send_mail
+                    # subject = "Finance app - překročení limitu"
+                    # from_email = "systemfinance5@gmail.com"
+                    # recipient_list = [request.user.email]
+                    # send_mail(subject, message, from_email, recipient_list)
 
-            # Not very effective, but it just works
             notifications = Notification.objects.filter(receiver_id=request.user.id)
 
             # If at least one notification is unread, show modal
