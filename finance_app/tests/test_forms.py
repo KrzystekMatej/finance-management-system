@@ -5,8 +5,10 @@ from finance_app.forms import (
     LoginForm,
     TransactionForm,
     CategoryForm,
+    BudgetForm,
+    RecurringTransactionForm,
 )
-from finance_app.models import Category
+from finance_app.models import Category, Transaction, CategoryPreference
 from django.utils import timezone
 from decimal import Decimal
 
@@ -240,3 +242,178 @@ class CreateCategoryFormTests(TestCase):
             form.errors,
             "Form should have 'color' in errors for invalid color format.",
         )
+
+
+class EditTransactionFormTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.category = Category.objects.create(name="Food", is_default=True)
+        self.transaction = Transaction.objects.create(
+            name="Old Transaction",
+            amount=Decimal("100.00"),
+            performed_at=timezone.now(),
+            user=self.user,
+            category=self.category,
+            description="Old description",
+        )
+
+    def test_edit_transaction_valid_data(self):
+        form_data = {
+            "name": "Updated Transaction",
+            "amount": Decimal("150.00"),
+            "performed_at": timezone.now(),
+            "category": self.category.id,
+            "description": "Updated description",
+        }
+        form = TransactionForm(
+            data=form_data, instance=self.transaction, user=self.user
+        )
+        self.assertTrue(form.is_valid())
+        updated_transaction = form.save()
+        self.assertEqual(updated_transaction.name, "Updated Transaction")
+        self.assertEqual(updated_transaction.amount, Decimal("150.00"))
+
+    def test_edit_transaction_invalid_amount(self):
+        form_data = {
+            "name": "Invalid Transaction",
+            "amount": "invalid",
+            "performed_at": timezone.now(),
+            "category": self.category.id,
+            "description": "Invalid amount",
+        }
+        form = TransactionForm(
+            data=form_data, instance=self.transaction, user=self.user
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("amount", form.errors)
+
+
+class EditCategoryFormTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.category = Category.objects.create(name="Travel")
+        self.category_preference = CategoryPreference.objects.create(
+            user=self.user, category=self.category, color="#FF5733"
+        )
+
+    def test_edit_category_valid_data(self):
+        form_data = {
+            "name": "Updated Travel",
+            "color": "#00FF00",
+        }
+        form = CategoryForm(
+            data=form_data, user=self.user, existing_instance=self.category_preference
+        )
+        self.assertTrue(form.is_valid())
+        updated_preference = form.save()
+        self.assertEqual(updated_preference.color, "#00FF00")
+        self.assertEqual(updated_preference.category.name, "Updated Travel")
+
+    def test_edit_category_invalid_color(self):
+        form_data = {
+            "name": "Travel",
+            "color": "invalid-color",
+        }
+        form = CategoryForm(
+            data=form_data, user=self.user, existing_instance=self.category_preference
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn("color", form.errors)
+
+
+class BudgetFormTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.category = Category.objects.create(name="Groceries")
+
+    def test_budget_form_valid_data(self):
+        data = {
+            "name": "Weekly Budget",
+            "limit": Decimal("300.00"),
+            "period_start": timezone.now(),
+            "period_end": timezone.now() + timezone.timedelta(days=7),
+            "categories": [self.category],
+            "description": "Groceries for the week.",
+        }
+        form = BudgetForm(data=data, user=self.user)
+        self.assertTrue(form.is_valid())
+
+    def test_budget_form_negative_limit(self):
+        data = {
+            "name": "Invalid Budget",
+            "limit": Decimal("-50.00"),
+            "period_start": timezone.now(),
+            "period_end": timezone.now() + timezone.timedelta(days=7),
+            "categories": [self.category],
+            "description": "Invalid limit.",
+        }
+        form = BudgetForm(data=data, user=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertIn("limit", form.errors)
+
+    def test_budget_form_invalid_dates(self):
+        data = {
+            "name": "Date Error Budget",
+            "limit": Decimal("150.00"),
+            "period_start": timezone.now(),
+            "period_end": timezone.now() - timezone.timedelta(days=7),
+            "categories": [self.category],
+            "description": "End date before start date.",
+        }
+        form = BudgetForm(data=data, user=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertIn("period_end", form.errors)
+
+    def test_budget_form_missing_categories(self):
+        data = {
+            "name": "No Categories Budget",
+            "limit": Decimal("200.00"),
+            "period_start": timezone.now(),
+            "period_end": timezone.now() + timezone.timedelta(days=15),
+            "categories": [],
+            "description": "No categories selected.",
+        }
+        form = BudgetForm(data=data, user=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertIn("categories", form.errors)
+
+
+class RecurringTransactionFormTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.category = Category.objects.create(name="Utilities")
+
+    def test_recurring_transaction_form_valid_data(self):
+        form_data = {
+            "name": "Monthly Rent",
+            "amount": Decimal("1200.00"),
+            "performed_at": timezone.now(),
+            "next_performed_at": timezone.now() + timezone.timedelta(days=30),
+            "interval": "MONTH",
+            "category": self.category.id,
+            "description": "Monthly rent payment",
+        }
+        form = RecurringTransactionForm(data=form_data, user=self.user)
+        self.assertTrue(form.is_valid())
+
+    def test_recurring_transaction_form_invalid_interval(self):
+        form_data = {
+            "name": "Weekly Grocery",
+            "amount": Decimal("200.00"),
+            "performed_at": timezone.now(),
+            "next_performed_at": timezone.now() + timezone.timedelta(days=7),
+            "interval": "INVALID",
+            "category": self.category.id,
+            "description": "Invalid interval",
+        }
+        form = RecurringTransactionForm(data=form_data, user=self.user)
+        self.assertFalse(form.is_valid())
+        self.assertIn("interval", form.errors)
