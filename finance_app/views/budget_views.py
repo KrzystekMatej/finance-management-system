@@ -20,18 +20,13 @@ def budgets_page(request):
 
     budgets = Budget.objects.filter(sharedbudget__user=request.user)
 
-    # Fallback if shared budget fails. Idk what shared budget is even
-    # meant to do here, but it sure isn't working correctly
-    if not budgets.exists():
-        budgets = Budget.objects.filter(owner=request.user)
-
     categories = CategoryPreference.objects.filter(user=request.user)
 
     shared_budgets = SharedBudget.objects.filter(budget__in=budgets).select_related(
         "user"
     )
 
-    notifications, show_notifications_modal = parse_notifications(request, budgets)
+    notifications, show_notifications_modal = parse_notifications(request)
 
     return render(
         request,
@@ -59,9 +54,7 @@ def budget_view(request, budget_id):
         user__in=associated_users, category__in=budget.categories.all()
     ).select_related("user")
 
-    notifications, show_notifications_modal = parse_notifications(
-        request, Budget.objects.filter(owner=request.user)
-    )
+    notifications, show_notifications_modal = parse_notifications(request)
 
     context = {
         "monthly_summaries": get_monthly_summaries(request, transactions_for_budget),

@@ -4,7 +4,6 @@ from finance_app.models import (
     RecurringTransaction,
     UserProfile,
     CategoryPreference,
-    Budget,
 )
 from .summary_views import parse_notifications
 from django.http import JsonResponse
@@ -18,9 +17,7 @@ def recurring_transactions_page(request):
 
     recurring_transactions = RecurringTransaction.objects.filter(user=request.user)
 
-    notifications, show_notifications_modal = parse_notifications(
-        request, Budget.objects.filter(owner=request.user)
-    )
+    notifications, show_notifications_modal = parse_notifications(request)
     return render(
         request,
         "recurring_transactions.html",

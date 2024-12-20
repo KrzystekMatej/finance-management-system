@@ -13,8 +13,9 @@ from finance_app.forms import FilterByDateForm
 from django.http import JsonResponse
 
 
-def parse_notifications(request, budgets):
+def parse_notifications(request):
 
+    budgets = Budget.objects.filter(sharedbudget__user=request.user)
     notifications = []
     show_notifications_modal = False
 
@@ -227,9 +228,7 @@ def filter_page(request):
         .order_by("category__name")
     )
 
-    notifications, show_notifications_modal = parse_notifications(
-        request, Budget.objects.filter(owner=request.user)
-    )
+    notifications, show_notifications_modal = parse_notifications(request)
 
     context = {
         "transactions": transactions,
@@ -261,7 +260,7 @@ def main_page(request):
         request, Transaction.get_non_recurring_transactions(user=request.user)
     )
 
-    notifications, show_notifications_modal = parse_notifications(request, budgets)
+    notifications, show_notifications_modal = parse_notifications(request)
 
     context = {
         "monthly_summaries": monthly_summaries,
