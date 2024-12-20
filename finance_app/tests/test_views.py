@@ -2,12 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model, get_user
 from django.utils import timezone
-from finance_app.models import (
-    Transaction,
-    Category,
-    CategoryPreference,
-    Budget
-)
+from finance_app.models import Transaction, Category, CategoryPreference, Budget
 from decimal import Decimal
 
 
