@@ -255,7 +255,7 @@ def main_page(request):
     process_recurring_transactions(request.user)
 
     categories = CategoryPreference.objects.filter(user=request.user)
-    budgets = Budget.objects.filter(owner=request.user)
+    budgets = Budget.objects.filter(sharedbudget__user=request.user)
     monthly_summaries = get_monthly_summaries(
         request, Transaction.get_non_recurring_transactions(user=request.user)
     )

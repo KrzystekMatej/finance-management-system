@@ -11,6 +11,7 @@ from finance_app.models import (
     CategoryPreference,
     Budget,
     SharedBudget,
+    BudgetRole,
 )
 
 
@@ -46,9 +47,9 @@ def budgets_page(request):
 def budget_view(request, budget_id):
     budget = get_object_or_404(Budget, id=budget_id, sharedbudget__user=request.user)
 
-    associated_users = [budget.owner] + list(
-        SharedBudget.objects.filter(budget=budget).values_list("user", flat=True)
-    )
+    associated_users = SharedBudget.objects.filter(
+        budget=budget, _role=BudgetRole.PARTICIPANT.value
+    ).values_list("user", flat=True)
 
     transactions_for_budget = Transaction.objects.filter(
         user__in=associated_users, category__in=budget.categories.all()
@@ -60,13 +61,15 @@ def budget_view(request, budget_id):
         "monthly_summaries": get_monthly_summaries(request, transactions_for_budget),
         "categories": CategoryPreference.objects.filter(user=request.user),
         "user_profile": UserProfile.objects.get(user=request.user),
-        "budgets": Budget.objects.filter(owner=request.user),
+        "budgets": Budget.objects.filter(sharedbudget__user=request.user),
         "notifications": notifications,
         "show_notifications_modal": show_notifications_modal,
     }
 
     return render(request, "main_page.html", context)
 
+
+# Pred upravou pro nacitani vsech PARTICIPANTS z rozpoctu do budget summary:
 
 # @login_required(login_url="login")
 # def budget_view(request, budget_id):
