@@ -7,12 +7,15 @@ from finance_app.models import (
     Budget,
     RecurringTransaction,
     TimeInterval,
+    SharedBudget,
+    UserProfile,
 )
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
+from django.db import transaction as db_transaction
 
 
 class RegistrationForm(UserCreationForm):
@@ -80,11 +83,9 @@ class FilterByDateForm(forms.Form):
         label="Categories",
     )
 
-    # Override init to set categories queryset dynamically
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Use actual Category model instances for the queryset
         categories = CategoryPreference.objects.filter(user=user).values_list(
             "category", flat=True
         )
@@ -98,6 +99,11 @@ class TransactionForm(forms.ModelForm):
         model = Transaction
         fields = ["amount", "performed_at", "category", "name", "description"]
 
+    def __init__(self, *args, user=None, existing_instance=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.existing_instance = existing_instance
+
     def clean_performed_at(self):
         performed_at = self.cleaned_data.get("performed_at")
         if performed_at:
@@ -109,6 +115,32 @@ class TransactionForm(forms.ModelForm):
             if performed_at > timezone.now():
                 raise ValidationError("Datum nemůže být v budoucnosti.")
         return performed_at
+
+    def save(self, commit=True):
+        with db_transaction.atomic():
+            instance = super().save(commit=False)
+
+            if isinstance(instance, RecurringTransaction):
+                if commit:
+                    instance.save()
+                return instance
+
+            user_profile = UserProfile.objects.select_for_update().get(user=self.user)
+
+            if instance.pk is None:
+                instance.user = self.user
+                user_profile.balance += instance.amount
+            else:
+                original_amount = Transaction.objects.get(pk=instance.pk).amount
+                difference = instance.amount - original_amount
+                user_profile.balance += difference
+
+            if commit:
+                user_profile.save()
+                instance.save()
+
+            self.balance = user_profile.balance
+            return instance
 
 
 class RecurringTransactionForm(TransactionForm):
@@ -130,15 +162,23 @@ class RecurringTransactionForm(TransactionForm):
         model = RecurringTransaction
 
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance._interval = self.cleaned_data["interval"]
+        with db_transaction.atomic():
+            instance = super().save(commit=False)
 
-        if not instance.next_performed_at:
-            instance.next_performed_at = instance.performed_at
+            instance.user = self.user
+            instance._interval = self.cleaned_data["interval"]
 
-        if commit:
-            instance.save()
-        return instance
+            if not instance.next_performed_at:
+                instance.next_performed_at = instance.performed_at
+
+            user_profile = UserProfile.objects.select_for_update().get(user=self.user)
+
+            if commit:
+                instance.save()
+                instance.process(user_profile)
+
+            self.balance = user_profile.balance
+            return instance
 
 
 class CategoryForm(forms.Form):
@@ -243,9 +283,11 @@ class BudgetForm(forms.ModelForm):
         return categories
 
     def save(self, commit=True):
-        budget = super().save(commit=False)
-        budget.owner = self.user
-        if commit:
-            budget.save()
-            self.save_m2m()
+        with db_transaction.atomic():
+            budget = super().save(commit=False)
+            budget.owner = self.user
+            if commit:
+                budget.save()
+                self.save_m2m()
+                SharedBudget.objects.create(user=budget.owner, budget=budget)
         return budget
