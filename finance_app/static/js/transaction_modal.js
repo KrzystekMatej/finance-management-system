@@ -106,8 +106,9 @@ createTransactionFormManager.confirmation = formData => {
     return true;
 };
 
-createTransactionFormManager.postSuccess = () => {
+createTransactionFormManager.postSuccess = (data) => {
     transactionModal.hide();
+    updateBalance(data.balance);
     location.reload();
 };
 

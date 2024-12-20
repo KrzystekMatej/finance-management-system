@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from finance_app.forms import TransactionForm, RecurringTransactionForm
 from finance_app.models import Transaction, UserProfile, CategoryPreference
+from django.db import transaction as db_transaction
 
 
 @login_required(login_url="login")
@@ -12,16 +13,18 @@ def create_transaction(request):
         and request.headers.get("x-requested-with") == "XMLHttpRequest"
     ):
         if request.POST.get("is_recurring") == "on":
-            form = RecurringTransactionForm(request.POST)
+            form = RecurringTransactionForm(request.POST, user=request.user)
         else:
-            form = TransactionForm(request.POST)
+            form = TransactionForm(request.POST, user=request.user)
 
         if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.user = request.user
-            transaction.save()
+            form.save()
             return JsonResponse(
-                {"success": True, "message": "Transakce byla úspěšně vytvořena."}
+                {
+                    "success": True,
+                    "message": "Transakce byla úspěšně vytvořena.",
+                    "balance": form.balance,
+                }
             )
         else:
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
@@ -40,11 +43,15 @@ def transaction_detail(request, transaction_id):
                 {"success": False, "message": "Nesprávný typ požadavku."}, status=400
             )
 
-        form = TransactionForm(request.POST, instance=transaction)
+        form = TransactionForm(request.POST, instance=transaction, user=request.user)
         if form.is_valid():
             form.save()
             return JsonResponse(
-                {"success": True, "message": "Vaše změny byly uloženy."}
+                {
+                    "success": True,
+                    "message": "Vaše změny byly uloženy.",
+                    "balance": form.balance,
+                }
             )
         else:
             return JsonResponse({"success": False, "errors": form.errors}, status=400)
@@ -71,9 +78,20 @@ def delete_transaction(request, transaction_id):
         transaction = get_object_or_404(
             Transaction, id=transaction_id, user=request.user
         )
-        transaction.delete()
+        user_profile = None
+
+        with db_transaction.atomic():
+            user_profile = UserProfile.objects.get(user=request.user)
+            user_profile.balance -= transaction.amount
+            user_profile.save()
+            transaction.delete()
+
         return JsonResponse(
-            {"success": True, "message": "Transakce byla úspěšně smazána."}
+            {
+                "success": True,
+                "message": "Transakce byla úspěšně smazána.",
+                "balance": user_profile.balance,
+            }
         )
     return JsonResponse(
         {"success": False, "message": "Nesprávný typ požadavku."}, status=400

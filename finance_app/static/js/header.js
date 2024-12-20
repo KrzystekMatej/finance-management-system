@@ -113,6 +113,14 @@ function renderBalance() {
     }
 }
 
+function updateBalance(updatedBalance) {
+    const balanceElement = document.getElementById("balance-container");
+    const formattedBalance = new Intl.NumberFormat('cs-CZ').format(updatedBalance);
+
+    balanceElement.setAttribute("data-balance", updatedBalance);
+    balanceElement.textContent = `${formattedBalance} Kč`;
+}
+
 // Event listener for balance hiding toggle
 hideBalanceCheckbox.addEventListener('change', function() {
     hideBalance = this.checked;

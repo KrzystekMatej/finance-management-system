@@ -11,6 +11,7 @@ from finance_app.models import (
 from finance_app.serializers import CategoryPreferenceSerializer
 from finance_app.forms import FilterByDateForm
 from django.http import JsonResponse
+from django.db import transaction as db_transaction
 
 
 def parse_notifications(request):
@@ -251,10 +252,12 @@ def filter_page(request):
 
 
 def process_recurring_transactions(user):
-    transactions = RecurringTransaction.objects.filter(user=user)
+    with db_transaction.atomic():
+        transactions = RecurringTransaction.objects.filter(user=user)
+        user_profile = UserProfile.objects.select_for_update().get(user=user)
 
-    for transaction in transactions:
-        transaction.process()
+        for transaction in transactions:
+            transaction.process(user_profile)
 
 
 @login_required(login_url="login")

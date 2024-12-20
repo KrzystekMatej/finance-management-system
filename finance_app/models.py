@@ -126,10 +126,10 @@ class RecurringTransaction(Transaction):
                 except ValueError:
                     return base_date.replace(year=base_date.year + 1, day=28)
 
-    def process(self):
+    def process(self, user_profile):
         current_time = timezone.now()
-
         generated_transactions = []
+        total_amount = 0
 
         while self.next_performed_at < current_time:
             generated_transactions.append(
@@ -142,14 +142,17 @@ class RecurringTransaction(Transaction):
                 )
             )
 
+            total_amount += self.amount
+
             self.next_performed_at = self.get_next_date(
                 self.next_performed_at, self.interval
             )
 
         if generated_transactions:
             Transaction.objects.bulk_create(generated_transactions)
-
-        self.save()
+            user_profile.balance += total_amount
+            user_profile.save()
+            self.save()
 
 
 class Budget(models.Model):

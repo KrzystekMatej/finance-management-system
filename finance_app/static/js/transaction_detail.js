@@ -9,6 +9,10 @@ editTransactionFormManager.fieldFormatters = [
     new FieldFormatter("amount", value => value.replace(",", "."))
 ];
 
+editTransactionFormManager.postSuccess = (data) => {
+    updateBalance(data.balance);
+};
+
 document.getElementById("edit-transaction-btn").addEventListener("click", function (event) {
     editTransactionFormManager.processForm();
 });
@@ -32,6 +36,7 @@ document.getElementById("delete-transaction-btn").addEventListener("click", func
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                updateBalance(data.balance);
                 window.location.href = "/";
             } else {
                 alert("Nepodařilo se smazat transakci.");

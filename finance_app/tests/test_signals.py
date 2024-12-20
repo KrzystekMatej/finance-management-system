@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from finance_app.models import Category, CategoryPreference, Transaction, UserProfile
-from decimal import Decimal
-from django.utils import timezone
+from finance_app.models import Category, CategoryPreference, UserProfile
 
 
 class UserProfileSignalTests(TestCase):
@@ -15,58 +13,6 @@ class UserProfileSignalTests(TestCase):
 
         self.assertEqual(user_profile.user, user)
         self.assertEqual(user_profile.balance, 0)
-
-
-class BalanceUpdateSignalTests(TestCase):
-    def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            username="test_user", password="password123"
-        )
-        self.user_profile = UserProfile.objects.get(user=self.user)
-        self.category = Category.objects.create(name="Food", is_default=True)
-
-    def test_balance_update_on_transaction_insert(self):
-        initial_balance = self.user_profile.balance
-
-        Transaction.objects.create(
-            user=self.user,
-            amount=Decimal("100.00"),
-            performed_at=timezone.now(),
-            category=self.category,
-            name="Test Transaction",
-        )
-
-        self.user_profile.refresh_from_db()
-        self.assertEqual(self.user_profile.balance, initial_balance + Decimal("100.00"))
-
-    def test_balance_update_on_transaction_update(self):
-        transaction = Transaction.objects.create(
-            user=self.user,
-            amount=Decimal("100.00"),
-            performed_at=timezone.now(),
-            category=self.category,
-            name="Test Transaction",
-        )
-
-        transaction.amount = Decimal("200.00")
-        transaction.save()
-
-        self.user_profile.refresh_from_db()
-        self.assertEqual(self.user_profile.balance, Decimal("200.00"))
-
-    def test_balance_update_on_transaction_delete(self):
-        transaction = Transaction.objects.create(
-            user=self.user,
-            amount=Decimal("100.00"),
-            performed_at=timezone.now(),
-            category=self.category,
-            name="Test Transaction",
-        )
-
-        transaction.delete()
-
-        self.user_profile.refresh_from_db()
-        self.assertEqual(self.user_profile.balance, Decimal("0.00"))
 
 
 class LinkNewUserToExistingDefaultCategoriesSignalTests(TestCase):
