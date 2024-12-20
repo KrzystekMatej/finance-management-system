@@ -31,6 +31,8 @@ from finance_app.views.budget_views import (
     create_budget,
     edit_budget,
     delete_budget,
+    delete_shared_budget,
+    create_shared_budget,
 )
 from finance_app.views.recurring_transaction_views import (
     recurring_transactions_page,
@@ -128,4 +130,10 @@ urlpatterns = [
         "update-notification/<int:pk>/", update_notification, name="update_notification"
     ),
     path("mark-all-unread/", mark_all_notifications_as_unread, name="mark_all_unread"),
+    path(
+        "delete-shared-budget/<int:budget_id>/",
+        delete_shared_budget,
+        name="delete-shared-budget",
+    ),
+    path("create-shared-budget/", create_shared_budget, name="create-shared-budget"),
 ]

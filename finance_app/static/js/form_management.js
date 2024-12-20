@@ -6,6 +6,7 @@ export class FormManager {
     confirmation;
     postSuccess;
     postFailure;
+    formLoader;
 
     constructor() {
         this.fieldFormatters = [];
@@ -19,10 +20,15 @@ export class FormManager {
     }
 
     loadFormData() {
-        this.formData = new FormData(this.form);
+        if (this.formLoader) this.formData = this.formLoader(this.form);
+        else this.formData = new FormData(this.form);
+
         for (const formatter of this.fieldFormatters) {
-            const formattedValue = formatter.format(this.formData.get(formatter.fieldName));
-            this.formData.set(formatter.fieldName, formattedValue);
+            const value = this.formData.get(formatter.fieldName)
+            if (value) {
+                const formattedValue = formatter.format(value);
+                this.formData.set(formatter.fieldName, formattedValue);
+            }
         }
     }
 
