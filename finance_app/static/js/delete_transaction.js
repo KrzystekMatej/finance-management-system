@@ -18,6 +18,8 @@ document.querySelectorAll(".delete-transaction").forEach(button => {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        updateBalance(data.balance);
+
                         const transactionElement = this.closest(".transaction");
                         if (transactionElement) {
                             transactionElement.remove();

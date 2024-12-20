@@ -13,6 +13,7 @@ from finance_app.models import (
     SharedBudget,
     BudgetRole,
 )
+from ..logging import logger
 
 
 @login_required(login_url="login")
@@ -122,6 +123,7 @@ def edit_budget(request, budget_id):
         request.method == "POST"
         and request.headers.get("x-requested-with") == "XMLHttpRequest"
     ):
+        logger.info(request.POST)
         budget = get_object_or_404(Budget, id=budget_id, owner=request.user)
         form = BudgetForm(request.POST, user=request.user, instance=budget)
         if form.is_valid():
