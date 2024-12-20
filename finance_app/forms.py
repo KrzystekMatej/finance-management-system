@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
+
+from finance_app.logging import logger
 from finance_app.models import (
     Transaction,
     Category,
@@ -16,6 +18,7 @@ from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import re
 from django.db import transaction as db_transaction
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class RegistrationForm(UserCreationForm):
@@ -287,7 +290,59 @@ class BudgetForm(forms.ModelForm):
             budget = super().save(commit=False)
             budget.owner = self.user
             if commit:
+                is_new = budget.pk is None
                 budget.save()
                 self.save_m2m()
-                SharedBudget.objects.create(user=budget.owner, budget=budget)
+                if is_new:
+                    SharedBudget.objects.create(user=budget.owner, budget=budget)
         return budget
+
+
+class SharedBudgetForm(forms.ModelForm):
+    username = forms.CharField(max_length=30, required=True)
+
+    class Meta:
+        model = SharedBudget
+        fields = ["_permission", "_role", "_notification_mode"]
+
+    def __init__(self, *args, budget=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.budget = budget
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        try:
+            self.user = get_user_model().objects.get(username=username)
+        except ObjectDoesNotExist:
+            raise ValidationError("Uživatel s tímto jménem neexistuje.")
+        user_shared_budget = SharedBudget.objects.filter(
+            user=self.user, budget=self.budget
+        )
+        if user_shared_budget:
+            raise ValidationError("Uživatel již je členem tohoto sdíleného rozpočtu.")
+
+    def save(self, commit=True):
+        with db_transaction.atomic():
+            instance = super().save(commit=False)
+            instance.user = self.user
+            instance.budget = self.budget
+
+            budget_categories = self.budget.categories.all()
+            user_categories = CategoryPreference.objects.filter(
+                user=self.user
+            ).values_list("category", flat=True)
+
+            new_preferences = []
+            for category in budget_categories:
+                if category.id not in user_categories:
+                    new_preferences.append(
+                        CategoryPreference(user=self.user, category=category)
+                    )
+                    logger.info(category.id)
+
+            if new_preferences:
+                CategoryPreference.objects.bulk_create(new_preferences)
+
+            if commit:
+                instance.save()
+            return instance

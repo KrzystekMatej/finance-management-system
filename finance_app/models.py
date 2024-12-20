@@ -166,6 +166,12 @@ class Budget(models.Model):
     description = models.TextField(blank=True)
     categories = models.ManyToManyField(Category, blank=True)
 
+    @property
+    def shared_budgets(self):
+        return getattr(
+            self, "_prefetched_shared_budgets", SharedBudget.objects.filter(budget=self)
+        )
+
 
 class SharedBudget(models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE)

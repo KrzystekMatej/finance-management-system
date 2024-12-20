@@ -7,11 +7,10 @@
   <div class="container mt-5 d-flex flex-column align-items-center">
     {% for budget in budgets %}
       <form class="summary-module edit-budget-form d-flex flex-column mb-3 w-100"
-            method="post"
-            action="">
+            data-budget-id="{{ budget.id }}">
         {% csrf_token %}
         <!-- first row-->
-        <div class="row w-100 mb-3" data-budget-id="{{ budget.id }}">
+        <div class="row w-100 mb-3">
           <!-- Kategorie-->
           <div class="col-md-4">
             <div class="budget-categories flex-grow-1 px-2">
@@ -23,7 +22,8 @@
                            class="form-check-input"
                            name="categories"
                            value="{{ category_preference.category.id }}"
-                           {% if category_preference.category in budget.categories.all %}checked{% endif %}>
+                           {% if category_preference.category in budget.categories.all %}checked{% endif %}
+                           {% if not budget.can_edit %}disabled{% endif %}>
                     {{ category_preference.category.name }}
                   </label>
                   <br>
@@ -38,7 +38,8 @@
               <input type="text"
                      name="name"
                      class="form-control"
-                     value="{{ budget.name }}">
+                     value="{{ budget.name }}"
+                     {% if not budget.can_edit %}disabled{% endif %}>
             </div>
             <!-- Limit -->
             <div class="budget-limit h-50 px-2">
@@ -46,7 +47,8 @@
               <input type="text"
                      name="limit"
                      class="form-control czech-number"
-                     value="{{ budget.limit }}">
+                     value="{{ budget.limit }}"
+                     {% if not budget.can_edit %}disabled{% endif %}>
             </div>
           </div>
           <div class="col-md-4 budget-period">
@@ -56,14 +58,35 @@
               <input type="date"
                      name="period_start"
                      class="form-control"
-                     value="{{ budget.period_start|date:"Y-m-d" }}">
+                     value="{{ budget.period_start|date:"Y-m-d" }}"
+                     {% if not budget.can_edit %}disabled{% endif %}>
             </div>
             <div class="h-50">
               <b>Období do</b>
               <input type="date"
                      name="period_end"
                      class="form-control"
-                     value="{{ budget.period_end|date:"Y-m-d" }}">
+                     value="{{ budget.period_end|date:"Y-m-d" }}"
+                     {% if not budget.can_edit %}disabled{% endif %}>
+            </div>
+          </div>
+        </div>
+        <div class="row w-100 mb-3">
+          <div class="col-md-8 offset-md-4">
+            <b>Nastavení notifikací</b>
+            <div class="form-check form-switch">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="app-notifications-{{ budget.id }}"
+                     {% if budget.app_on %}checked{% endif %}>
+              <label class="form-check-label" for="app-notifications-{{ budget.id }}">Aplikace</label>
+            </div>
+            <div class="form-check form-switch">
+              <input class="form-check-input"
+                     type="checkbox"
+                     id="email-notifications-{{ budget.id }}"
+                     {% if budget.email_on %}checked{% endif %}>
+              <label class="form-check-label" for="email-notifications-{{ budget.id }}">Email</label>
             </div>
           </div>
         </div>
@@ -71,92 +94,77 @@
           <!-- Popis -->
           <div class="col-md-4">
             <b>Popis</b>
-            <textarea name="description" class="form-control" rows="5">{{ budget.description }}</textarea>
+            <textarea name="description"
+                      class="form-control"
+                      rows="5"
+                      {% if not budget.can_edit %}disabled{% endif %}>{{ budget.description }}</textarea>
           </div>
           <!-- Sdílené uživatele -->
           <div class="col-md-8">
             <b>Sdílení</b>
             <div class="shared-users-container form-control overflow-auto">
-              {% for shared_user in shared_budgets %}
-                {% if shared_user.budget.id == budget.id %}
-                  <div class="d-flex align-items-center">
-                    <div class="col-md-3">
-                      <span class="me-2">{{ shared_user.user.first_name }}</span>
-                      <span>{{ shared_user.user.last_name }}</span>
-                    </div>
-                    <div class="d-flex col-md-6 justify-content-center align-items-center">
-                      <div class="form-check mx-2">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               name="notifications_none"
-                               {% if shared_user.notification_mode.value == 'NONE' %}checked{% endif %}>
-                        <label class="form-check-label">NONE</label>
-                      </div>
-                      <div class="form-check mx-2">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               name="notifications_app"
-                               {% if shared_user.notification_mode.value == 'APP' or shared_user.notification_mode.value == "APP_EMAIL" %}checked{% endif %}>
-                        <label class="form-check-label">APP</label>
-                      </div>
-                      <div class="form-check mx-2">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               name="notifications_email"
-                               {% if shared_user.notification_mode.value == 'EMAIL' or shared_user.notification_mode.value == "APP_EMAIL" %}checked{% endif %}>
-                        <label class="form-check-label">EMAIL</label>
-                      </div>
-                    </div>
-                    <div class="d-flex col-md-3">
-                      <select name="permissions" class="form-select mx-2">
-                        <option value="VIEW"
-                                {% if shared_user.permission.value == 'VIEW' %}selected{% endif %}>VIEW</option>
-                        <option value="EDIT"
-                                {% if shared_user.permission.value == 'EDIT' %}selected{% endif %}>EDIT</option>
-                      </select>
-                      {% for s in shared_budgets %}
-                        {% if s.budget.id == budget.id %}
-                          {% if s.user_id == request.user.id and s.permission.value == "EDIT" %}
-                            <button type="button"
-                                    class="btn btn-link p-0 delete-user_from_shared_budget-btn">
-                              <i class="fas fa-trash-alt text-danger fa-lg"></i>
-                            </button>
-                          {% endif %}
-                        {% endif %}
-                      {% endfor %}
+              {% for shared_budget in budget.shared_budgets %}
+                <div class="d-flex align-items-center shared-budget-container">
+                  <input type="hidden" class="shared-budget-id" value="{{ shared_budget.id }}">
+                  <div class="col-md-3">
+                    <span class="me-2">{{ shared_budget.user.first_name }}</span>
+                    <span>{{ shared_budget.user.last_name }}</span>
+                  </div>
+                  <div class="d-flex col-md-4 align-items-center">
+                    <input type="hidden" class="shared-budget-id" value="{{ shared_budget.id }}">
+                    <div class="form-check mx-2">
+                      <input type="checkbox"
+                             class="form-check-input permission-checkbox"
+                             id="permission-{{ shared_budget.id }}"
+                             value="EDIT"
+                             {% if shared_budget.permission.value == 'EDIT' %}checked{% endif %}
+                             {% if request.user != budget.owner or shared_budget.user == budget.owner %}disabled{% endif %}>
+                      <label class="form-check-label" for="permission-{{ shared_budget.id }}">Editor</label>
                     </div>
                   </div>
-                {% endif %}
+                  <!-- Role Dropdown -->
+                  <div class="d-flex col-md-4">
+                    <select class="form-select mx-2 role-select"
+                            {% if request.user != budget.owner and request.user != shared_budget.user %}disabled{% endif %}>
+                      <option value="PARTICIPANT"
+                              {% if shared_budget.role.value == 'PARTICIPANT' %}selected{% endif %}>ÚČASTNÍK</option>
+                      <option value="OBSERVER"
+                              {% if shared_budget.role.value == 'OBSERVER' %}selected{% endif %}>POZOROVATEL</option>
+                    </select>
+                  </div>
+                  <!-- Delete Button -->
+                  <div class="col-md-1">
+                    {% if request.user == budget.owner and shared_budget.user.id != budget.owner.id %}
+                      <button type="button"
+                              class="btn btn-link p-0 delete-shared-budget-btn"
+                              data-shared-budget-id="{{ shared_budget.id }}">
+                        <i class="fas fa-trash-alt text-danger fa-lg"></i>
+                      </button>
+                    {% endif %}
+                  </div>
+                </div>
               {% endfor %}
-              {% for s in shared_budgets %}
-                {% if s.budget.id == budget.id %}
-                  {% if s.user_id == request.user.id and s.permission.value == "EDIT" %}
-                    <button type="button"
-                            class="btn btn-primary btn-sm add-shared-user mt-2"
-                            data-bs-toggle="modal"
-                            data-bs-target="#add-user-modal"
-                            data-budget-id="{{ budget.id }}">Přidat uživatele</button>
-                  {% endif %}
-                {% endif %}
-              {% endfor %}
+              {% if budget.can_edit %}
+                <button type="button"
+                        class="btn btn-primary btn-sm add-shared-user-btn mt-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#add-user-modal"
+                        data-budget-id="{{ budget.id }}">Přidat uživatele</button>
+              {% endif %}
             </div>
           </div>
         </div>
-        <!-- Ovladaci tlacitka (pouze pro EDIT) -->
-        {% for shared_user in shared_budgets %}
-          {% if shared_user.budget.id == budget.id %}
-            {% if shared_user.user_id == request.user.id and shared_user.permission.value == "EDIT" %}
-              <div class="row justify-content-center spacer-top">
-                <button type="button"
-                        class="btn btn-primary fixed-button-big edit-budget-btn spacer-right"
-                        data-budget-id="{{ budget.id }}">Uložit změny</button>
-                <button type="button"
-                        class="btn btn-secondary fixed-button-big delete-budget-btn spacer-left"
-                        data-budget-id="{{ budget.id }}">Smazat rozpočet</button>
-              </div>
-            {% endif %}
+        <!-- Ovladaci tlacitka (pouze pro ownera) -->
+        <div class="row justify-content-center spacer-top">
+          <button type="button"
+                  class="btn btn-primary fixed-button-big edit-budget-btn spacer-right"
+                  data-budget-id="{{ budget.id }}">Uložit změny</button>
+          {% if request.user.id == budget.owner.id %}
+            <button type="button"
+                    class="btn btn-secondary fixed-button-big delete-budget-btn spacer-left"
+                    data-budget-id="{{ budget.id }}">Smazat rozpočet</button>
           {% endif %}
-        {% endfor %}
+        </div>
       </form>
     {% endfor %}
   </div>
