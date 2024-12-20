@@ -7,6 +7,7 @@ from finance_app.models import (
     Budget,
     RecurringTransaction,
     Notification,
+    SharedBudget
 )
 from finance_app.serializers import CategoryPreferenceSerializer
 from finance_app.forms import FilterByDateForm
@@ -38,8 +39,16 @@ def parse_notifications(request):
 
         limit = float(budget.limit)
 
-        user_profile = UserProfile.objects.filter(user=request.user).first()
-        notification_mode = str(user_profile.global_notification_mode.value)
+        # Idk if this can fail, but just to be sure
+        try:
+            shared_budget = SharedBudget.objects.filter(user=request.user, budget=budget)
+            if shared_budget.count() == 1:
+                notification_mode = str(shared_budget.first().notification_mode.value)
+            else:
+              # Shouldn't ever happen
+              notification_mode = "APP_EMAIL"
+        except:
+            notification_mode = "APP_EMAIL"
 
         # Breached the limit, create a notification entry
         if limit < expenses and notification_mode != "NONE":
