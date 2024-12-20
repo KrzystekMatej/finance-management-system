@@ -86,48 +86,62 @@ toggleThemeButton.addEventListener('change', () => {
 // 2. Balance Visibility Toggle
 // ----------------------------
 
-let hideBalance = false; // TODO: Fetch from account's settings
+let hideBalance = getCookie('hideBalance') === 'true';
 
 const hideBalanceCheckbox = document.getElementById('toggle-checkbox-hide-balance');
 
-// Function to toggle balance visibility
-function toggleBalance() {
-    showBalance = !showBalance;
-    renderBalance();
+function setCookie(name, value, days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = `expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value};${expires};path=/`;
 }
 
-// Function to render balance depending on visibility settings
+function getCookie(name) {
+    const nameEQ = `${name}=`;
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.indexOf(nameEQ) === 0) {
+            return cookie.substring(nameEQ.length, cookie.length);
+        }
+    }
+    return null;
+}
+
+function toggleBalance() {
+    hideBalance = !hideBalance;
+    setCookie('hideBalance', hideBalance, 30);
+    renderBalance();
+    hideBalanceCheckbox.checked = hideBalance;
+}
+
 function renderBalance() {
-  const balanceContainer = document.getElementById('balance-container');
-  if (!hideBalance) {
-      const balance = parseFloat(balanceContainer.getAttribute('data-balance'));
-      const formattedBalance = new Intl.NumberFormat('cs-CZ').format(balance); // 69420 -> 69 420
-
-      balanceContainer.innerHTML = `<div onclick="toggleBalance()" id="balance">` + formattedBalance + ` Kč</div>`;
-    }else{
-      const balanceElement = document.getElementById('balance');
-      if (balanceElement){
-        balanceElement.remove();
-      }
-
+    const balanceContainer = document.getElementById('balance-container');
+    if (!hideBalance) {
+        const balance = parseFloat(balanceContainer.getAttribute('data-balance'));
+        const formattedBalance = new Intl.NumberFormat('cs-CZ').format(balance); // Format: 69420 -> 69 420
+        balanceContainer.innerHTML = `<div onclick="toggleBalance()" id="balance">${formattedBalance} Kč</div>`;
+    } else {
+        balanceContainer.innerHTML = `<div onclick="toggleBalance()" id="balance">Zůstatek skryt</div>`;
     }
 }
 
 function updateBalance(updatedBalance) {
-    const balanceElement = document.getElementById("balance-container");
+    const balanceContainer = document.getElementById('balance-container');
     const formattedBalance = new Intl.NumberFormat('cs-CZ').format(updatedBalance);
 
-    balanceElement.setAttribute("data-balance", updatedBalance);
-    balanceElement.textContent = `${formattedBalance} Kč`;
+    balanceContainer.setAttribute("data-balance", updatedBalance);
+    if (!hideBalance) {
+        balanceContainer.innerHTML = `<div onclick="toggleBalance()" id="balance">${formattedBalance} Kč</div>`;
+    }
 }
 
-// Event listener for balance hiding toggle
-hideBalanceCheckbox.addEventListener('change', function() {
-    hideBalance = this.checked;
-    renderBalance();
+hideBalanceCheckbox.addEventListener('change', function () {
+    toggleBalance();
 });
 
-// Initial render of the balance section
+// Initial 
 renderBalance();
 hideBalanceCheckbox.checked = hideBalance;
 
