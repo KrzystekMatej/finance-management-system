@@ -294,7 +294,9 @@ class BudgetForm(forms.ModelForm):
                 budget.save()
                 self.save_m2m()
                 if is_new:
-                    SharedBudget.objects.create(user=budget.owner, budget=budget, _permission="EDIT")
+                    SharedBudget.objects.create(
+                        user=budget.owner, budget=budget, _permission="EDIT"
+                    )
         return budget
 
 
