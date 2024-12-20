@@ -76,6 +76,8 @@ python manage.py test
 
 [Processes of project](https://docs.google.com/document/d/1XIyD3P5bkV1UHQEpMx7P9PDq5NtpDqV9/edit?usp=sharing&ouid=102689092095969383323&rtpof=true&sd=true)
 
+[Overleaf presentation](https://www.overleaf.com/project/6755c42185497c8ba680bf48)
+
 ## UML diagram
 
 ```mermaid
