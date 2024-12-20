@@ -40,9 +40,7 @@ def parse_notifications(request):
 
         limit = float(budget.limit)
 
-        shared_budget = SharedBudget.objects.filter(
-            user=request.user, budget=budget
-        )
+        shared_budget = SharedBudget.objects.filter(user=request.user, budget=budget)
         if shared_budget.count() == 1:
             notification_mode = str(shared_budget.first().notification_mode.value)
         else:
