@@ -2,7 +2,13 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model, get_user
 from django.utils import timezone
-from finance_app.models import Transaction, Category, CategoryPreference
+from finance_app.models import (
+    Transaction,
+    Category,
+    CategoryPreference,
+    Budget
+)
+from decimal import Decimal
 
 
 class RegisterPageTest(TestCase):
@@ -278,3 +284,145 @@ class CreateCategoryViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.json()["success"])
+
+
+class CreateBudgetViewTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.client.login(username="testuser", password="password123")
+        self.category = Category.objects.create(name="Utilities")
+        self.url = reverse("create-budget")
+
+    def test_create_budget_success(self):
+        data = {
+            "name": "Monthly Budget",
+            "limit": "500.00",
+            "period_start": timezone.now().isoformat(),
+            "period_end": (timezone.now() + timezone.timedelta(days=30)).isoformat(),
+            "categories": [self.category.id],
+            "description": "Budget for monthly expenses.",
+        }
+        response = self.client.post(
+            self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["success"])
+        self.assertEqual(Budget.objects.count(), 1)
+
+    def test_create_budget_failure_invalid_limit(self):
+        data = {
+            "name": "Negative Limit Budget",
+            "limit": "-100.00",
+            "period_start": timezone.now().isoformat(),
+            "period_end": (timezone.now() + timezone.timedelta(days=30)).isoformat(),
+            "categories": [self.category.id],
+            "description": "Budget with negative limit.",
+        }
+        response = self.client.post(
+            self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+
+    def test_create_budget_failure_unauthorized(self):
+        self.client.logout()
+        response = self.client.post(
+            self.url, {}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 302)  # Redirect to login
+
+    def test_create_budget_failure_invalid_dates(self):
+        data = {
+            "name": "Invalid Date Budget",
+            "limit": "200.00",
+            "period_start": timezone.now().isoformat(),
+            "period_end": timezone.now().isoformat(),  # End same as start
+            "categories": [self.category.id],
+            "description": "Budget with invalid dates.",
+        }
+        response = self.client.post(
+            self.url, data, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+
+
+class EditCategoryViewTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.client.login(username="testuser", password="password123")
+        self.category = Category.objects.create(name="Travel")
+        self.category_preference = CategoryPreference.objects.create(
+            user=self.user, category=self.category, color="#FF5733"
+        )
+        self.url = reverse("edit-category", args=[self.category_preference.id])
+
+    def test_edit_category_invalid_data(self):
+        response = self.client.post(
+            self.url,
+            {
+                "name": "",
+                "color": "invalid-color",
+            },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.json()["success"])
+
+
+class DeleteCategoryViewTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.client.login(username="testuser", password="password123")
+        self.category = Category.objects.create(name="Entertainment")
+        self.category_preference = CategoryPreference.objects.create(
+            user=self.user, category=self.category, color="#FF5733"
+        )
+        self.url = reverse("delete-category", args=[self.category_preference.id])
+
+    def test_delete_category_success(self):
+        response = self.client.post(self.url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["success"])
+        self.assertFalse(
+            CategoryPreference.objects.filter(id=self.category_preference.id).exists()
+        )
+
+    def test_delete_category_failure_unauthorized(self):
+        self.client.logout()
+        response = self.client.post(self.url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 302)  # Redirect to login
+
+
+class DeleteTransactionViewTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="testuser", password="password123"
+        )
+        self.client.login(username="testuser", password="password123")
+        self.transaction = Transaction.objects.create(
+            name="Test Transaction",
+            amount=Decimal("100.00"),
+            performed_at=timezone.now(),
+            user=self.user,
+            category=None,
+            description="Test description",
+        )
+        self.url = reverse("delete-transaction", args=[self.transaction.id])
+
+    def test_delete_transaction_success(self):
+        response = self.client.post(self.url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["success"])
+        self.assertFalse(Transaction.objects.filter(id=self.transaction.id).exists())
+
+    def test_delete_transaction_failure_unauthorized(self):
+        self.client.logout()
+        response = self.client.post(self.url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        self.assertEqual(response.status_code, 302)
